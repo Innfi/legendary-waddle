@@ -23,6 +23,5 @@ async fn call_select() -> Result<(), sqlx::Error> {
 
   println!("row: {:?}", query_result);
 
-
   Ok(())
 }
