@@ -4,13 +4,14 @@ use dotenv::dotenv;
 use std::env;
 use std::net::TcpListener;
 
-use web_server::routes::{db_test, health_check};
+use web_server::routes::{call_select_many, call_select_one, health_check};
 
 fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
   let server = HttpServer::new(move || {
     App::new()
       .route("/health_check", web::get().to(health_check))
-      .route("/db", web::get().to(db_test))
+      .route("/select/one", web::get().to(call_select_one))
+      .route("/select/many", web::get().to(call_select_many))
   })
   .listen(listener)?
   .run();
@@ -30,9 +31,15 @@ async fn main() -> std::io::Result<()> {
 }
 
 fn print_env() {
-  println!("--------");
+  let process_env = env::vars().find(|x| x.0 == "PROCESS_ENV");
+  if process_env.is_none() {
+    return;
+  }
+  if process_env.unwrap().1 != "local" {
+    return;
+  }
+
   for (key, value) in env::vars() {
     println!("{}: {}", key, value);
   }
-  println!("--------");
 }
