@@ -1,5 +1,5 @@
-use actix_web::HttpResponse;
-use sqlx::mysql::MySqlPoolOptions;
+use actix_web::{web, HttpResponse};
+use sqlx::MySqlPool;
 use chrono::{DateTime, Utc};
 
 #[derive(sqlx::FromRow)]
@@ -11,25 +11,18 @@ struct User {
 }
 
 // FIXME: the return type is ugly as hell, to be divided
-pub async fn call_select_one() -> HttpResponse {
+pub async fn call_select_one(pool: web::Data<MySqlPool>) -> HttpResponse {
   println!("db_test");
-  let _ = select_one().await;
+  let _ = select_one(pool).await;
 
   HttpResponse::Ok().finish()
 }
 
-async fn select_one() -> Result<(), sqlx::Error> {
+async fn select_one(pool: web::Data<MySqlPool>) -> Result<(), sqlx::Error> {
   println!("select_one");
-
-  // FIXME: borrow the pool from the outside
-  let pool = MySqlPoolOptions::new()
-    .max_connections(2)
-    .connect("mysql://tester:test1234@localhost/innfi")
-    .await?;
-
   println!("call_select] pool created");
   let query_result = sqlx::query!("SELECT id FROM users")
-    .fetch_one(&pool)
+    .fetch_one(pool.get_ref())
     .await?;
 
   println!("row: {:?}", query_result);
@@ -39,8 +32,8 @@ async fn select_one() -> Result<(), sqlx::Error> {
   Ok(())
 }
 
-pub async fn call_select_many() -> HttpResponse {
-  let select_many_result = select_many().await;
+pub async fn call_select_many(pool: web::Data<MySqlPool>) -> HttpResponse {
+  let select_many_result = select_many(pool).await;
   if select_many_result.is_err() {
     println!("err: {:?}", select_many_result.err());
 
@@ -55,20 +48,13 @@ pub async fn call_select_many() -> HttpResponse {
   HttpResponse::Ok().finish()
 }
 
-async fn select_many() -> Result<Vec<User>, sqlx::Error> {
+async fn select_many(pool: web::Data<MySqlPool>) -> Result<Vec<User>, sqlx::Error> {
   println!("select_many");
 
   let dummy_email = "innfi@test.com";
-
-  let pool = MySqlPoolOptions::new()
-    .max_connections(2)
-    .connect("mysql://tester:test1234@localhost/innfi")
-    .await?;
-
-  println!("select_many 1");
   let stream = sqlx::query_as::<_, User>("SELECT * FROM users WHERE email = ?")
     .bind(dummy_email)
-    .fetch_all(&pool).await;
+    .fetch_all(pool.get_ref()).await;
   if stream.is_err() {
     return Err(stream.err().unwrap());
   }
