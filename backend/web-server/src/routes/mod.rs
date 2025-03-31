@@ -1,5 +1,5 @@
-mod db_test;
+mod user;
 mod health_check;
 
-pub use db_test::*;
+pub use user::*;
 pub use health_check::*;

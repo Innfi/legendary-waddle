@@ -63,3 +63,26 @@ async fn select_many(pool: web::Data<MySqlPool>) -> Result<Vec<User>, sqlx::Erro
 
   Ok(stream.unwrap())
 }
+
+pub async fn call_insert_one(pool: web::Data<MySqlPool>, payload: web::Data<User>) -> HttpResponse {
+  println!("call_insert_one");
+
+  let result = insert_one(pool, payload).await;
+  if result.is_err() {
+    println!("err: {:?}", result.err());
+
+    return HttpResponse::InternalServerError().finish();
+  }
+
+  HttpResponse::Ok().finish()
+}
+
+async fn insert_one(pool: web::Data<MySqlPool>, payload: web::Data<User>) -> Result<(), sqlx::Error> {
+  // TODO: grab insert error
+  sqlx::query("INSERT INTO users(email, pass) VALUES(?, ?);")
+  .bind(payload.email.clone())
+  .bind(payload.pass.clone())
+  .execute(pool.get_ref()).await;
+
+  Ok(())
+}
