@@ -3,11 +3,17 @@ use sqlx::MySqlPool;
 use chrono::{DateTime, Utc};
 
 #[derive(sqlx::FromRow)]
-struct User {
+pub struct User {
   id: i32,
   email: String,
   pass: Option<String>, // just an example for nullable field
   created_at: DateTime<Utc>,
+}
+
+pub struct UpdateUserPayload {
+  id: i32,
+  email: Option<String>,
+  pass: Option<String>,
 }
 
 // FIXME: the return type is ugly as hell, to be divided
@@ -79,10 +85,24 @@ pub async fn call_insert_one(pool: web::Data<MySqlPool>, payload: web::Data<User
 
 async fn insert_one(pool: web::Data<MySqlPool>, payload: web::Data<User>) -> Result<(), sqlx::Error> {
   // TODO: grab insert error
-  sqlx::query("INSERT INTO users(email, pass) VALUES(?, ?);")
+  let _ = sqlx::query("INSERT INTO users(email, pass) VALUES(?, ?);")
   .bind(payload.email.clone())
   .bind(payload.pass.clone())
   .execute(pool.get_ref()).await;
+
+  Ok(())
+}
+
+async fn update_one(pool: web::Data<MySqlPool>, payload: web::Data<UpdateUserPayload>) -> Result<(), sqlx::Error> {
+  let _ = sqlx::query!(
+    "UPDATE users SET 
+      email = COALESCE(?, email),
+      pass = COALESCE(?, pass) 
+     WHERE id = ?",
+     payload.email,
+     payload.pass,
+     payload.id
+  ).execute(pool.get_ref()).await;
 
   Ok(())
 }
