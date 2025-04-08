@@ -30,7 +30,7 @@ impl UserRepo {
       .await;
 
     if query_result.is_err() {
-
+      return Err(query_result.err().unwrap());
     }
 
     Ok(query_result.unwrap())

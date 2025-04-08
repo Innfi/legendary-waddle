@@ -1,5 +1,7 @@
 mod dto;
-mod traits;
+mod service;
+mod user_repo;
 
 pub use dto::*;
-pub use traits::*;
+pub use service::*;
+pub use user_repo::*;
