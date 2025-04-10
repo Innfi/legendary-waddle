@@ -1,6 +1,6 @@
 use actix_web::web;
-use sqlx::mysql::MySqlPoolOptions;
 use sqlx::MySqlPool;
+use sqlx::mysql::MySqlPoolOptions;
 
 pub fn init_database_pool() -> web::Data<MySqlPool> {
   let pool = MySqlPoolOptions::new()

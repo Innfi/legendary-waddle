@@ -1,6 +1,6 @@
-use actix_web::{web, HttpResponse};
-use sqlx::MySqlPool;
+use actix_web::{HttpResponse, web};
 use chrono::{DateTime, Utc};
+use sqlx::MySqlPool;
 
 #[derive(sqlx::FromRow)]
 pub struct User {
@@ -60,7 +60,8 @@ async fn select_many(pool: web::Data<MySqlPool>) -> Result<Vec<User>, sqlx::Erro
   let dummy_email = "innfi@test.com";
   let stream = sqlx::query_as::<_, User>("SELECT * FROM users WHERE email = ?")
     .bind(dummy_email)
-    .fetch_all(pool.get_ref()).await;
+    .fetch_all(pool.get_ref())
+    .await;
   if stream.is_err() {
     return Err(stream.err().unwrap());
   }
@@ -83,26 +84,35 @@ pub async fn call_insert_one(pool: web::Data<MySqlPool>, payload: web::Data<User
   HttpResponse::Ok().finish()
 }
 
-async fn insert_one(pool: web::Data<MySqlPool>, payload: web::Data<User>) -> Result<(), sqlx::Error> {
+async fn insert_one(
+  pool: web::Data<MySqlPool>,
+  payload: web::Data<User>,
+) -> Result<(), sqlx::Error> {
   // TODO: grab insert error
   let _ = sqlx::query("INSERT INTO users(email, pass) VALUES(?, ?);")
-  .bind(payload.email.clone())
-  .bind(payload.pass.clone())
-  .execute(pool.get_ref()).await;
+    .bind(payload.email.clone())
+    .bind(payload.pass.clone())
+    .execute(pool.get_ref())
+    .await;
 
   Ok(())
 }
 
-async fn update_one(pool: web::Data<MySqlPool>, payload: web::Data<UpdateUserPayload>) -> Result<(), sqlx::Error> {
+async fn update_one(
+  pool: web::Data<MySqlPool>,
+  payload: web::Data<UpdateUserPayload>,
+) -> Result<(), sqlx::Error> {
   let _ = sqlx::query!(
     "UPDATE users SET 
       email = COALESCE(?, email),
       pass = COALESCE(?, pass) 
      WHERE id = ?",
-     payload.email,
-     payload.pass,
-     payload.id
-  ).execute(pool.get_ref()).await;
+    payload.email,
+    payload.pass,
+    payload.id
+  )
+  .execute(pool.get_ref())
+  .await;
 
   Ok(())
 }
