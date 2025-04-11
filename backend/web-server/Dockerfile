@@ -1,11 +1,11 @@
-FROM rust:1.86-slim as builder
+FROM rust:1.86-slim AS builder
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && \
   cargo install trunk
 
 COPY . .
-ENV SQLX_OFFLINE true
+ENV SQLX_OFFLINE=true
 
 RUN cargo build --release --bin web-server
 
