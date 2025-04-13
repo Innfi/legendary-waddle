@@ -1,14 +1,9 @@
-use actix_web::dev::Server;
-use actix_web::{App, HttpServer, web};
 use dotenv::dotenv;
-use sqlx::MySqlPool;
-use sqlx::mysql::MySqlPoolOptions;
 use std::env;
-use std::net::TcpListener;
 
-use web_server::routes::{call_insert_one, call_select_many, call_select_one, health_check};
-use web_server::startup_database::init_database_pool;
-use web_server::startup_web::run;
+use web_server::startup_web::run_v2;
+use web_server::common;
+
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -16,10 +11,9 @@ async fn main() -> std::io::Result<()> {
   print_env();
   println!("Hello, world!");
 
-  let pool = init_database_pool();
-  let listener = TcpListener::bind("localhost:8080")?;
+  let common_resource = common::init_common_resource();
 
-  run(listener, user_service, pool)?.await
+  run_v2(common_resource)?.await
 }
 
 fn print_env() {
