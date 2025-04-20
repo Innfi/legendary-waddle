@@ -6,7 +6,7 @@ pub struct CommonResource {
   pub pool: MySqlPool,
 }
 
-pub fn init_common_resource() -> Arc<CommonResource > {
+pub fn init_common_resource() -> Arc<CommonResource> {
   Arc::new(CommonResource { 
     pool: MySqlPoolOptions::new()
     .max_connections(2)
