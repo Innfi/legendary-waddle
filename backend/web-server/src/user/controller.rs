@@ -1,9 +1,9 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{get, patch, post, web::{self, *}, HttpResponse};
 use sqlx::MySqlPool;
 
 use super::{service::{insert_one, select_many, select_one, update_one}, UpdateUserPayload, User};
 
-// #[get("/one")]
+#[get("/one")]
 pub async fn get_user(pool: web::Data<MySqlPool>) -> HttpResponse {
   println!("get_user");
   let _ = select_one(pool).await;
@@ -11,7 +11,7 @@ pub async fn get_user(pool: web::Data<MySqlPool>) -> HttpResponse {
   HttpResponse::Ok().finish()
 }
 
-// #[get("/many")]
+#[get("/many")]
 pub async fn get_users(pool: web::Data<MySqlPool>) -> HttpResponse {
   let select_many_result = select_many(pool).await;
   if select_many_result.is_err() {
@@ -28,7 +28,7 @@ pub async fn get_users(pool: web::Data<MySqlPool>) -> HttpResponse {
   HttpResponse::Ok().finish()
 }
 
-// #[post("/")]
+#[post("/")]
 pub async fn create_user(pool: web::Data<MySqlPool>, payload: web::Data<User>) -> HttpResponse {
   println!("create_user");
 
@@ -42,7 +42,7 @@ pub async fn create_user(pool: web::Data<MySqlPool>, payload: web::Data<User>) -
   HttpResponse::Ok().finish()
 }
 
-// #[patch("/")]
+#[patch("/")]
 pub async fn update_user(pool: web::Data<MySqlPool>, payload: web::Data<UpdateUserPayload>) -> HttpResponse {
   println!("update_user");
 
@@ -56,11 +56,10 @@ pub async fn update_user(pool: web::Data<MySqlPool>, payload: web::Data<UpdateUs
 
 pub fn config_user(cfg: &mut web::ServiceConfig) {
   cfg.service(
-    web::resource("/user")
-      .route(web::get)
-      // .route("/one", web::get().to(get_user))
-      // .route(web::get("/many").to(get_users))
-      // .route(web::post("/").to(create_user))
-      // .route(web::update("/").to(update_user))
+    scope("/user")
+      .service(get_user)
+      .service(get_users)
+      .service(create_user)
+      .service(update_user),
   );
 }
