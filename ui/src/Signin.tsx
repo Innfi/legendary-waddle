@@ -13,9 +13,9 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
+
 import AppTheme from './theme/AppTheme';
-import ColorModeSelect from './theme/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './components/CustomsIcons';
+import { GoogleIcon, SitemarkIcon } from './components/CustomsIcons';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -59,20 +59,11 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignIn(props: { disableCustomTheme?: boolean }) {
+export function SignIn(props: { disableCustomTheme?: boolean }) {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     if (emailError || passwordError) {
@@ -117,7 +108,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
-        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
         <Card variant="outlined">
           <SitemarkIcon />
           <Typography
@@ -194,14 +184,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               startIcon={<GoogleIcon />}
             >
               Sign in with Google
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign in with Facebook')}
-              startIcon={<FacebookIcon />}
-            >
-              Sign in with Facebook
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Don&apos;t have an account?{' '}

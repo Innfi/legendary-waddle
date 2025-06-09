@@ -1,10 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './signin';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+
+import { SignIn } from './Signin';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <SignIn />
   </StrictMode>,
-)
+);
