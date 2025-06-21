@@ -1,8 +1,8 @@
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { type CredentialResponse, GoogleLogin } from "@react-oauth/google";
 
 export function GoogleLoginPage() {
   const handleSuccess = (credentialResponse: CredentialResponse) => {
-
+    console.log(`clientId: ${credentialResponse.clientId}`);
   };
 
   const handleError = () => {
