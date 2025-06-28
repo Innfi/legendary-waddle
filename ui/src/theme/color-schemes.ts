@@ -2,7 +2,7 @@ import { alpha } from '@mui/material/styles';
 
 import { brand, gray, green, orange, red } from './primitives';
 
-export const colorSchemes = {
+const colorSchemes = {
   light: {
     palette: {
       primary: {
@@ -103,3 +103,5 @@ export const colorSchemes = {
     },
   },
 };
+
+export default colorSchemes;

@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material/styles';
 
 const defaultTheme = createTheme();
 
-export const typography = {
+const typography = {
   fontFamily: 'Inter, sans-serif',
   h1: {
     fontSize: defaultTheme.typography.pxToRem(48),
@@ -51,3 +51,5 @@ export const typography = {
     fontWeight: 400,
   },
 };
+
+export default typography;

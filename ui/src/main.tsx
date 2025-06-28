@@ -1,9 +1,20 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { SignIn } from './Signin';
+import { RecoilRoot } from 'recoil';
+import { QueryClientProvider } from 'react-query';
+
+import { AxiosProvider } from './facility/axios.provider';
+import { queryClient } from './facility/react-query.client';
+import App from './App';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <SignIn />
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+        <AxiosProvider>
+          <App />
+        </AxiosProvider>
+      </QueryClientProvider>
+    </RecoilRoot>
   </StrictMode>,
 );

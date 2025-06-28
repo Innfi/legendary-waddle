@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { AxiosContext, axiosInstance } from "./axios.base";
 
-export const AxiosPromider = ({ children }: React.PropsWithChildren<unknown>) => {
+export const AxiosProvider = ({ children }: React.PropsWithChildren<unknown>) => {
   const axiosValue = useMemo(() => {
     return axiosInstance;
   }, []);

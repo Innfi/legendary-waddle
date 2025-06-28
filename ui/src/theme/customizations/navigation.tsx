@@ -10,8 +10,7 @@ import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
 
 import { gray, brand } from '../primitives';
 
-/* eslint-disable import/prefer-default-export */
-export const navigationCustomizations: Components<Theme> = {
+const navigationCustomizations: Components<Theme> = {
   MuiMenuItem: {
     styleOverrides: {
       root: ({ theme }) => ({
@@ -278,3 +277,5 @@ export const navigationCustomizations: Components<Theme> = {
     },
   },
 };
+
+export default navigationCustomizations;
