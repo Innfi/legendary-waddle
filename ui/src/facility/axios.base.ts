@@ -1,10 +1,10 @@
 import Axios, { AxiosError, type AxiosInstance } from "axios";
 import { createContext, useContext } from "react";
-import { useQuery } from "react-query";
-
+import { useQuery } from '@tanstack/react-query';
 
 export const axiosInstance = Axios.create({
-  baseURL: import.meta.env.API_URL,
+  // baseURL: import.meta.env.API_URL,
+  baseURL: 'http://localhost:8787',
   timeout: 3000,
   headers: {
     'Content-Type': 'application/json',
@@ -37,15 +37,20 @@ export const useAxios = () => {
   return useContext(AxiosContext);
 };
 
+interface TestInterface {
+  id: number;
+  name: string;
+}
+
 export const useGetApi = (url: string) => {
   const instance = useAxios();
-  const service = async () => {
-    return await instance.get(url, {
-      headers: {
-        // TODO: tokens for oauth?
-      }
-    });
-  };
 
-  return useQuery('query-key', () => service())
+  return useQuery({
+    queryKey: ['get-dummy'],
+    queryFn: async (): Promise<TestInterface[]> => {
+      const response = await instance.get<TestInterface[]>(url);
+
+      return response.data;
+    },
+  });
 };
