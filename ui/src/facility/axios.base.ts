@@ -1,6 +1,6 @@
 import Axios, { AxiosError, type AxiosInstance } from "axios";
 import { createContext, useContext } from "react";
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const axiosInstance = Axios.create({
   // baseURL: import.meta.env.API_URL,
@@ -51,6 +51,21 @@ export const useGetApi = (url: string) => {
       const response = await instance.get<TestInterface[]>(url);
 
       return response.data;
+    },
+  });
+};
+
+export const usePostApi = <T>(url: string) => {
+  const instance = useAxios();
+
+  return useMutation({
+    mutationKey: ['post-dummy'],
+    mutationFn: async (payload: T): Promise<number> => {
+      const response = await instance.post(url, payload, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      return response.status;
     },
   });
 };

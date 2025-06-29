@@ -13,8 +13,14 @@ def get_users(request, path, method):
     "Access-Control-Allow-Origin": "http://localhost:5173"
   })
 
-def post_users(request, path, method):
-  return Response(f"{method} {path}")
+async def post_users(request, path, method):
+  body = await request.json()
+  print(f"post_users: {body.id}, {body.name}")
+
+  return Response(f"{method} {path}", headers={
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "http://localhost:5173"
+  })
 
 def get_products(request, path, method):
   return Response(f"{method} {path}")
@@ -35,14 +41,14 @@ routes = {
 
 async def handle_cors(request):
   if "Origin" in request.headers and "Access-Control-Request-Method" in request.headers and "Access-Control-Request-Headers" in request.headers:
-    return Response.new(None, headers={
+    return Response("", headers={
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
       "Access-Control-Max-Age": "86400",
       "Access-Control-Allow-Headers": request.headers["Access-Control-Request-Headers"]
     })
 
-  return Response.new(None, headers={"Allow": "GET, HEAD, POST, OPTIONS"})
+  return Response("", headers={"Allow": "GET, HEAD, POST, OPTIONS"})
 
 
 async def on_fetch(request, env):
