@@ -69,3 +69,31 @@ export const usePostApi = <T>(url: string) => {
     },
   });
 };
+
+export const usePatchApi = <T>(url: string) => {
+  const instance = useAxios();
+
+  return useMutation({
+    mutationKey: ['patch-dummy'],
+    mutationFn: async (payload: T): Promise<number> => {
+      const response = await instance.patch(url, payload, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      return response.status;
+    },
+  });
+};
+
+export const useDeleteApi = (url: string) => {
+  const instance = useAxios();
+
+  return useMutation({
+    mutationKey: ['delete-dummy'],
+    mutationFn: async (): Promise<number> => {
+      const response = await instance.delete(url);
+
+      return response.status;
+    },
+  });
+};

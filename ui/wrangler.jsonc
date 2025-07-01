@@ -6,7 +6,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "ui",
 	"main": "worker/index.ts",
-	"compatibility_date": "2025-06-20",
+	"compatibility_date": "2025-06-17",
 	"assets": {
 		"not_found_handling": "single-page-application"
 	},
