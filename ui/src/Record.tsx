@@ -1,8 +1,14 @@
+import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { Button, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, TextField, Typography } from '@mui/material';
+
+interface WorkoutUnit {
+  workoutName: string;
+  workoutSets: number;
+  workoutReps: number;
+}
 
 // copied from signin component, which was copied from the tutorial :(
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -49,6 +55,11 @@ const RecordContainer = styled(Stack)(({ theme }) => ({
 
 export default function RecordPage() {
   const [reps, setReps] = useState<number>(0);
+  const [unit, setUnit] = useState<WorkoutUnit>({
+    workoutName: 'temp',
+    workoutSets: 1,
+    workoutReps: 0
+  });
 
   return (
     <RecordContainer direction="column" justifyContent="space-between">
@@ -56,10 +67,20 @@ export default function RecordPage() {
         <Typography component="h2">record component</Typography>
         reps: {reps}
         <Button type="button" onClick={() => setReps(reps+1)}>test button</Button>
-      </Card>
-      <Card variant="highlighted">
-      </Card>
-      <Card variant="elevation">
+          <Stack direction="row">
+            <FormControl>
+              <FormLabel>test label</FormLabel>
+              <TextField variant="outlined" />
+            </FormControl>
+            <FormControl>
+              <FormLabel>test label2</FormLabel>
+              <TextField variant="outlined" />
+            </FormControl>
+            <FormControlLabel 
+              control={<Checkbox color="primary" />}
+              label="test form control label"
+            />
+          </Stack>
       </Card>
     </RecordContainer>
   );
