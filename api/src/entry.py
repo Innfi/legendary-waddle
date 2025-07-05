@@ -16,9 +16,3 @@ async def on_fetch(request, env):
     return handler(request, method, path)
   else:
     return Response("not found", status=404)
-
-  # name = await env.spinach_kv.get("name")
-  # if name is None:
-  #   return Response("key not found")
-
-  # return Response(name)
