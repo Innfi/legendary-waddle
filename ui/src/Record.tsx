@@ -2,7 +2,9 @@ import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, TextField, Typography } from '@mui/material';
+import { Button, ButtonGroup, Checkbox, FormControlLabel, FormGroup, Grid, Typography } from '@mui/material';
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 interface WorkoutUnit {
   workoutName: string;
@@ -64,23 +66,28 @@ export default function RecordPage() {
   return (
     <RecordContainer direction="column" justifyContent="space-between">
       <Card variant="outlined">
-        <Typography component="h2">record component</Typography>
-        reps: {reps}
-        <Button type="button" onClick={() => setReps(reps+1)}>test button</Button>
-          <Stack direction="row">
-            <FormControl>
-              <FormLabel>test label</FormLabel>
-              <TextField variant="outlined" />
-            </FormControl>
-            <FormControl>
-              <FormLabel>test label2</FormLabel>
-              <TextField variant="outlined" />
-            </FormControl>
-            <FormControlLabel 
-              control={<Checkbox color="primary" />}
-              label="test form control label"
-            />
-          </Stack>
+        <Grid container spacing={2}>
+        <Stack direction="row">
+          <Grid size={8}>
+            <ButtonGroup orientation="horizontal" variant="contained">
+              <Button onClick={() => setReps(reps+1)} color="primary" aria-label="move up" sx={{ marginRight: '5px' }}>
+                <ArrowUpwardIcon />
+              </Button>
+              <Button onClick={() => setReps(reps-1)} color="secondary" aria-label="move down" sx={{ marginRight: '5px' }}>
+                <ArrowDownwardIcon />
+              </Button>
+            </ButtonGroup>
+          </Grid>
+          <Grid size={4}>
+            <Typography component="h1">reps: {reps}</Typography>
+          </Grid>
+          <Grid size={4}>
+            <FormGroup>
+              <FormControlLabel control={<Checkbox />}  label="complete" />
+            </FormGroup>
+          </Grid>
+        </Stack>
+        </Grid>
       </Card>
     </RecordContainer>
   );
