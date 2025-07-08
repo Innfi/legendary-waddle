@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router';
 
 import { SignIn } from './Signin';
 import BoxForClick from './BoxForClick';
-import RecordPage from './Record';
+import RecordPage from './records/RecordPage';
 import DashboardPage from './Dashboard';
 
 export const router = createBrowserRouter([
