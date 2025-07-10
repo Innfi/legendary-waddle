@@ -6,17 +6,22 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 import type { WorkoutUnit } from './entity';
 import { Card, RecordContainer } from './styled-component';
-import { usePostRecord } from './api';
+import { useGetRecords, usePostRecord } from './api';
 
 export default function RecordPage() {
+  // TODO: manage token with recoil
+  const dummyToken = 'tolkien';
+
   const [unit, setUnit] = useState<WorkoutUnit>({
     workoutName: 'temp',
     workoutSets: 1,
     workoutReps: 0
   });
 
+  const { refetch, data, isFetched } = useGetRecords(dummyToken);
+
   const [isChecked, setIsChecked] = useState(false);
-  const { mutate, isSuccess } = usePostRecord<WorkoutUnit>();
+  const { mutate, isSuccess } = usePostRecord(dummyToken);
 
   const increaseReps = () => {
     setUnit({
@@ -38,8 +43,8 @@ export default function RecordPage() {
   useEffect(() => {
     if (!isSuccess) return;
 
-    // TODO: reload?
-  }, [isSuccess]);
+    refetch();
+  }, [isSuccess, refetch]);
 
   return (
     <RecordContainer direction="column" justifyContent="space-between">
