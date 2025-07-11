@@ -9,10 +9,8 @@ async def on_fetch(request, env):
   if method == "OPTIONS":
     return handle_cors(request)
 
-  path = urlparse(request.url).path
-
-  handler = get_handler(method, path)
+  handler = get_handler(request, method)
   if handler:
-    return handler(request, method, path)
+    return handler(request)
   else:
     return Response("not found", status=404)
