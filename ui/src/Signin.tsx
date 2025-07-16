@@ -14,6 +14,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 
 import { GoogleIcon, SitemarkIcon } from './components/CustomsIcons';
+import { useGoogleLogin, type CodeResponse, type UseGoogleLoginOptionsAuthCodeFlow } from '@react-oauth/google';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -102,6 +103,15 @@ export function SignIn(props: { disableCustomTheme?: boolean }) {
     return isValid;
   };
 
+  const options: UseGoogleLoginOptionsAuthCodeFlow = {
+    redirect_uri: 'http://localhost:5173/records',
+    onSuccess: (tokenResponse: Omit<CodeResponse, "error" | "error_description" | "error_uri">): void => {
+      console.log(`accessToken: ${tokenResponse.code}`);
+      console.log(`tokenType: ${tokenResponse.scope}`);
+    },
+  };
+  const login = useGoogleLogin(options);
+
   return (
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
@@ -176,7 +186,7 @@ export function SignIn(props: { disableCustomTheme?: boolean }) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert('Sign in with Google')}
+              onClick={() => login()}
               startIcon={<GoogleIcon />}
             >
               Sign in with Google
