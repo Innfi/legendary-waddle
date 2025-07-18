@@ -1,0 +1,10 @@
+{
+    "workouts": [],
+    "records": [
+        {
+            "workout_id": "test",
+            "sets": 1,
+            "reps": 5
+        }
+    ]
+}
