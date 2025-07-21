@@ -1,6 +1,7 @@
 fastapi
+fastapi-cors
 uvicorn
 python-multipart
-fastapi-cors
 google
 google-auth
+SQLAlchemy
