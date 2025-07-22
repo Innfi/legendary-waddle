@@ -2,12 +2,15 @@ from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from common.database import Base
 
+import uuid
+
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    oauth_provider_id = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    name = Column(String)
 
     workouts = relationship("Workout", back_populates="owner")
 
@@ -17,7 +20,7 @@ class Workout(Base):
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date)
     name = Column(String)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner_id = Column(String, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="workouts")
     exercises = relationship("Exercise", back_populates="workout")
@@ -40,3 +43,4 @@ class Record(Base):
     workout_id = Column(String)
     sets = Column(Integer)
     reps = Column(Integer)
+    owner_id = Column(String, ForeignKey("users.id"))

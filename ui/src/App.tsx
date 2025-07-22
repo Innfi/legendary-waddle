@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import WorkoutPage from './pages/WorkoutPage';
 import DashboardPage from './pages/DashboardPage';
+import RecordPage from './pages/RecordPage';
 import AppTheme from './theme/AppTheme';
 import { CssBaseline } from '@mui/material';
 
@@ -13,8 +14,9 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/workout" element={<WorkoutPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/workouts" element={<WorkoutPage />} />
+          <Route path="/records" element={<RecordPage />} />
         </Routes>
       </Router>
     </AppTheme>

@@ -5,16 +5,24 @@ import axios from 'axios';
 
 const WorkoutPage: React.FC = () => {
   const queryClient = useQueryClient();
+  const token = localStorage.getItem('token');
 
   const { data: workouts } = useQuery({
     queryKey: ['workouts'],
-    queryFn: () => axios.get('/workouts').then(res => res.data)
+    queryFn: () =>
+      axios.get('/api/records', {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(res => res.data),
+    enabled: !!token, // Only run query if token exists
   });
 
   const mutation = useMutation({
-    mutationFn: (newRecord: any) => axios.post('/records', newRecord),
+    mutationFn: (newRecord: any) =>
+      axios.post('/api/records', newRecord, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      queryClient.invalidateQueries({ queryKey: ['records'] });
     },
   });
 
@@ -26,6 +34,10 @@ const WorkoutPage: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (!token) {
+      console.error('No token found, cannot submit record.');
+      return;
+    }
     const parsedRecord = {
       ...newRecord,
       workout_id: newRecord.workout_id,

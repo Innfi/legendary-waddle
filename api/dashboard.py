@@ -1,20 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from common.database import SessionLocal
 from models import User, Workout, Exercise
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 from typing import List
+import structlog
+
+from auth import get_current_user
+from common.database import get_db
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+log = structlog.get_logger()
 
 class WorkoutStat(BaseModel):
     workout_name: str
@@ -24,12 +21,9 @@ class WorkoutStat(BaseModel):
 class DashboardData(BaseModel):
     workouts: List[WorkoutStat]
 
-@router.get("/dashboard/{user_id}", response_model=DashboardData)
-def get_dashboard_data(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
+@router.get("/dashboard", response_model=DashboardData)
+def get_dashboard_data(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    log.info("Fetching dashboard data", user_id=current_user.id)
     one_week_ago = datetime.utcnow().date() - timedelta(days=7)
 
     results = (
@@ -39,7 +33,7 @@ def get_dashboard_data(user_id: int, db: Session = Depends(get_db)):
             func.sum(Exercise.reps).label("total_reps"),
         )
         .join(Exercise, Workout.id == Exercise.workout_id)
-        .filter(Workout.owner_id == user_id)
+        .filter(Workout.owner_id == current_user.id)
         .filter(Workout.date >= one_week_ago)
         .group_by(Workout.name)
         .all()

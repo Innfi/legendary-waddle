@@ -63,8 +63,7 @@ const LoginPage: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Login successful:', data);
-        // You can now store the user data or session token in your app's state
+        localStorage.setItem('token', data.access_token);
         navigate('/dashboard');
       } else {
         console.error('Login failed:', await response.text());

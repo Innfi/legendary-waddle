@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface WorkoutStat {
   workout_name: string;
@@ -18,9 +19,17 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // NOTE: Hardcoding user_id for now. This should be replaced with the
-        // authenticated user's ID.
-        const response = await fetch('/api/dashboard/1');
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No token found');
+        }
+
+        const response = await fetch('/api/dashboard', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data');
         }
@@ -47,6 +56,8 @@ const DashboardPage: React.FC = () => {
   return (
     <div>
       <h1>Dashboard</h1>
+      <Link to="/records">View Records</Link>
+      <Link to="/workouts">View Workouts</Link>
       {data && data.workouts.length > 0 ? (
         <ul>
           {data.workouts.map((workout, index) => (

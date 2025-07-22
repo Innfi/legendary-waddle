@@ -5,3 +5,5 @@ python-multipart
 google
 google-auth
 SQLAlchemy
+PyJWT
+structlog
