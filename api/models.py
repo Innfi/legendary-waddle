@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from common.database import Base
 
 import uuid
+import datetime
 
 class User(Base):
     __tablename__ = "users"
@@ -44,3 +45,4 @@ class Record(Base):
     sets = Column(Integer)
     reps = Column(Integer)
     owner_id = Column(String, ForeignKey("users.id"))
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)

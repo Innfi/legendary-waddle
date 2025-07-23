@@ -1,3 +1,4 @@
+import { Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -56,19 +57,21 @@ const DashboardPage: React.FC = () => {
   return (
     <div>
       <h1>Dashboard</h1>
-      <Link to="/records">View Records</Link>
-      <Link to="/workouts">View Workouts</Link>
-      {data && data.workouts.length > 0 ? (
-        <ul>
-          {data.workouts.map((workout, index) => (
-            <li key={index}>
-              <strong>{workout.workout_name}</strong>: {workout.total_sets} sets, {workout.total_reps} reps
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No workout data available for the last 7 days.</p>
-      )}
+      <Stack direction="column">
+        <Link to="/records">View Records</Link>
+        <Link to="/workouts">View Workouts</Link>
+        {data && data.workouts.length > 0 ? (
+          <ul>
+            {data.workouts.map((workout, index) => (
+              <li key={index}>
+                <strong>{workout.workout_name}</strong>: {workout.total_sets} sets, {workout.total_reps} reps
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No workout data available for the last 7 days.</p>
+        )}
+      </Stack>
     </div>
   );
 };

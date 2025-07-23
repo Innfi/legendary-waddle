@@ -21,8 +21,11 @@ class WorkoutCreate(BaseModel):
 
 @router.get("/workouts")
 def get_workouts(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    default_workouts = ["Pullups", "Dips", "Squats", "Kettlebell Swings"]
+
+    return default_workouts
     # return db.query(Workout).filter(Workout.owner_id == current_user.id).all()
-    return db.query(Workout).filter().all()
+    # return db.query(Workout).filter().all()
 
 @router.post("/workouts")
 def create_workout(workout: WorkoutCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
