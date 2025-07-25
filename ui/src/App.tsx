@@ -6,11 +6,13 @@ import DashboardPage from './pages/DashboardPage';
 import RecordPage from './pages/RecordPage';
 import AppTheme from './theme/AppTheme';
 import { CssBaseline } from '@mui/material';
+import { NotificationProvider } from './context/NotificationContext';
 
 const App: React.FC = () => {
   return (
     <AppTheme>
       <CssBaseline enableColorScheme/>
+      <NotificationProvider>
       <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -19,6 +21,7 @@ const App: React.FC = () => {
           <Route path="/records" element={<RecordPage />} />
         </Routes>
       </Router>
+      </NotificationProvider>
     </AppTheme>
   );
 };

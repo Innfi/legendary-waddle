@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton } from '@mui/material';
-import { AddCircleOutline } from '@mui/icons-material';
+import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
+import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -12,7 +12,7 @@ const WorkoutPage: React.FC = () => {
   const { data: workouts } = useQuery({
     queryKey: ['workouts'],
     queryFn: () =>
-      axios.get('/api/workouts', {
+      axios.get<string[]>('/api/workouts', {
         headers: { Authorization: `Bearer ${token}` },
       }).then(res => res.data),
     enabled: !!token,
@@ -53,6 +53,28 @@ const WorkoutPage: React.FC = () => {
     setNewRecord({ ...newRecord, [event.target.name]: event.target.value });
   };
 
+  const handleIncrement = () => {
+    const currentReps = parseInt(newRecord.reps, 10) || 0;
+    setNewRecord({ ...newRecord, reps: (currentReps + 1).toString() });
+  };
+
+  const handleDecrement = () => {
+    const currentReps = parseInt(newRecord.reps, 10) || 0;
+    if (currentReps > 0) {
+        setNewRecord({ ...newRecord, reps: (currentReps - 1).toString() });
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        handleIncrement();
+    } else if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        handleDecrement();
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!token || !selectedWorkoutId) {
@@ -72,9 +94,9 @@ const WorkoutPage: React.FC = () => {
       <Container>
         <Typography variant="h4">Select a Workout</Typography>
         <List>
-          {workouts?.map((workout: any) => (
-            <ListItemButton key={workout.id} onClick={() => setSelectedWorkoutId(workout.id)}>
-              <ListItem sx={{ }}>{workout.name}</ListItem>
+          {workouts?.map((workout: string, index: number) => (
+            <ListItemButton key={index} onClick={() => setSelectedWorkoutId(workout)}>
+              <ListItem sx={{ }}>{workout}</ListItem>
             </ListItemButton>
           ))}
         </List>
@@ -84,27 +106,43 @@ const WorkoutPage: React.FC = () => {
 
   return (
     <Container>
-      <Button onClick={() => setSelectedWorkoutId(null)}>Back to Workouts</Button>
-      <Typography variant="h4">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</Typography>
-      <Typography variant="h4">Workout: {workouts?.find((w:any) => w.id === selectedWorkoutId)?.name}</Typography>
-      
-      <Typography variant="h4">Add Record</Typography>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <TextField name="sets" label="Set" value={nextSet} disabled />
-        <TextField name="reps" label="Reps" value={newRecord.reps} onChange={handleInputChange} />
-        <IconButton type="submit">
-          <AddCircleOutline />
-        </IconButton>
-      </form>
-
-      <Typography variant="h4">Previous Records</Typography>
-      <List>
-        {records?.map((record: any) => (
-          <ListItem key={record.id}>
-            {`Set: ${record.sets}, Reps: ${record.reps}, Time: ${new Date(record.timestamp).toLocaleTimeString()}`}
-          </ListItem>
-        ))}
-      </List>
+      <Stack direction="column">
+        <Button onClick={() => setSelectedWorkoutId(null)}>Back to Workouts</Button>
+        <Stack direction="row">
+          <Typography variant="h4">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</Typography>
+          <Typography variant="h4">{selectedWorkoutId}</Typography>
+        </Stack>
+        <Container>
+          <Typography variant="h4">Add Sets</Typography>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <TextField name="sets" label="Set" value={nextSet} disabled />
+            <Stack direction="row" alignItems="center">
+                <TextField name="reps" label="Reps" value={newRecord.reps} onChange={handleInputChange} onKeyDown={handleKeyDown} />
+                <Stack direction="column">
+                    <IconButton onClick={handleIncrement} size="small">
+                        <ArrowUpward />
+                    </IconButton>
+                    <IconButton onClick={handleDecrement} size="small">
+                        <ArrowDownward />
+                    </IconButton>
+                </Stack>
+            </Stack>
+            <IconButton type="submit">
+              <AddCircleOutline />
+            </IconButton>
+          </form>
+        </Container>
+        <Container>
+          <Typography variant="h4">Records</Typography>
+          <List>
+            {records?.map((record: any) => (
+              <ListItem key={record.id}>
+                {`Set: ${record.sets}, Reps: ${record.reps}, Time: ${new Date(record.timestamp).toLocaleTimeString('ko-KR')}`}
+              </ListItem>
+            ))}
+          </List>
+        </Container>
+      </Stack>
     </Container>
   );
 };
