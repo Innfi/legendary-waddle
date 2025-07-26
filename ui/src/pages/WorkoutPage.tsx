@@ -1,22 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { postRecord } from './api';
+import { type WorkoutName, type WorkoutRecord, workoutNames } from './entity';
 
-const WorkoutPage: React.FC = () => {
-  const queryClient = useQueryClient();
+function WorkoutPage() {
+  // const queryClient = useQueryClient();
   const token = localStorage.getItem('token');
-  const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
-
-  const { data: workouts } = useQuery({
-    queryKey: ['workouts'],
-    queryFn: () =>
-      axios.get<string[]>('/api/workouts', {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then(res => res.data),
-    enabled: !!token,
-  });
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<WorkoutName| null>(null);
 
   const { data: records } = useQuery({
     queryKey: ['records', selectedWorkoutId],
@@ -27,15 +20,16 @@ const WorkoutPage: React.FC = () => {
     enabled: !!token && !!selectedWorkoutId,
   });
 
-  const mutation = useMutation({
-    mutationFn: (newRecord: any) =>
-      axios.post('/api/records', newRecord, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['records', selectedWorkoutId] });
-    },
-  });
+  const mutation = postRecord(selectedWorkoutId);
+  // const mutation = useMutation({
+  //   mutationFn: (newRecord: any) =>
+  //     axios.post('/api/records', newRecord, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['records', selectedWorkoutId] });
+  //   },
+  // });
 
   const [newRecord, setNewRecord] = useState({ reps: '' });
   const [nextSet, setNextSet] = useState(1);
@@ -81,9 +75,10 @@ const WorkoutPage: React.FC = () => {
       console.error('No token or workout selected, cannot submit record.');
       return;
     }
-    const parsedRecord = {
-      workout_id: selectedWorkoutId,
-      reps: parseInt(newRecord.reps, 10),
+    const parsedRecord: Omit<WorkoutRecord, 'workoutSet'>= {
+      workoutName: selectedWorkoutId,
+      workoutReps: parseInt(newRecord.reps, 10),
+      workoutDate: new Date()
     };
     mutation.mutate(parsedRecord);
     setNewRecord({ reps: '' });
@@ -94,7 +89,7 @@ const WorkoutPage: React.FC = () => {
       <Container>
         <Typography variant="h4">Select a Workout</Typography>
         <List>
-          {workouts?.map((workout: string, index: number) => (
+          {workoutNames.map((workout: WorkoutName, index: number) => (
             <ListItemButton key={index} onClick={() => setSelectedWorkoutId(workout)}>
               <ListItem sx={{ }}>{workout}</ListItem>
             </ListItemButton>

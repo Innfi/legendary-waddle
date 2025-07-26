@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import WorkoutPage from './pages/WorkoutPage';
@@ -6,9 +5,9 @@ import DashboardPage from './pages/DashboardPage';
 import RecordPage from './pages/RecordPage';
 import AppTheme from './theme/AppTheme';
 import { CssBaseline } from '@mui/material';
-import { NotificationProvider } from './context/NotificationContext';
+import { NotificationProvider } from './components/NotificationContext';
 
-const App: React.FC = () => {
+function App() {
   return (
     <AppTheme>
       <CssBaseline enableColorScheme/>
