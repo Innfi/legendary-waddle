@@ -1,8 +1,6 @@
 export interface WorkoutRecord {
   workoutName: WorkoutName;
-  workoutSet: number;
   workoutReps: number;
-  workoutDate: Date;
 }
 
 export type WorkoutName = 'Pullups' |

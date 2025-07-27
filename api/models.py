@@ -41,8 +41,8 @@ class Record(Base):
     __tablename__ = "records"
 
     id = Column(Integer, primary_key=True, index=True)
-    workout_id = Column(String)
-    sets = Column(Integer)
-    reps = Column(Integer)
+    workout_name = Column(String)
+    workout_set = Column(Integer)
+    workout_reps = Column(Integer)
+    workout_date = Column(DateTime, default=datetime.datetime.utcnow)
     owner_id = Column(String, ForeignKey("users.id"))
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)

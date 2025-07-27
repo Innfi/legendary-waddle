@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { postRecord } from './api';
+import { usePostRecord } from './api';
 import { type WorkoutName, type WorkoutRecord, workoutNames } from './entity';
 
 function WorkoutPage() {
-  // const queryClient = useQueryClient();
   const token = localStorage.getItem('token');
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<WorkoutName| null>(null);
 
@@ -20,19 +19,14 @@ function WorkoutPage() {
     enabled: !!token && !!selectedWorkoutId,
   });
 
-  const mutation = postRecord(selectedWorkoutId);
-  // const mutation = useMutation({
-  //   mutationFn: (newRecord: any) =>
-  //     axios.post('/api/records', newRecord, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     }),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['records', selectedWorkoutId] });
-  //   },
-  // });
+  const mutation = usePostRecord(selectedWorkoutId);
 
   const [newRecord, setNewRecord] = useState({ reps: '' });
   const [nextSet, setNextSet] = useState(1);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewRecord({ ...newRecord, [event.target.name]: event.target.value });
+  };
 
   useEffect(() => {
     if (selectedWorkoutId && records) {
@@ -43,9 +37,6 @@ function WorkoutPage() {
     }
   }, [selectedWorkoutId, records]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewRecord({ ...newRecord, [event.target.name]: event.target.value });
-  };
 
   const handleIncrement = () => {
     const currentReps = parseInt(newRecord.reps, 10) || 0;
@@ -75,10 +66,9 @@ function WorkoutPage() {
       console.error('No token or workout selected, cannot submit record.');
       return;
     }
-    const parsedRecord: Omit<WorkoutRecord, 'workoutSet'>= {
+    const parsedRecord: WorkoutRecord = {
       workoutName: selectedWorkoutId,
       workoutReps: parseInt(newRecord.reps, 10),
-      workoutDate: new Date()
     };
     mutation.mutate(parsedRecord);
     setNewRecord({ reps: '' });

@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import structlog
 
-from workouts import router as workouts_router
 from records import router as records_router
 from auth import router as auth_router
 from dashboard import router as dashboard_router
@@ -26,7 +25,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-app.include_router(workouts_router)
 app.include_router(records_router)
 app.include_router(auth_router)
 app.include_router(dashboard_router)
