@@ -1,27 +1,23 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import WorkoutPage from './pages/WorkoutPage';
-import DashboardPage from './pages/DashboardPage';
-import RecordPage from './pages/RecordPage';
-import AppTheme from './theme/AppTheme';
+import { Suspense } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
+
 import { NotificationProvider } from './components/NotificationContext';
+import AppTheme from './theme/AppTheme';
+import { RenderRouter } from './router';
 
 function App() {
   return (
+    <Suspense fallback={<div>loading...</div>}>
     <AppTheme>
       <CssBaseline enableColorScheme/>
       <NotificationProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/workouts" element={<WorkoutPage />} />
-          <Route path="/records" element={<RecordPage />} />
-        </Routes>
-      </Router>
+        <BrowserRouter>
+          <RenderRouter />
+        </BrowserRouter>
       </NotificationProvider>
     </AppTheme>
+    </Suspense>
   );
 };
 

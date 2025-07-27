@@ -44,5 +44,5 @@ class Record(Base):
     workout_name = Column(String)
     workout_set = Column(Integer)
     workout_reps = Column(Integer)
-    workout_date = Column(DateTime, default=datetime.datetime.utcnow)
+    workout_date = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     owner_id = Column(String, ForeignKey("users.id"))

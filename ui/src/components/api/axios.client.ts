@@ -1,4 +1,5 @@
 import Axios from "axios";
+
 import { getToken } from "../../state/locals";
 
 const axiosClient = Axios.create({
@@ -12,6 +13,7 @@ const axiosClient = Axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     const token = getToken();
+    // console.log(`token: ${token}`);
     if (token) config.headers.Authorization = `bearer ${token}`;
 
     return config;

@@ -1,87 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { usePostRecord } from './api';
-import { type WorkoutName, type WorkoutRecord, workoutNames } from './entity';
+import { useGetRecord, usePostRecord } from './api';
+import { type WorkoutName, workoutNames, type WorkoutRecord, type WorkoutRecordItem } from './entity';
+
+interface WorkoutRecord2 {
+  workoutName: WorkoutName | null;
+  workoutSet: number;
+  workoutReps: number;
+}
 
 function WorkoutPage() {
-  const token = localStorage.getItem('token');
-  const [selectedWorkoutId, setSelectedWorkoutId] = useState<WorkoutName| null>(null);
-
-  const { data: records } = useQuery({
-    queryKey: ['records', selectedWorkoutId],
-    queryFn: () =>
-      axios.get(`/api/records?workout_id=${selectedWorkoutId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then(res => res.data),
-    enabled: !!token && !!selectedWorkoutId,
+  const [record, setRecord] = useState<WorkoutRecord2>({
+    workoutName: null,
+    workoutSet: 1,
+    workoutReps: 0
   });
 
-  const mutation = usePostRecord(selectedWorkoutId);
+  const { data: records } = useGetRecord(record.workoutName);
+  const mutation = usePostRecord(record.workoutName);
 
-  const [newRecord, setNewRecord] = useState({ reps: '' });
-  const [nextSet, setNextSet] = useState(1);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewRecord({ ...newRecord, [event.target.name]: event.target.value });
-  };
-
-  useEffect(() => {
-    if (selectedWorkoutId && records) {
-      const lastRecord = records
-        .filter((r: any) => r.workout_id === selectedWorkoutId)
-        .sort((a: any, b: any) => b.sets - a.sets)[0];
-      setNextSet(lastRecord ? lastRecord.sets + 1 : 1);
+  const handleChangeReps = (direction: 'up' | 'down') => {
+    if (direction === 'down') {
+      setRecord({ ...record, workoutReps: record.workoutReps <= 0 ? 0 : record.workoutReps -1 });
+      return;
     }
-  }, [selectedWorkoutId, records]);
 
-
-  const handleIncrement = () => {
-    const currentReps = parseInt(newRecord.reps, 10) || 0;
-    setNewRecord({ ...newRecord, reps: (currentReps + 1).toString() });
-  };
-
-  const handleDecrement = () => {
-    const currentReps = parseInt(newRecord.reps, 10) || 0;
-    if (currentReps > 0) {
-        setNewRecord({ ...newRecord, reps: (currentReps - 1).toString() });
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        handleIncrement();
-    } else if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        handleDecrement();
-    }
+    setRecord({ ...record, workoutReps: record.workoutReps+1 });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!token || !selectedWorkoutId) {
-      console.error('No token or workout selected, cannot submit record.');
+    if (!record.workoutName) {
+      // TODO: error handling
       return;
     }
-    const parsedRecord: WorkoutRecord = {
-      workoutName: selectedWorkoutId,
-      workoutReps: parseInt(newRecord.reps, 10),
-    };
-    mutation.mutate(parsedRecord);
-    setNewRecord({ reps: '' });
+
+    mutation.mutate(record as WorkoutRecord);
+
+    setRecord({
+      ...record,
+      workoutSet: record.workoutSet+1,
+    });
   };
 
-  if (!selectedWorkoutId) {
+  if (!record.workoutName) {
     return (
       <Container>
         <Typography variant="h4">Select a Workout</Typography>
         <List>
-          {workoutNames.map((workout: WorkoutName, index: number) => (
-            <ListItemButton key={index} onClick={() => setSelectedWorkoutId(workout)}>
-              <ListItem sx={{ }}>{workout}</ListItem>
+          {workoutNames.map((currentName: WorkoutName, index: number) => (
+            <ListItemButton key={index} onClick={() => setRecord({
+              ...record,
+              workoutName: currentName,
+            })}>
+              <ListItem>{currentName}</ListItem>
             </ListItemButton>
           ))}
         </List>
@@ -92,22 +65,22 @@ function WorkoutPage() {
   return (
     <Container>
       <Stack direction="column">
-        <Button onClick={() => setSelectedWorkoutId(null)}>Back to Workouts</Button>
+        <Button onClick={() => setRecord({ ...record, workoutName: null })}>Back to Workouts</Button>
         <Stack direction="row">
           <Typography variant="h4">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</Typography>
-          <Typography variant="h4">{selectedWorkoutId}</Typography>
+          <Typography variant="h4">{record.workoutName}</Typography>
         </Stack>
         <Container>
           <Typography variant="h4">Add Sets</Typography>
           <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <TextField name="sets" label="Set" value={nextSet} disabled />
+            <TextField name="sets" label="Set" value={record.workoutSet} disabled />
             <Stack direction="row" alignItems="center">
-                <TextField name="reps" label="Reps" value={newRecord.reps} onChange={handleInputChange} onKeyDown={handleKeyDown} />
+                <TextField name="reps" label="Reps" value={record.workoutReps} />
                 <Stack direction="column">
-                    <IconButton onClick={handleIncrement} size="small">
+                    <IconButton onClick={() => handleChangeReps('up')} size="small">
                         <ArrowUpward />
                     </IconButton>
-                    <IconButton onClick={handleDecrement} size="small">
+                    <IconButton onClick={() => handleChangeReps('down')} size="small">
                         <ArrowDownward />
                     </IconButton>
                 </Stack>
@@ -120,9 +93,9 @@ function WorkoutPage() {
         <Container>
           <Typography variant="h4">Records</Typography>
           <List>
-            {records?.map((record: any) => (
-              <ListItem key={record.id}>
-                {`Set: ${record.sets}, Reps: ${record.reps}, Time: ${new Date(record.timestamp).toLocaleTimeString('ko-KR')}`}
+            {records?.map((record: WorkoutRecordItem) => (
+              <ListItem key={record.workoutName}>
+                {`Set: ${record.workoutSet}, Reps: ${record.workoutReps}, Time: ${new Date(record.workoutDate).toLocaleTimeString('ko-KR')}`}
               </ListItem>
             ))}
           </List>
@@ -130,6 +103,6 @@ function WorkoutPage() {
       </Stack>
     </Container>
   );
-};
+}
 
 export default WorkoutPage;
