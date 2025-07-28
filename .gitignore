@@ -26,3 +26,5 @@ dist-ssr
 wrangler.toml
 __pycache__
 database.db
+resource
+
