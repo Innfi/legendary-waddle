@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import type { WorkoutName, WorkoutRecord, WorkoutRecordItem } from "./entity";
+import type { WorkoutName, WorkoutRecord, WorkoutRecordItem } from "../state/entity";
 import axiosClient from "../components/api/axios.client";
 import { queryClient } from "../components/api/query.client";
 

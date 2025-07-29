@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { useGetRecord, usePostRecord } from './api';
-import { type WorkoutName, workoutNames, type WorkoutRecord, type WorkoutRecordItem } from './entity';
+import { type WorkoutName, workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
 
-interface WorkoutRecord2 {
+interface CurrentWorkout {
   workoutName: WorkoutName | null;
   workoutSet: number;
   workoutReps: number;
 }
 
 function WorkoutPage() {
-  const [record, setRecord] = useState<WorkoutRecord2>({
+  const [record, setRecord] = useState<CurrentWorkout>({
     workoutName: null,
     workoutSet: 1,
     workoutReps: 0
