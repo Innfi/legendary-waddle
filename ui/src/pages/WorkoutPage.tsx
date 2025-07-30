@@ -1,23 +1,30 @@
 import { useState } from 'react';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
-import { useGetRecord, usePostRecord } from './api';
+import { useRecoilState } from 'recoil';
+
 import { type WorkoutName, workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
+import { dateKeySelector } from '../state/atom';
+import { useGetRecord, usePostRecord } from './api';
 
 interface CurrentWorkout {
   workoutName: WorkoutName | null;
   workoutSet: number;
   workoutReps: number;
+  dateKey: string;
 }
 
 function WorkoutPage() {
+  const [dateKey] = useRecoilState(dateKeySelector);
+
   const [record, setRecord] = useState<CurrentWorkout>({
     workoutName: null,
     workoutSet: 1,
-    workoutReps: 0
+    workoutReps: 0,
+    dateKey,
   });
 
-  const { data: records } = useGetRecord(record.workoutName);
+  const { data: records } = useGetRecord(dateKey, record.workoutName);
   const mutation = usePostRecord(record.workoutName);
 
   const handleChangeReps = (direction: 'up' | 'down') => {
@@ -67,7 +74,7 @@ function WorkoutPage() {
       <Stack direction="column">
         <Button onClick={() => setRecord({ ...record, workoutName: null })}>Back to Workouts</Button>
         <Stack direction="row">
-          <Typography variant="h4">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</Typography>
+          <Typography variant="h4">{dateKey}</Typography>
           <Typography variant="h4">{record.workoutName}</Typography>
         </Stack>
         <Container>

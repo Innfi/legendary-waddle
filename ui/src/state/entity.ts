@@ -2,6 +2,7 @@ export interface WorkoutRecord {
   workoutName: WorkoutName;
   workoutSet: number;
   workoutReps: number;
+  dateKey: string;
 }
 
 export interface WorkoutRecordItem extends WorkoutRecord {

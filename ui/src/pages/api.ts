@@ -4,11 +4,11 @@ import type { WorkoutName, WorkoutRecord, WorkoutRecordItem } from "../state/ent
 import axiosClient from "../components/api/axios.client";
 import { queryClient } from "../components/api/query.client";
 
-export const useGetRecord = (workoutName: WorkoutName | null) => {
+export const useGetRecord = (dateKey: string, workoutName: WorkoutName | null) => {
   return useQuery({
     queryKey: ['records', workoutName],
     queryFn: async () => {
-      const res = await axiosClient.get<WorkoutRecordItem[]>(`/api/records?workout_id=${workoutName}`);
+      const res = await axiosClient.get<WorkoutRecordItem[]>(`/api/records?dateKey=${dateKey}&workout_id=${workoutName}`);
 
       console.log(`data: ${JSON.stringify(res.data)}`);
       return res.data;
@@ -17,13 +17,13 @@ export const useGetRecord = (workoutName: WorkoutName | null) => {
   });
 };
 
-export const usePostRecord = (workoutId: string | null) => {
+export const usePostRecord = (workoutName: WorkoutName | null) => {
   return useMutation({
     mutationFn: (newRecord: WorkoutRecord) => {
       return axiosClient.post('/api/records', newRecord);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['records', workoutId] })
+      queryClient.invalidateQueries({ queryKey: ['records', workoutName] })
     },
   })
 };

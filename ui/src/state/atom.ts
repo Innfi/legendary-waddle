@@ -41,4 +41,14 @@ export const dateKeySelector = selector({
 
     return state.dateKey;
   },
+  set: ({ set, get }, newDateKey) => {
+    const state = get(defaultAppState);
+
+    return set(defaultAppState, {
+      ...state,
+      dateKey: newDateKey instanceof DefaultValue
+        ? state.dateKey
+        : newDateKey,
+    });
+  },
 });
