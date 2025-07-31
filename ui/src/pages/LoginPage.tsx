@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import MuiCard from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import { useGoogleOneTapLogin, type CredentialResponse } from '@react-oauth/google';
 
+import { usePostLogin } from './api';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -49,43 +51,47 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 
 const LoginPage: React.FC = () => {
+  // const navigate = useNavigate();
+
+  // const handleLoginSuccess = async (credentialResponse: any) => {
+  //   try {
+  //     const response = await fetch('http://localhost:8000/api/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ credential: credentialResponse.credential }),
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       localStorage.setItem('token', data.access_token);
+  //       navigate('/dashboard');
+  //     } else {
+  //       console.error('Login failed:', await response.text());
+  //     }
+  //   } catch (error) {
+  //     console.error('An error occurred during login:', error);
+  //   }
+  // };
+
+  // const handleLoginError = () => {
+  //   console.log('Login Failed');
+  // };
+
   const navigate = useNavigate();
-
-  const handleLoginSuccess = async (credentialResponse: any) => {
-    try {
-      const response = await fetch('http://localhost:8000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ credential: credentialResponse.credential }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.access_token);
-        navigate('/dashboard');
-      } else {
-        console.error('Login failed:', await response.text());
-      }
-    } catch (error) {
-      console.error('An error occurred during login:', error);
-    }
-  };
-
-  const handleLoginError = () => {
-    console.log('Login Failed');
-  };
+  const postLogin = usePostLogin(navigate);
+  useGoogleOneTapLogin({
+    onSuccess: (credentialResponse: CredentialResponse) => {
+      postLogin.mutate(credentialResponse);
+    },
+    onError: () => {
+      console.log('login error');
+    },
+  });
 
   return (
     <SignInContainer>
-      <Card>
-        <h1>Login Page</h1>
-        <GoogleLogin
-          onSuccess={handleLoginSuccess}
-          onError={handleLoginError}
-        />
-      </Card>
     </SignInContainer>
   );
 };

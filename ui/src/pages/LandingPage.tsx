@@ -7,6 +7,7 @@ import {
   Paper,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
+
 import { GoogleIcon } from '../components/CustomsIcons';
 
 function LandingPage() {
