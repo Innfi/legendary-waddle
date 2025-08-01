@@ -153,7 +153,7 @@ export const shape = {
   borderRadius: 8,
 };
 
-// @ts-ignore
+// @ts-expect-error We are overriding the default shadows with our own custom shadows.
 const defaultShadows: Shadows = [
   'none',
   'var(--template-palette-baseShadow)',

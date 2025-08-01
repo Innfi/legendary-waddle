@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from models import User, Workout, Exercise
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel
 from typing import List
 import structlog
 
-from auth import get_current_user
+from auth2 import get_current_user
 from common.database import get_db
 
 router = APIRouter()
@@ -24,7 +24,7 @@ class DashboardData(BaseModel):
 @router.get("/dashboard", response_model=DashboardData)
 def get_dashboard_data(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     log.info("Fetching dashboard data", user_id=current_user.id)
-    one_week_ago = datetime.utcnow().date() - timedelta(days=7)
+    one_week_ago = datetime.now(timezone.utc) - timedelta(days=7)
 
     results = (
         db.query(

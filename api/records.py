@@ -3,7 +3,7 @@ from pydantic.alias_generators import to_camel
 from sqlalchemy.orm import Session
 import structlog
 
-from auth import get_current_user
+from auth2 import get_current_user
 from common.database import get_db
 from models import Record, User
 from schema import WorkoutRecordItem, CreateRecordPayload

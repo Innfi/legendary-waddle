@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import jwt
@@ -11,8 +12,10 @@ from models import User
 router = APIRouter()
 log = structlog.get_logger()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login2")
+
 # This should be a secret, but for now we'll hardcode it
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = "legendary-waddle"
 ALGORITHM = "HS256"
 
 class Token(BaseModel):
@@ -58,3 +61,21 @@ async def login2(token: Token, db: Session = Depends(get_db)):
     except (KeyError, jwt.PyJWTError) as e:
         log.error("Login failed", error=str(e))
         raise HTTPException(status_code=401, detail="Invalid token or user info")
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise credentials_exception
+    return user

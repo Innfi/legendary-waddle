@@ -10,32 +10,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 
 import { GoogleIcon } from '../components/CustomsIcons';
-import { setToken } from '../state/locals';
+import { usePostLogin } from '../components/auth/api';
 
 function LandingPage() {
   const navigate = useNavigate();
+  const postLogin = usePostLogin(navigate);
   const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const response = await fetch('http://localhost:8000/api/login2', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ access_token: tokenResponse.access_token }),
-        });
-        if (!response.ok) {
-          throw new Error('Login failed');
-        }
-        const data = await response.json();
-        console.log('Login successful:', data);
-
-        setToken(data.access_token);
-        navigate('/dashboard');
-      } catch (error) {
-        console.error('Login error:', error);
-      }
-    },
+    onSuccess: async (tokenResponse) => postLogin.mutate(tokenResponse.access_token),
   });
 
   return (

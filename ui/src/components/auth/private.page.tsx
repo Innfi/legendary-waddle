@@ -5,14 +5,12 @@ import { getToken } from '../../state/locals';
 const PrivateRoute: FC<RouteProps> = ({ children }) => {
   const token = getToken();
   if (!token || token.length <= 0) {
-    return <Navigate to='/login' />;
+    return <Navigate to='/' />;
   }
 
   return <>{children}</>;
 };
 
-export interface PrivatePageProps extends PathRouteProps {}
-
-export const PrivatePage: FC<PrivatePageProps> = ({ children }) => {
+export const PrivatePage: FC<PathRouteProps> = ({ children }) => {
   return <PrivateRoute>{children}</PrivateRoute>
 };

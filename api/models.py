@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from common.database import Base
-
+from datetime import datetime, timezone
 import uuid
-import datetime
 
 class User(Base):
     __tablename__ = "users"
@@ -44,6 +43,6 @@ class Record(Base):
     workout_name = Column(String)
     workout_set = Column(Integer)
     workout_reps = Column(Integer)
-    workout_date = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    workout_date = Column(DateTime, default=datetime.now(timezone.utc))
     date_key = Column(String, index=True)
     owner_id = Column(String, ForeignKey("users.id"), index=True)

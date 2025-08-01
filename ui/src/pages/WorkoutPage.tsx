@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 
 import { type WorkoutName, workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
-import { dateKeySelector } from '../state/atom';
+import { dateKeyAtom } from '../state/atom';
 import { useGetRecord, usePostRecord } from './api';
 
 interface CurrentWorkout {
@@ -15,7 +15,7 @@ interface CurrentWorkout {
 }
 
 function WorkoutPage() {
-  const [dateKey] = useRecoilState(dateKeySelector);
+  const [dateKey] = useAtom(dateKeyAtom);
 
   const [record, setRecord] = useState<CurrentWorkout>({
     workoutName: null,
