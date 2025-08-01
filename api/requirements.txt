@@ -7,3 +7,4 @@ google-auth
 SQLAlchemy
 PyJWT
 structlog
+requests 

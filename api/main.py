@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import structlog
 
 from records import router as records_router
-from auth import router as auth_router
+from auth2 import router as auth2_router
 from dashboard import router as dashboard_router
 from common.database import engine
 from common.logger import setup_logging
@@ -26,7 +26,7 @@ app.add_middleware(
 )
 
 app.include_router(records_router)
-app.include_router(auth_router)
+app.include_router(auth2_router)
 app.include_router(dashboard_router)
 
 @app.get("/")
