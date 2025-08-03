@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack } from '@mui/material';
+import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { useAtom } from 'jotai';
+import { Link } from 'react-router-dom';
 
 import { type WorkoutName, workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
 import { dateKeyAtom } from '../state/atom';
@@ -72,18 +73,22 @@ function WorkoutPage() {
   return (
     <Container>
       <Stack direction="column">
-        <Button onClick={() => setRecord({ ...record, workoutName: null })}>Back to Workouts</Button>
+        <Container>
         <Stack direction="row">
-          <Typography variant="h4">{dateKey}</Typography>
+          <Button component={Link} to="/dashboard">Go to Dashboard</Button>
+          <Button onClick={() => setRecord({ ...record, workoutName: null })}>Back to Workouts</Button>
+        </Stack>
+        <Stack direction="row" sx={{ marginBottom: '10px' }}>
+          <Typography variant="h4" sx={{ marginLeft: '10px', marginRight: '10px'}}>{dateKey}</Typography>
           <Typography variant="h4">{record.workoutName}</Typography>
         </Stack>
+        </Container>
         <Container>
-          <Typography variant="h4">Add Sets</Typography>
           <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <TextField name="sets" label="Set" value={record.workoutSet} disabled />
             <Stack direction="row" alignItems="center">
                 <TextField name="reps" label="Reps" value={record.workoutReps} />
-                <Stack direction="column">
+                <Stack direction="row">
                     <IconButton onClick={() => handleChangeReps('up')} size="small">
                         <ArrowUpward />
                     </IconButton>
@@ -98,14 +103,27 @@ function WorkoutPage() {
           </form>
         </Container>
         <Container>
-          <Typography variant="h4">Records</Typography>
-          <List>
-            {records?.map((record: WorkoutRecordItem) => (
-              <ListItem key={record.workoutName}>
-                {`Set: ${record.workoutSet}, Reps: ${record.workoutReps}, Time: ${new Date(record.workoutDate).toLocaleTimeString('ko-KR')}`}
-              </ListItem>
-            ))}
-          </List>
+          <Typography variant="h4" sx={{ marginBottom: '10px' }}>Records</Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Set</TableCell>
+                  <TableCell>Reps</TableCell>
+                  <TableCell>Time</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {records?.sort((a, b) => b.workoutSet - a.workoutSet).map((record: WorkoutRecordItem) => (
+                  <TableRow key={record.workoutSet}>
+                    <TableCell>{record.workoutSet}</TableCell>
+                    <TableCell>{record.workoutReps}</TableCell>
+                    <TableCell>{new Date(record.workoutDate).toLocaleTimeString('ko-KR')}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Container>
       </Stack>
     </Container>

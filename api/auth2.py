@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 import jwt
 import structlog
 import requests
+import os
 
 from common.database import get_db
 from models import User
@@ -14,9 +15,8 @@ log = structlog.get_logger()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login2")
 
-# This should be a secret, but for now we'll hardcode it
-SECRET_KEY = "legendary-waddle"
-ALGORITHM = "HS256"
+SECRET_KEY = os.environ.get("SECRET_KEY", "legendary-waddle")
+ALGORITHM = os.environ.get("ALGORITHM", "HS256")
 
 class Token(BaseModel):
     access_token: str
