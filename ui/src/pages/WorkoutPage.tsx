@@ -29,12 +29,12 @@ function WorkoutPage() {
   const mutation = usePostRecord(record.workoutName);
 
   const handleChangeReps = (direction: 'up' | 'down') => {
-    if (direction === 'down') {
-      setRecord({ ...record, workoutReps: record.workoutReps <= 0 ? 0 : record.workoutReps -1 });
+    if (direction === 'up') {
+      setRecord({ ...record, workoutReps: record.workoutReps+1 });
       return;
     }
 
-    setRecord({ ...record, workoutReps: record.workoutReps+1 });
+    setRecord({ ...record, workoutReps: record.workoutReps <= 0 ? 0 : record.workoutReps -1 });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -83,27 +83,24 @@ function WorkoutPage() {
           <Typography variant="h4">{record.workoutName}</Typography>
         </Stack>
         </Container>
-        <Container>
+        <Container sx={{ marginBottom: '10px' }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <TextField name="sets" label="Set" value={record.workoutSet} disabled />
             <Stack direction="row" alignItems="center">
-                <TextField name="reps" label="Reps" value={record.workoutReps} />
-                <Stack direction="row">
-                    <IconButton onClick={() => handleChangeReps('up')} size="small">
-                        <ArrowUpward />
-                    </IconButton>
-                    <IconButton onClick={() => handleChangeReps('down')} size="small">
-                        <ArrowDownward />
-                    </IconButton>
-                </Stack>
-            </Stack>
+              <TextField name="sets" label="Set" value={record.workoutSet} disabled sx={{ marginRight: '10px' }} />
+              <TextField name="reps" label="Reps" value={record.workoutReps}  sx={{ marginRight: '10px' }}/>
+              <IconButton onClick={() => handleChangeReps('up')} size="small" sx={{ marginRight: '5px' }}>
+                  <ArrowUpward />
+              </IconButton>
+              <IconButton onClick={() => handleChangeReps('down')} size="small" sx={{ marginRight: '10px' }}>
+                  <ArrowDownward />
+              </IconButton>
             <IconButton type="submit">
               <AddCircleOutline />
             </IconButton>
+            </Stack>
           </form>
         </Container>
         <Container>
-          <Typography variant="h4" sx={{ marginBottom: '10px' }}>Records</Typography>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>

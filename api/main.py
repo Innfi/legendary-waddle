@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import structlog
 
-from records import router as records_router
-from auth2 import router as auth2_router
-from dashboard import router as dashboard_router
-from common.database import engine
+from auth import router as auth2_router
+from repository.database import engine
+import repository.models as models
 from common.logger import setup_logging
-import models
+from records import router as records_router
+from dashboard import router as dashboard_router
 
 setup_logging()
 log = structlog.get_logger()

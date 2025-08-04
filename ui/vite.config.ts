@@ -11,8 +11,6 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      '/workouts': 'http://localhost:8000',
-      '/records': 'http://localhost:8000'
     }
   }
 })

@@ -57,8 +57,7 @@ const DashboardPage: React.FC = () => {
   return (
     <div>
       <h1>Dashboard</h1>
-      <Stack direction="column">
-        <Link to="/records">View Records</Link>
+      <Stack direction="column" sx={{ marginLeft: '20px' }}>
         <Link to="/workouts">View Workouts</Link>
         {data && data.workouts.length > 0 ? (
           <ul>

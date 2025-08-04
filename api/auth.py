@@ -7,8 +7,9 @@ import structlog
 import requests
 import os
 
-from common.database import get_db
-from models import User
+from repository.database import get_db
+from repository.models import User
+from repository.auth import get_user_by_oauth_provider_id, create_user
 
 router = APIRouter()
 log = structlog.get_logger()
@@ -37,15 +38,11 @@ async def login2(token: Token, db: Session = Depends(get_db)):
         name = userinfo.get('name')
 
         # Check if user exists
-        user = db.query(User).filter(User.oauth_provider_id == oauth_provider_id).first()
+        user = get_user_by_oauth_provider_id(db, oauth_provider_id)
 
         if not user:
             # Create new user
-            log.info("Creating new user", email=email, oauth_provider_id=oauth_provider_id)
-            user = User(oauth_provider_id=oauth_provider_id, email=email, name=name)
-            db.add(user)
-            db.commit()
-            db.refresh(user)
+            user = create_user(db, oauth_provider_id, email, name)
         else:
             log.info("User logged in", user_id=user.id)
 

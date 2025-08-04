@@ -8,7 +8,7 @@ export const useGetRecord = (dateKey: string, workoutName: WorkoutName | null) =
   return useQuery({
     queryKey: ['records', workoutName],
     queryFn: async () => {
-      const res = await axiosClient.get<WorkoutRecordItem[]>(`/api/records?dateKey=${dateKey}&workout_id=${workoutName}`);
+      const res = await axiosClient.get<WorkoutRecordItem[]>(`/api/records?date_key=${dateKey}&workout_name=${workoutName}`);
 
       console.log(`data: ${JSON.stringify(res.data)}`);
       return res.data;

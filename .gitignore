@@ -27,4 +27,4 @@ wrangler.toml
 __pycache__
 database.db
 resource
-
+scripts
