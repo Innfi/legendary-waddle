@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 import structlog
 
 from auth import get_current_user
-from repository.database import get_db
-from repository.records import get_records_by_owner_id
-from repository.records import create_record as create_record_repo
-from repository.models import User
+from repository2.database import get_db
+from repository2.records import get_records_by_owner_id
+from repository2.records import create_record as create_record_repo
+from repository2.models import User
 from repository.schema import WorkoutRecordItem, CreateRecordPayload
 
 router = APIRouter()
@@ -25,4 +25,5 @@ def create_record(record: CreateRecordPayload,
                   db: Session = Depends(get_db), 
                   current_user: User = Depends(get_current_user)):
     create_record_repo(db, record, current_user.id)
+
     return

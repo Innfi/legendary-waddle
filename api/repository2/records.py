@@ -2,15 +2,17 @@
 # The logic is largely the same, but this version is prepared for a PostgreSQL database.
 
 from sqlalchemy.orm import Session
+from sqlalchemy import Column
 import structlog
+from uuid import UUID
 
-from models import Record
-from api.repository.schema import CreateRecordPayload
+from repository2.models import Record
+from repository.schema import CreateRecordPayload
 
 log = structlog.get_logger()
 
 def get_records_by_owner_id(
-    db: Session, owner_id: str, date_key: str | None, workout_name: str | None
+    db: Session, owner_id: Column[UUID], date_key: str | None, workout_name: str | None
 ):
     """Fetches records for a user, with optional filters for date and workout name."""
     log.info("Fetching records for user", user_id=owner_id)
@@ -21,7 +23,7 @@ def get_records_by_owner_id(
         query = query.filter(Record.workout_name == workout_name)
     return query.all()
 
-def create_record(db: Session, record: CreateRecordPayload, owner_id: str):
+def create_record(db: Session, record: CreateRecordPayload, owner_id: Column[UUID]):
     """Creates a new record and commits it to the database."""
     log.info(
         "Creating record for user",

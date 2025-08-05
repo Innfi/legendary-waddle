@@ -2,14 +2,16 @@
 # The logic is largely the same, but this version is prepared for a PostgreSQL database.
 
 from sqlalchemy.orm import Session
-from sqlalchemy import func
-from models import User, Workout, Exercise
+from sqlalchemy import func, Column
+from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime, timezone, timedelta
 import structlog
+from uuid import UUID
+from repository2.models import Workout, Exercise
 
 log = structlog.get_logger()
 
-def get_dashboard_stats_by_owner_id(db: Session, owner_id: str):
+def get_dashboard_stats_by_owner_id(db: Session, owner_id: Column[UUID]):
     """Fetches dashboard statistics for a given user."""
     log.info("Fetching dashboard data", user_id=owner_id)
     one_week_ago = datetime.now(timezone.utc) - timedelta(days=7)

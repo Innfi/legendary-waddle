@@ -8,3 +8,4 @@ SQLAlchemy
 PyJWT
 structlog
 requests 
+psycopg2
