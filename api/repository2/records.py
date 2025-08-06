@@ -7,7 +7,7 @@ import structlog
 from uuid import UUID
 
 from repository2.models import Record
-from repository.schema import CreateRecordPayload
+from repository2.schema import CreateRecordPayload
 
 log = structlog.get_logger()
 
@@ -29,6 +29,7 @@ def create_record(db: Session, record: CreateRecordPayload, owner_id: Column[UUI
         "Creating record for user",
         user_id=owner_id,
         workout_name=record.workout_name,
+        date_key=record.date_key,
     )
     db_record = Record(**record.model_dump(), owner_id=owner_id)
     db.add(db_record)

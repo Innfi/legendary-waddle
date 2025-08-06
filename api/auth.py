@@ -47,7 +47,7 @@ async def login(token: Token, db: Session = Depends(get_db)):
             log.info("User logged in", user_id=user.id)
 
         # Create JWT
-        access_token_payload = {"sub": user.id}
+        access_token_payload = {"sub": str(user.id)}
         access_token = jwt.encode(access_token_payload, SECRET_KEY, algorithm=ALGORITHM)
 
         return {"access_token": access_token, "token_type": "bearer"}

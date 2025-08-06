@@ -28,3 +28,4 @@ __pycache__
 database.db
 resource
 scripts
+.env

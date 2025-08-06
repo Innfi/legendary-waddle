@@ -8,7 +8,7 @@ from repository2.database import get_db
 from repository2.records import get_records_by_owner_id
 from repository2.records import create_record as create_record_repo
 from repository2.models import User
-from repository.schema import WorkoutRecordItem, CreateRecordPayload
+from repository2.schema import WorkoutRecordItem, CreateRecordPayload
 
 router = APIRouter()
 log = structlog.get_logger()
