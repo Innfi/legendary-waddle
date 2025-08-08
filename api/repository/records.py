@@ -6,8 +6,8 @@ from sqlalchemy import Column
 import structlog
 from uuid import UUID
 
-from repository2.models import Record
-from repository2.schema import CreateRecordPayload
+from repository.models import Record
+from repository.schema import CreateRecordPayload
 
 log = structlog.get_logger()
 

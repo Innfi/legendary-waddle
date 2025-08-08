@@ -7,9 +7,9 @@ import structlog
 import requests
 import os
 
-from repository2.database import get_db
-from repository2.models import User
-from repository2.auth import get_user_by_oauth_provider_id, create_user
+from repository.database import get_db
+from repository.models import User
+from repository.auth import get_user_by_oauth_provider_id, create_user
 
 router = APIRouter()
 log = structlog.get_logger()

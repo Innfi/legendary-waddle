@@ -5,8 +5,8 @@ import structlog
 from auth import router as auth2_router
 # from repository.database import engine
 # import repository.models as models
-from repository2.database import engine
-import repository2.models as models
+from repository.database import engine
+import repository.models as models
 from common.logger import setup_logging
 from records import router as records_router
 from dashboard import router as dashboard_router

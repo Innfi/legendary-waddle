@@ -5,9 +5,9 @@ from typing import List
 import structlog
 
 from auth import get_current_user
-from repository2.database import get_db
-from repository2.models import User
-from repository2.dashboard import get_dashboard_stats_by_owner_id
+from repository.database import get_db
+from repository.models import User
+from repository.dashboard import get_dashboard_stats_by_owner_id
 
 router = APIRouter()
 log = structlog.get_logger()

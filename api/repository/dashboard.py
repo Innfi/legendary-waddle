@@ -7,7 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime, timezone, timedelta
 import structlog
 from uuid import UUID
-from repository2.models import Workout, Exercise
+from repository.models import Workout, Exercise
 
 log = structlog.get_logger()
 

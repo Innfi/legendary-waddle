@@ -1,10 +1,7 @@
-# This file is intended to be a PostgreSQL-compatible version of api/repository/auth.py.
-# The logic is largely the same, but this version is prepared for a PostgreSQL database.
-
 from sqlalchemy.orm import Session
 import structlog
 
-from repository2.models import User
+from repository.models import User
 
 log = structlog.get_logger()
 
