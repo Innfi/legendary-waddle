@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -55,23 +55,50 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <Stack direction="column" sx={{ marginLeft: '20px' }}>
-        <Link to="/workouts">View Workouts</Link>
-        {data && data.workouts.length > 0 ? (
-          <ul>
-            {data.workouts.map((workout, index) => (
-              <li key={index}>
-                <strong>{workout.workout_name}</strong>: {workout.total_sets} sets, {workout.total_reps} reps
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No workout data available for the last 7 days.</p>
-        )}
-      </Stack>
-    </div>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ flex: 1, pb: 2 }}>
+        <h1>Dashboard</h1>
+        <Stack direction="column" sx={{ marginLeft: '20px' }}>
+          {data && data.workouts.length > 0 ? (
+            <ul>
+              {data.workouts.map((workout, index) => (
+                <li key={index}>
+                  <strong>{workout.workout_name}</strong>: {workout.total_sets} sets, {workout.total_reps} reps
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No workout data available for the last 7 days.</p>
+          )}
+        </Stack>
+      </Box>
+      <Box
+        sx={{
+          position: 'sticky',
+          bottom: 0,
+          width: '100%',
+          py: 2,
+          backgroundColor: 'background.paper',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+        }}
+      >
+        <Stack direction="row" justifyContent="space-around">
+          <Button component={Link} to="/dashboard">
+            Home
+          </Button>
+          <Button component={Link} to="/workouts">
+            Workout
+          </Button>
+          <Button component={Link} to="/schedule">
+            Schedule
+          </Button>
+          <Button component={Link} to="/profile">
+            Profile
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
   );
 };
 
