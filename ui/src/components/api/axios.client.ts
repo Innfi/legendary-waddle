@@ -3,7 +3,7 @@ import Axios from "axios";
 import { getToken } from "../../state/locals";
 
 const axiosClient = Axios.create({
-  timeout: 1000,
+  timeout: 3000,
   headers: {
     'Content-Type': 'application/json'
   },

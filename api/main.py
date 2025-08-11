@@ -11,6 +11,15 @@ from common.logger import setup_logging
 from records import router as records_router
 from dashboard import router as dashboard_router
 
+import logging
+import sys
+
+# Setup logging for SQLAlchemy
+logger = logging.getLogger('sqlalchemy.engine')
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
+
 setup_logging()
 log = structlog.get_logger()
 
