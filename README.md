@@ -1,3 +1,5 @@
+[![Docker Image CI](https://github.com/Innfi/legendary-waddle/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/Innfi/legendary-waddle/actions/workflows/docker-publish.yml)
+
 # Workout Records App
 
 # Introduction
