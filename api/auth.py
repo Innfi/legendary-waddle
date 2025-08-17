@@ -22,7 +22,7 @@ ALGORITHM = os.environ.get("ALGORITHM", "HS256")
 class Token(BaseModel):
     access_token: str
 
-@router.post("/api/login")
+@router.post("/login")
 async def login(token: Token, db: Session = Depends(get_db)):
     try:
         # Use access token to get user info from Google

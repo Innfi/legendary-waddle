@@ -15,7 +15,7 @@ export const usePostLogin = (navigate: NavigateFunction) => {
 
   return useMutation({
     mutationFn: (accessToken: string) => {
-      return axiosClient.post<LoginResponse>('http://localhost:8000/api/login', { access_token: accessToken });
+      return axiosClient.post<LoginResponse>('/api/login', { access_token: accessToken });
     },
     onSuccess: (response: AxiosResponse<LoginResponse>) => {
       setToken(response.data.access_token);

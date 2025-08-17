@@ -19,4 +19,4 @@ jobs:
       with:
         context: ./api
         push: true
-        tags: innfi/legendary-waddle:latest
+        tags: innfi/legendary-waddle:${{ github.sha }}
