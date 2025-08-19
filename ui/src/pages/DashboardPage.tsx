@@ -1,8 +1,8 @@
-import { Box, Button, Stack } from '@mui/material';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Box, Stack } from '@mui/material';
 
 import WorkoutHistoryPage from './WorkoutHistoryPage';
+import Footer from './Footer';
 
 const DashboardPage: React.FC = () => {
 
@@ -14,32 +14,7 @@ const DashboardPage: React.FC = () => {
           <WorkoutHistoryPage />
         </Stack>
       </Box>
-      <Box
-        sx={{
-          position: 'sticky',
-          bottom: 0,
-          width: '100%',
-          py: 2,
-          backgroundColor: 'background.paper',
-          borderTop: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
-        <Stack direction="row" justifyContent="space-around">
-          <Button component={Link} to="/dashboard">
-            Home
-          </Button>
-          <Button component={Link} to="/workouts">
-            Workout
-          </Button>
-          <Button component={Link} to="/schedule">
-            Schedule
-          </Button>
-          <Button component={Link} to="/profile">
-            Profile
-          </Button>
-        </Stack>
-      </Box>
+      <Footer />
     </Box>
   );
 };
