@@ -10,6 +10,7 @@ import repository.models as models
 from common.logger import setup_logging
 from records import router as records_router
 from dashboard import router as dashboard_router
+from profile import router as profile_router
 
 import logging
 import sys
@@ -39,6 +40,7 @@ app.add_middleware(
 app.include_router(records_router)
 app.include_router(auth2_router)
 app.include_router(dashboard_router)
+app.include_router(profile_router)
 
 @app.get("/")
 def read_root():

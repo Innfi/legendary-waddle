@@ -27,3 +27,22 @@ export const usePostRecord = (workoutName: WorkoutName | null) => {
     },
   });
 };
+
+export type UserProfile = {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  favoriteWorkouts: { name: string; icon: string }[];
+  goal: string;
+};
+
+export const useGetProfile = () => {
+  return useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const res = await axiosClient.get<UserProfile>('/api/profile');
+      return res.data;
+    },
+  });
+};
