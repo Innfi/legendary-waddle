@@ -11,8 +11,10 @@ def get_profile(db: Session, user: User) -> UserProfile:
 
     return UserProfile(
         id=str(user.id),
-        name=user.name,
-        email=user.email,
+        name="test_user",
+        email="test_email@notexist.io",
+        # name=user.name,
+        # email=user.email,
         avatar_url=None,
         favorite_workouts=favorite_workouts,
         goal="To be healthy",
