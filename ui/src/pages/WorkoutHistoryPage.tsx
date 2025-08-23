@@ -23,7 +23,7 @@ function WorkoutHistoryPage() {
           throw new Error('No token found');
         }
 
-        const response = await fetch('/api/dashboard', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/dashboard`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

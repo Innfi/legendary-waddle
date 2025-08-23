@@ -2,7 +2,10 @@ import Axios from "axios";
 
 import { getToken } from "../../state/locals";
 
+console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
+
 const axiosClient = Axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   timeout: 3000,
   headers: {
     'Content-Type': 'application/json'

@@ -8,7 +8,7 @@ export const useGetRecord = (dateKey: string, workoutName: WorkoutName | null) =
   return useQuery({
     queryKey: ['records', workoutName],
     queryFn: async () => {
-      const res = await axiosClient.get<WorkoutRecordItem[]>(`/api/records?date_key=${dateKey}&workout_name=${workoutName}`);
+      const res = await axiosClient.get<WorkoutRecordItem[]>(`/records?date_key=${dateKey}&workout_name=${workoutName}`);
 
       console.log(`data: ${JSON.stringify(res.data)}`);
       return res.data;
@@ -20,7 +20,7 @@ export const useGetRecord = (dateKey: string, workoutName: WorkoutName | null) =
 export const usePostRecord = (workoutName: WorkoutName | null) => {
   return useMutation({
     mutationFn: (newRecord: WorkoutRecord) => {
-      return axiosClient.post('/api/records', newRecord);
+      return axiosClient.post('/records', newRecord);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['records', workoutName] })
@@ -41,7 +41,7 @@ export const useGetProfile = () => {
   return useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
-      const res = await axiosClient.get<UserProfile>('/api/profile');
+      const res = await axiosClient.get<UserProfile>('/profile');
       return res.data;
     },
   });

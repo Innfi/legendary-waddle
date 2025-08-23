@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://legendary-waddle-970293656109.asia-northeast3.run.app/api/$1"
-    }
-  ]
-}
