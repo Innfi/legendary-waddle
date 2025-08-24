@@ -6,7 +6,7 @@ import {
   Typography,
   Paper,
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 
 import { GoogleIcon } from '../components/CustomsIcons';
@@ -41,16 +41,6 @@ function LandingPage() {
               Track your progress, stay motivated, and reach your fitness goals with our intuitive
               workout tracker.
             </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              component={Link}
-              to="/login"
-              sx={{ mt: 4 }}
-            >
-              Get Started
-            </Button>
           </Grid>
         </Grid>
       </Container>
