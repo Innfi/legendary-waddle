@@ -1,70 +1,51 @@
-import { useEffect, useState } from 'react';
-
-interface WorkoutStat {
-  workout_name: string;
-  total_sets: number;
-  total_reps: number;
-}
-
-interface DashboardData {
-  workouts: WorkoutStat[];
-}
+import { useState } from 'react';
+import { useGetRecordStats } from './api';
+import { Box, CircularProgress, Paper, Stack, TextField, Typography } from '@mui/material';
 
 function WorkoutHistoryPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No token found');
-        }
+  const { data, isLoading, error } = useGetRecordStats(fromDate, toDate);
 
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/dashboard`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch dashboard data');
-        }
-        const result: DashboardData = await response.json();
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
   return (
-    <div>
-      {data && data.workouts.length > 0 ? (
-        <ul>
-          {data.workouts.map((workout, index) => (
-            <li key={index}>
-              <strong>{workout.workout_name}</strong>: {workout.total_sets} sets, {workout.total_reps} reps
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No workout data available for the last 7 days.</p>
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Workout Statistics
+      </Typography>
+      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+        <TextField
+          label="From Date"
+          type="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          label="To Date"
+          type="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </Stack>
+      {isLoading && <CircularProgress />}
+      {error && <Typography color="error">Error fetching stats</Typography>}
+      {data && (
+        <Paper sx={{ p: 2 }}>
+          <Stack spacing={1}>
+            <Typography>Total Reps: {data.total_reps}</Typography>
+            <Typography>Total Sets: {data.total_sets}</Typography>
+            <Typography>Average Reps per Set: {data.avg_reps.toFixed(2)}</Typography>
+            <Typography>Average Interval between Sets (seconds): {data.avg_interval_seconds.toFixed(2)}</Typography>
+          </Stack>
+        </Paper>
       )}
-    </div>
+    </Box>
   );
 }
 export default WorkoutHistoryPage;
