@@ -7,10 +7,11 @@ import { usePostLogin } from '../components/auth/api';
 function LandingPage() {
   const navigate = useNavigate();
   const postLogin = usePostLogin(navigate);
+
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => postLogin.mutate(tokenResponse.access_token),
   });
-// <Button variant="outlined" startIcon={<GoogleIcon />} onClick={() => login()}>
+
   return (
     <div className="dark min-h-screen bg-background text-foreground">
       <div className="flex flex-col min-h-screen max-w-sm mx-auto px-6 border border-border">
@@ -27,13 +28,13 @@ function LandingPage() {
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <div className="text-center space-y-8">
             <h1 className="text-4xl tracking-tight">
               legenary-waddle
             </h1>
             <p className="text-muted-foreground text-lg">
-              Welcome to your mobile app
+              record your workouts 
             </p>
           </div>
         </div>

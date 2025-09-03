@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { useAtom } from 'jotai';
@@ -27,6 +27,16 @@ function WorkoutPage() {
 
   const { data: records } = useGetRecord(dateKey, record.workoutName);
   const mutation = usePostRecord(record.workoutName);
+
+  useEffect(() => {
+    if (records && records.length > 0) {
+      const maxSet = Math.max(...records.map(r => r.workoutSet));
+      setRecord({
+        ...record,
+        workoutSet: maxSet + 1,
+      });
+    }
+  }, [records]);
 
   const handleChangeReps = (direction: 'up' | 'down') => {
     if (direction === 'up') {
