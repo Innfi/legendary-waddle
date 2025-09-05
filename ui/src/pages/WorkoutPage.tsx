@@ -121,9 +121,9 @@ function WorkoutPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {records?.sort((a, b) => b.workoutSet - a.workoutSet).map((record: WorkoutRecordItem) => (
-                  <TableRow key={record.workoutSet}>
-                    <TableCell>{record.workoutSet}</TableCell>
+                {records?.map((record: WorkoutRecordItem, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>{index}</TableCell>
                     <TableCell>{record.workoutReps}</TableCell>
                     <TableCell>{new Date(record.workoutDate).toLocaleTimeString('ko-KR')}</TableCell>
                   </TableRow>
