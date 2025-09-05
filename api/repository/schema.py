@@ -5,7 +5,6 @@ from typing import List, Optional
 
 class CreateRecordPayload(BaseModel):
     workout_name: str
-    workout_set: int
     workout_reps: int
     date_key: str
 
@@ -13,7 +12,6 @@ class CreateRecordPayload(BaseModel):
 
 class WorkoutRecordItem(BaseModel):
     workout_name: str
-    workout_set: int
     workout_reps: int
     workout_date: datetime
     date_key: str
