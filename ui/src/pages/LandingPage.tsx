@@ -28,7 +28,7 @@ function LandingPage() {
         </div>
 
         {/* Main content area */}
-        <div className="flex items-center justify-center">
+        <div className="flex flex-1 items-center justify-center pb-6">
           <div className="text-center space-y-8">
             <h1 className="text-4xl tracking-tight">
               legenary-waddle
@@ -40,7 +40,7 @@ function LandingPage() {
         </div>
 
         {/* Bottom section with Google login */}
-        <div className="pb-8 pt-4">
+        <div className="flex-1 pb-8 pt-12">
           <Button 
             onClick={() => login()}
             className="w-full bg-white text-black hover:bg-gray-100 flex items-center justify-center gap-3 py-6"
