@@ -66,3 +66,28 @@ export const useGetRecordStats = (from_date?: string, to_date?: string) => {
     },
   });
 };
+
+export type ScheduleDetail = {
+  workoutName: string;
+  sets: number;
+  reps: number;
+};
+
+export type Schedule = {
+  id: number;
+  plannedDate: string; // Assuming it's a string in ISO format
+  details: ScheduleDetail[];
+};
+
+export const useGetSchedules = (from_date?: string, to_date?: string) => {
+  return useQuery({
+    queryKey: ['schedules', from_date, to_date],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (from_date) params.append('from_date', from_date);
+      if (to_date) params.append('to_date', to_date);
+      const res = await axiosClient.get<Schedule[]>(`/schedules?${params.toString()}`);
+      return res.data;
+    },
+  });
+};

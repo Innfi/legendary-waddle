@@ -8,6 +8,7 @@ import repository.models as models
 from common.logger import setup_logging
 from records import router as records_router
 from user_profile import router as profile_router
+from schedule import router as schedule_router
 
 import logging
 import sys
@@ -37,6 +38,7 @@ app.add_middleware(
 app.include_router(auth2_router)
 app.include_router(records_router)
 app.include_router(profile_router)
+app.include_router(schedule_router)
 
 @app.get("/")
 def read_root():
