@@ -123,7 +123,7 @@ function WorkoutPage() {
               <TableBody>
                 {records?.map((record: WorkoutRecordItem, index: number) => (
                   <TableRow key={index}>
-                    <TableCell>{index}</TableCell>
+                    <TableCell>{records.length-index}</TableCell>
                     <TableCell>{record.workoutReps}</TableCell>
                     <TableCell>{new Date(record.workoutDate).toLocaleTimeString('ko-KR')}</TableCell>
                   </TableRow>

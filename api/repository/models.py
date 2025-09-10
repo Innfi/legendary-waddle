@@ -4,9 +4,9 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from sqlalchemy.types import JSON
 from repository.database import Base
 import uuid
-from sqlalchemy.types import JSON
 
 class User(Base):
     __tablename__ = "users"
@@ -15,8 +15,6 @@ class User(Base):
     oauth_provider_id = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     name = Column(String)
-
-    workouts = relationship("Workout", back_populates="owner")
 
 class Record(Base):
     __tablename__ = "records"

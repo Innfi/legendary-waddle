@@ -6,7 +6,7 @@ from auth import get_current_user
 from repository.database import get_db
 from repository.models import User
 from repository.schema import UserProfile
-from api.repository.user_profile import get_profile as get_profile_repo
+from repository.user_profile import get_profile as get_profile_repo
 
 router = APIRouter()
 log = structlog.get_logger()
