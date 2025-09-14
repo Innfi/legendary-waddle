@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useGetSchedules } from './api';
-import { Box, CircularProgress, Paper, Stack, Typography, List, ListItem, ListItemText, Divider, Badge } from '@mui/material';
+import { Box, CircularProgress, Paper, Stack, Typography, List, ListItem, ListItemText, Badge } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, type PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import dayjs, { type Dayjs } from 'dayjs';
 
-interface ServerDayProps extends PickersDayProps<Dayjs> {
+import Footer from './Footer';
+
+interface ServerDayProps extends PickersDayProps {
   highlightedDays?: number[];
 }
 
@@ -41,51 +43,54 @@ function SchedulePage() {
   const selectedSchedule = data?.find((schedule) => dayjs(schedule.plannedDate).isSame(date, 'day'));
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box>
-        <Typography variant="h4" gutterBottom>
-          Workout Schedules
-        </Typography>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <Paper sx={{ p: 2, flex: '1 1 300px' }}>
-            <DateCalendar
-              value={date}
-              onChange={(newDate) => setDate(newDate)}
-              loading={isLoading}
-              slots={{
-                day: ServerDay,
-              }}
-              slotProps={{
-                day: {
-                  highlightedDays,
-                },
-              }}
-            />
-          </Paper>
-          <Paper sx={{ p: 2, flex: '1 1 300px' }}>
-            <Typography variant="h6" gutterBottom>
-              {date ? date.format('LL') : 'Select a date'}
-            </Typography>
-            {isLoading && <CircularProgress />}
-            {error && <Typography color="error">Error fetching schedules</Typography>}
-            {selectedSchedule ? (
-              <List>
-                {selectedSchedule.details.map((detail, index) => (
-                  <ListItem key={index}>
-                    <ListItemText
-                      primary={detail.workoutName}
-                      secondary={`Sets: ${detail.sets}, Reps: ${detail.reps}`}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            ) : (
-              <Typography>No workout scheduled for this day.</Typography>
-            )}
-          </Paper>
-        </Stack>
-      </Box>
-    </LocalizationProvider>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box sx={{ flex: 1, pb: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            Workout Schedules
+          </Typography>
+          <Stack direction='column' spacing={2}>
+            <Paper sx={{ p: 2, flex: '1 1 300px' }}>
+              <DateCalendar
+                value={date}
+                onChange={(newDate) => setDate(newDate)}
+                loading={isLoading}
+                slots={{
+                  day: ServerDay,
+                }}
+                slotProps={{
+                  day: {
+                  //   highlightedDays,
+                  },
+                }}
+              />
+            </Paper>
+            <Paper sx={{ p: 2, flex: '1 1 300px' }}>
+              <Typography variant="h6" gutterBottom>
+                {date ? date.format('LL') : 'Select a date'}
+              </Typography>
+              {isLoading && <CircularProgress />}
+              {error && <Typography color="error">Error fetching schedules</Typography>}
+              {selectedSchedule ? (
+                <List>
+                  {selectedSchedule.details.map((detail, index) => (
+                    <ListItem key={index}>
+                      <ListItemText
+                        primary={detail.workoutName}
+                        secondary={`Sets: ${detail.sets}, Reps: ${detail.reps}`}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography>No workout scheduled for this day.</Typography>
+              )}
+            </Paper>
+          </Stack>
+        </Box>
+      </LocalizationProvider>
+      <Footer />
+    </Box>
   );
 }
 export default SchedulePage;
