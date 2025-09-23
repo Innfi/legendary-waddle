@@ -1,7 +1,8 @@
 export interface WorkoutRecord {
-  workoutName: WorkoutName;
+  workoutName: string;
   workoutSet: number;
   workoutReps: number;
+  weight: number;
   dateKey: string;
 }
 
@@ -9,10 +10,7 @@ export interface WorkoutRecordItem extends WorkoutRecord {
   workoutDate: Date;
 }
 
-export type WorkoutName = 'Pullups' |
-  'Dips' |
-  'Squats' |
-  'Kettlebell Swings';
+export type WorkoutName = string;
 
 export const workoutNames: WorkoutName[] = [
   'Pullups',

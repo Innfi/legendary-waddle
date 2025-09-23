@@ -23,6 +23,7 @@ class Record(Base):
     workout_name = Column(String)
     workout_set = Column(Integer)
     workout_reps = Column(Integer)
+    weight = Column(Integer, nullable=False, default=0)
     workout_date = Column(DateTime(timezone=True), server_default=func.now())
     date_key = Column(String, index=True)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)

@@ -12,16 +12,19 @@ interface CurrentWorkout {
   workoutName: WorkoutName | null;
   workoutSet: number;
   workoutReps: number;
+  weight: number;
   dateKey: string;
 }
 
 function WorkoutPage() {
   const [dateKey] = useAtom(dateKeyAtom);
+  const [customWorkoutName, setCustomWorkoutName] = useState('');
 
   const [record, setRecord] = useState<CurrentWorkout>({
     workoutName: null,
     workoutSet: 1,
     workoutReps: 0,
+    weight: 0,
     dateKey,
   });
 
@@ -47,6 +50,15 @@ function WorkoutPage() {
     setRecord({ ...record, workoutReps: record.workoutReps <= 0 ? 0 : record.workoutReps -1 });
   };
 
+  const handleChangeWeight = (direction: 'up' | 'down') => {
+    if (direction === 'up') {
+      setRecord({ ...record, weight: record.weight + 5 });
+      return;
+    }
+
+    setRecord({ ...record, weight: record.weight <= 0 ? 0 : record.weight - 5 });
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!record.workoutName) {
@@ -66,6 +78,23 @@ function WorkoutPage() {
     return (
       <Container>
         <Typography variant="h4">Select a Workout</Typography>
+        <Stack direction="row" spacing={1} sx={{ marginTop: 2, marginBottom: 2 }}>
+          <TextField
+            label="Custom Workout Name"
+            value={customWorkoutName}
+            onChange={(e) => setCustomWorkoutName(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (customWorkoutName) {
+                setRecord({ ...record, workoutName: customWorkoutName });
+              }
+            }}
+          >
+            Start
+          </Button>
+        </Stack>
         <List>
           {workoutNames.map((currentName: WorkoutName, index: number) => (
             <ListItemButton key={index} onClick={() => setRecord({
@@ -86,7 +115,7 @@ function WorkoutPage() {
         <Container>
         <Stack direction="row">
           <Button component={Link} to="/dashboard">Go to Dashboard</Button>
-          <Button onClick={() => setRecord({ ...record, workoutName: null })}>Back to Workouts</Button>
+          <Button onClick={() => setRecord({ ...record, workoutName: null, weight: 0, workoutReps: 0, workoutSet: 1 })}>Back to Workouts</Button>
         </Stack>
         <Stack direction="row" sx={{ marginBottom: '10px' }}>
           <Typography variant="h4" sx={{ marginLeft: '10px', marginRight: '10px'}}>{dateKey}</Typography>
@@ -104,6 +133,13 @@ function WorkoutPage() {
               <IconButton onClick={() => handleChangeReps('down')} size="small" sx={{ marginRight: '10px' }}>
                   <ArrowDownward />
               </IconButton>
+              <TextField name="weight" label="Weight" value={record.weight} sx={{ marginRight: '10px' }} />
+              <IconButton onClick={() => handleChangeWeight('up')} size="small" sx={{ marginRight: '5px' }}>
+                <ArrowUpward />
+              </IconButton>
+              <IconButton onClick={() => handleChangeWeight('down')} size="small" sx={{ marginRight: '10px' }}>
+                <ArrowDownward />
+              </IconButton>
             <IconButton type="submit">
               <AddCircleOutline />
             </IconButton>
@@ -117,6 +153,7 @@ function WorkoutPage() {
                 <TableRow>
                   <TableCell>Set</TableCell>
                   <TableCell>Reps</TableCell>
+                  <TableCell>Weight</TableCell>
                   <TableCell>Time</TableCell>
                 </TableRow>
               </TableHead>
@@ -125,6 +162,7 @@ function WorkoutPage() {
                   <TableRow key={index}>
                     <TableCell>{records.length-index}</TableCell>
                     <TableCell>{record.workoutReps}</TableCell>
+                    <TableCell>{record.weight}</TableCell>
                     <TableCell>{new Date(record.workoutDate).toLocaleTimeString('ko-KR')}</TableCell>
                   </TableRow>
                 ))}
