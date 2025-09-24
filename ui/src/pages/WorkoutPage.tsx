@@ -133,13 +133,8 @@ function WorkoutPage() {
               <IconButton onClick={() => handleChangeReps('down')} size="small" sx={{ marginRight: '10px' }}>
                   <ArrowDownward />
               </IconButton>
-              <TextField name="weight" label="Weight" value={record.weight} sx={{ marginRight: '10px' }} />
-              <IconButton onClick={() => handleChangeWeight('up')} size="small" sx={{ marginRight: '5px' }}>
-                <ArrowUpward />
-              </IconButton>
-              <IconButton onClick={() => handleChangeWeight('down')} size="small" sx={{ marginRight: '10px' }}>
-                <ArrowDownward />
-              </IconButton>
+              <TextField name="weight" label="Weight" value={record.weight} sx={{ marginRight: '10px' }} 
+                onChange={(e) => setRecord({ ...record, weight: Number(e.target.value) })} />
             <IconButton type="submit">
               <AddCircleOutline />
             </IconButton>
