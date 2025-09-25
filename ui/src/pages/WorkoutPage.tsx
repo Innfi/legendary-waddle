@@ -50,15 +50,6 @@ function WorkoutPage() {
     setRecord({ ...record, workoutReps: record.workoutReps <= 0 ? 0 : record.workoutReps -1 });
   };
 
-  const handleChangeWeight = (direction: 'up' | 'down') => {
-    if (direction === 'up') {
-      setRecord({ ...record, weight: record.weight + 5 });
-      return;
-    }
-
-    setRecord({ ...record, weight: record.weight <= 0 ? 0 : record.weight - 5 });
-  };
-
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!record.workoutName) {
