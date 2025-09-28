@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 
-import WorkoutHistoryPage from './WorkoutHistoryPage';
 import Footer from './Footer';
 
 const DashboardPage: React.FC = () => {
@@ -11,7 +10,6 @@ const DashboardPage: React.FC = () => {
       <Box sx={{ flex: 1, pb: 2 }}>
         <h1>Dashboard</h1>
         <Stack direction="column" sx={{ marginLeft: '20px' }}>
-          <WorkoutHistoryPage />
         </Stack>
       </Box>
       <Footer />

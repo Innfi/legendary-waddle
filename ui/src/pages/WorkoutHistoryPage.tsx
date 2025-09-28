@@ -1,17 +1,36 @@
 import { useState } from 'react';
-import { useGetRecordStats } from './api';
-import { Box, CircularProgress, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Box, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 
-function WorkoutHistoryPage() {
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
+import type { WorkoutRecordItem } from '../state/entity';
+import { useGetRecordsList } from './api';
+import WorkoutHistoryPageUnit from './WorkoutHistoryPageUnit';
+import Footer from './Footer';
 
-  const { data, isLoading, error } = useGetRecordStats(fromDate, toDate);
+function WorkoutHistoryPage2() {
+  const [fromDate, setFromDate] = useState(dayjs().subtract(1, 'month').format('YYMMDD') );
+  const [toDate, setToDate] = useState(dayjs().format('YYMMDD'));
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const { data, isLoading, error } = useGetRecordsList(fromDate, toDate);
+
+  const handleToggle = (dateKey: string) => {
+    setExpanded(prev => ({ ...prev, [dateKey]: !prev[dateKey] }));
+  };
+
+  const groupedByDate = data?.reduce((acc, item) => {
+    const date = item.dateKey;
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(item);
+    return acc;
+  }, {} as Record<string, WorkoutRecordItem[]>);
 
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Workout Statistics
+        Workout History
       </Typography>
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
         <TextField
@@ -34,18 +53,29 @@ function WorkoutHistoryPage() {
         />
       </Stack>
       {isLoading && <CircularProgress />}
-      {error && <Typography color="error">Error fetching stats</Typography>}
-      {data && (
-        <Paper sx={{ p: 2 }}>
-          <Stack spacing={1}>
-            <Typography>Total Reps: {data.total_reps}</Typography>
-            <Typography>Total Sets: {data.total_sets}</Typography>
-            <Typography>Average Reps per Set: {data.avg_reps.toFixed(2)}</Typography>
-            <Typography>Average Interval between Sets (seconds): {data.avg_interval_seconds.toFixed(2)}</Typography>
-          </Stack>
-        </Paper>
-      )}
+      {error && <Typography color="error">Error fetching history</Typography>}
+      {groupedByDate && Object.entries(groupedByDate).map(([dateKey, records]) => {
+        const firstRecord = records[0];
+        const workoutName = firstRecord.workoutName;
+        const date = new Date(firstRecord.workoutDate).toLocaleDateString();
+        const sets = records.map(r => ({ set: r.workoutSet, reps: r.workoutReps, weight: r.weight }));
+
+        return (
+          <WorkoutHistoryPageUnit
+            key={dateKey}
+            date={date}
+            workoutName={workoutName}
+            elapsedTime="N/A"
+            sets={sets}
+            memo="N/A"
+            isExpanded={!!expanded[dateKey]}
+            onClick={() => handleToggle(dateKey)}
+          />
+        );
+      })}
+      <Footer />
     </Box>
   );
 }
-export default WorkoutHistoryPage;
+
+export default WorkoutHistoryPage2;

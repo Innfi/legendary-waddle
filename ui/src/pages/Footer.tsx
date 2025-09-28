@@ -29,7 +29,7 @@ function Footer() {
           <Button component={Link} to="/profile">
             Profile
           </Button>
-          <Button component={Link} to="/history2">
+          <Button component={Link} to="/history">
             History
           </Button>
         </Stack>
