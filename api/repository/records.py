@@ -24,19 +24,6 @@ def get_records_by_owner_id(
         query = query.filter(Record.workout_name == workout_name)
     return query.order_by(Record.workout_date.desc()).all()
 
-def get_records_by_date_range(
-    db: Session, owner_id: Column[UUID], from_date: datetime | None, to_date: datetime | None
-):
-    """Fetches records for a user within a given date range."""
-    log.info("Fetching records for user in date range", user_id=owner_id, from_date=from_date, to_date=to_date)
-    query = db.query(Record).filter(Record.owner_id == owner_id)
-    if from_date:
-        query = query.filter(Record.workout_date >= from_date)
-    if to_date:
-        query = query.filter(Record.workout_date <= to_date)
-    return query.order_by(Record.workout_date).all()
-
-
 def get_records_by_date_key_range(
     db: Session, owner_id: Column[UUID], from_date: str | None, to_date: str | None
 ):
@@ -47,7 +34,7 @@ def get_records_by_date_key_range(
         query = query.filter(Record.date_key >= from_date)
     if to_date:
         query = query.filter(Record.date_key <= to_date)
-    return query.order_by(Record.workout_date.desc()).all()
+    return query.order_by(Record.workout_date).all()
 
 
 def create_record(db: Session, record: CreateRecordPayload, owner_id: Column[UUID]):
