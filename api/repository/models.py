@@ -28,6 +28,15 @@ class Record(Base):
     date_key = Column(String, index=True)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
 
+class WorkoutMemo(Base):
+    __tablename__ = "workout_memos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
+    date_key = Column(String, index=True)
+    workout_name = Column(String)
+    memo = Column(String)
+
 class UserProfile(Base):
     __tablename__ = "user_profiles"
 
