@@ -7,7 +7,7 @@ import { useGetRecordsList } from './api';
 import WorkoutHistoryPageUnit from './WorkoutHistoryPageUnit';
 import Footer from './Footer';
 
-function WorkoutHistoryPage2() {
+function WorkoutHistoryPage() {
   const [fromDate, setFromDate] = useState(dayjs().subtract(1, 'month').format('YYMMDD') );
   const [toDate, setToDate] = useState(dayjs().format('YYMMDD'));
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -38,8 +38,8 @@ function WorkoutHistoryPage2() {
           type="date"
           value={fromDate}
           onChange={(e) => setFromDate(e.target.value)}
-          InputLabelProps={{
-            shrink: true,
+          slotProps={{
+            inputLabel: { shrink: true },
           }}
         />
         <TextField
@@ -47,8 +47,8 @@ function WorkoutHistoryPage2() {
           type="date"
           value={toDate}
           onChange={(e) => setToDate(e.target.value)}
-          InputLabelProps={{
-            shrink: true,
+          slotProps={{
+            inputLabel: { shrink: true },
           }}
         />
       </Stack>
@@ -78,4 +78,4 @@ function WorkoutHistoryPage2() {
   );
 }
 
-export default WorkoutHistoryPage2;
+export default WorkoutHistoryPage;
