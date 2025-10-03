@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 
 class CreateRecordPayload(BaseModel):
+    workout_index: int
     workout_name: str
     workout_set: int
     workout_reps: int

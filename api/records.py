@@ -5,20 +5,28 @@ from datetime import datetime, timedelta, timezone
 
 from auth import get_current_user
 from repository.database import get_db
-from repository.records import get_records_by_owner_id, get_records_by_date_key_range
-from repository.records import create_record as create_record_repo
 from repository.models import User
 from repository.schema import WorkoutRecordItem, CreateRecordPayload
+from api.repository.workout_records import find_many, find_many_by_date_keys
+from api.repository.workout_records import create_one
 
 router = APIRouter()
 log = structlog.get_logger()
 
+
+@router.post("/records", status_code=status.HTTP_201_CREATED)
+def create_record(record: CreateRecordPayload, 
+                  db: Session = Depends(get_db), 
+                  current_user: User = Depends(get_current_user)):
+    create_one(db, record, current_user.id)
+
+    return
 @router.get("/records", response_model=list[WorkoutRecordItem])
 def get_records(db: Session = Depends(get_db), 
                 current_user: User = Depends(get_current_user), 
                 date_key: str | None = Query(None),
                 workout_name: str | None = Query(None)):
-    return get_records_by_owner_id(db, current_user.id, date_key, workout_name)
+    return find_many(db, current_user.id, date_key, workout_name)
 
 @router.get("/records/list", response_model=list[WorkoutRecordItem])
 def get_records_list(db: Session = Depends(get_db),
@@ -31,12 +39,4 @@ def get_records_list(db: Session = Depends(get_db),
         from_date = one_month_ago.strftime("%yy%m%d")
         to_date = today.strftime("%yy%m%d")
         
-    return get_records_by_date_key_range(db, current_user.id, from_date, to_date)
-
-@router.post("/records", status_code=status.HTTP_201_CREATED)
-def create_record(record: CreateRecordPayload, 
-                  db: Session = Depends(get_db), 
-                  current_user: User = Depends(get_current_user)):
-    create_record_repo(db, record, current_user.id)
-
-    return
+    return find_many_by_date_keys(db, current_user.id, from_date, to_date)
