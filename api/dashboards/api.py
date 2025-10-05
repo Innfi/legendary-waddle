@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 from typing import List
 import structlog
 
+from common.database import get_db
 from auth.current_user import get_current_user
-from api.common.database import get_db
-from repository.models import User
-from repository.dashboard import get_dashboard_stats_by_owner_id
+from user.model import User
+from dashboards.repository import find_many
 
 router = APIRouter()
 log = structlog.get_logger()
@@ -22,11 +22,5 @@ class DashboardData(BaseModel):
 
 @router.get("/dashboard", response_model=DashboardData)
 def get_dashboard_data(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    results = get_dashboard_stats_by_owner_id(db, current_user.id)
-
-    workout_stats = [
-        WorkoutStat(workout_name=name, total_sets=sets or 0, total_reps=reps or 0)
-        for name, sets, reps in results
-    ]
-
-    return DashboardData(workouts=workout_stats)
+    # placeholder
+    return find_many(db, current_user.id)

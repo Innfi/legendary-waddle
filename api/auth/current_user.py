@@ -4,9 +4,8 @@ from sqlalchemy.orm import Session
 import jwt
 import os
 
-from api.common.database import get_db
-from api.auth.models import User
-from api.auth.repository import get_user_by_oauth_provider_id, create_user
+from common.database import get_db
+from user.model import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 

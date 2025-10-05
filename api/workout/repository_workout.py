@@ -3,7 +3,7 @@ from sqlalchemy import Column
 import structlog
 from uuid import UUID
 
-from api.workouts.models import Workout
+from workout.model import Workout
 
 log = structlog.get_logger()
 

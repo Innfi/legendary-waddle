@@ -2,13 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import structlog
 
-from api.auth.router import router as auth_router
-from api.common.database import engine
-import repository.models as models
 from common.logger import setup_logging
-from api.workouts.router import router as workouts_router
-from user_profile import router as profile_router
-from schedule import router as schedule_router
+from user import model as user_models
+from workout import model as workout_models
+from auth.router import router as auth_router
+from common.database import engine
+from workout.router import router as workouts_router
+from user.router import router as profile_router
 
 import logging
 import sys
@@ -22,7 +22,8 @@ logger.addHandler(handler)
 setup_logging()
 log = structlog.get_logger()
 
-models.Base.metadata.create_all(bind=engine)
+user_models.Base.metadata.create_all(bind=engine)
+workout_models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -38,7 +39,6 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(workouts_router)
 app.include_router(profile_router)
-app.include_router(schedule_router)
 
 @app.get("/")
 def read_root():

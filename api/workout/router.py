@@ -3,12 +3,12 @@ from sqlalchemy.orm import Session
 import structlog
 from datetime import datetime, timedelta, timezone
 
-from api.auth.current_user import get_current_user
-from api.common.database import get_db
-from api.auth.models import User
-from api.workouts.dto import WorkoutRecordItem, CreateRecordPayload
-from api.workouts.repository_workouts import find_many_by_date_keys
-from api.workouts.repository_workouts import find_many, create_one
+from auth.current_user import get_current_user
+from common.database import get_db
+from user.model import User
+from workout.dto import WorkoutRecordItem, CreateRecordPayload
+from workout.repository_workout import find_many_by_date_keys
+from workout.repository_record import find_many, create_one
 
 router = APIRouter()
 log = structlog.get_logger()

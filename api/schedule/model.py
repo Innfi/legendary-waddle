@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from api.common.database import Base
+from common.database import Base
 
 class Schedule(Base):
     __tablename__ = "schedules"

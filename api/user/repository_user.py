@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 import structlog
 
-from repository.models import User
+from user.model import User
 
 log = structlog.get_logger()
 

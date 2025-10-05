@@ -7,8 +7,8 @@ import structlog
 import requests
 import os
 
-from api.common.database import get_db
-from api.auth.repository import get_user_by_oauth_provider_id, create_user
+from common.database import get_db
+from user.repository_user import get_user_by_oauth_provider_id, create_user
 
 router = APIRouter()
 log = structlog.get_logger()

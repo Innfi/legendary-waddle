@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import JSON
-from api.common.database import Base
+from common.database import Base
 import uuid
 
 class User(Base):

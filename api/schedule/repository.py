@@ -4,8 +4,8 @@ import structlog
 from uuid import UUID
 from datetime import date
 
-from repository.models import Schedule, ScheduleDetail
-from repository.schema import ScheduleCreate
+from schedule.model import Schedule, ScheduleDetail
+from schedule.dto import ScheduleCreate
 
 log = structlog.get_logger()
 

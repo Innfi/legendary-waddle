@@ -4,11 +4,12 @@ import structlog
 from datetime import date
 from typing import List
 
-from auth import get_current_user
-from repository.database import get_db
-from repository.schedule import create_schedule as create_schedule_repo, get_schedules_by_owner_id
-from repository.models import User
-from repository.schema import Schedule, ScheduleCreate
+from common.database import get_db
+from auth.current_user import get_current_user
+from user.model import User
+from schedule.model import Schedule
+from schedule.dto import ScheduleCreate
+from schedule.repository import create_schedule as create_schedule_repo, get_schedules_by_owner_id
 
 router = APIRouter()
 log = structlog.get_logger()

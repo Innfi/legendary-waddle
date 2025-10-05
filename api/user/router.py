@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 import structlog
 
-from auth import get_current_user
-from api.common.database import get_db
-from repository.models import User
-from repository.schema import UserProfile
-from repository.user_profile import get_profile as get_profile_repo
+from common.database import get_db
+from auth.current_user import get_current_user
+from user.model import User
+from user.dto import UserProfile
+from user.repository_user_profile import get_profile as get_profile_repo
 
 router = APIRouter()
 log = structlog.get_logger()

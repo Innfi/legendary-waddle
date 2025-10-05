@@ -3,8 +3,8 @@ from sqlalchemy import Column
 import structlog
 from uuid import UUID
 
-from api.workouts.models import Record
-from api.workouts.dto import CreateRecordPayload
+from workout.model import Record
+from workout.dto import CreateRecordPayload
 
 log = structlog.get_logger()
 
