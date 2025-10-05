@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from typing import List
 import structlog
 
-from auth import get_current_user
-from repository.database import get_db
+from auth.current_user import get_current_user
+from api.common.database import get_db
 from repository.models import User
 from repository.dashboard import get_dashboard_stats_by_owner_id
 

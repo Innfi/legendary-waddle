@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import structlog
 
 from auth import get_current_user
-from repository.database import get_db
+from api.common.database import get_db
 from repository.models import User
 from repository.schema import UserProfile
 from repository.user_profile import get_profile as get_profile_repo
