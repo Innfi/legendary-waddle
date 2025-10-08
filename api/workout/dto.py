@@ -27,3 +27,28 @@ class WorkoutRecordItem(BaseModel):
         from_attributes=True
     )
 
+class WorkoutRecordUnit(BaseModel):
+    workout_id: int
+    workout_set: int
+    workout_reps: int
+    weight: int
+    workout_date: datetime
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True
+    )
+
+class WorkoutWithRecords(BaseModel):
+    workout_id: int
+    date_key: str
+    name: str
+    memo: Optional[str]
+    records: List[WorkoutRecordUnit] = []
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True
+    )

@@ -47,3 +47,13 @@ def find_many_by_date_keys(
         query = query.filter(Record.date_key <= to_date)
     return query.order_by(Record.workout_date).all()
 
+def find_many_by_workout_ids(
+    db: Session, owner_id: Column[UUID], workout_ids: list[Column[int]]
+):
+    """Fetches records for a user that match any of the provided workout IDs."""
+    log.info("Fetching records for user by workout IDs", user_id=owner_id, workout_ids=workout_ids)
+    query = db.query(Record).filter(Record.owner_id == owner_id)
+    if workout_ids:
+        query = query.filter(Record.workout_id.in_(workout_ids))
+    return query.order_by(Record.workout_date.desc()).all()
+

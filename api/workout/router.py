@@ -6,9 +6,9 @@ from datetime import datetime, timedelta, timezone
 from auth.current_user import get_current_user
 from common.database import get_db
 from user.model import User
-from workout.dto import WorkoutRecordItem, CreateRecordPayload
-from workout.repository_workout import find_many_by_date_keys
-from workout.repository_record import find_many, create_one
+from workout.dto import WorkoutRecordItem, CreateRecordPayload, WorkoutWithRecords, WorkoutRecordUnit
+from workout.repository_workout import find_many_by_date_keys, find_many as find_workouts
+from workout.repository_record import find_many, create_one, find_many_by_workout_ids
 
 router = APIRouter()
 log = structlog.get_logger()
@@ -27,6 +27,8 @@ def get_workouts(db: Session = Depends(get_db),
     workouts = find_many_by_date_keys(db, current_user.id, from_date, to_date)
     if workouts is None:
         return []
+    
+
     
 @router.post("/records", status_code=status.HTTP_201_CREATED)
 def create_record(record: CreateRecordPayload, 
@@ -54,3 +56,44 @@ def get_records_list(db: Session = Depends(get_db),
         to_date = today.strftime("%yy%m%d")
         
     return find_many_by_date_keys(db, current_user.id, from_date, to_date)
+
+@router.get("/workout-detail", response_model=list[WorkoutWithRecords])
+def get_workout_detail(date_key: str = Query(..., regex=r"^\d{6}$", description="Date in yymmdd format (e.g., 251008)"),
+                       db: Session = Depends(get_db),
+                       current_user: User = Depends(get_current_user)):
+    """Get detailed workout information with records for a specific date."""
+    log.info("Fetching workout detail for user", user_id=current_user.id, date_key=date_key)
+    
+    # Get all workouts for the specific date
+    workouts = find_workouts(db, current_user.id, date_key)
+    
+    if not workouts:
+        return []
+    
+    # Get workout IDs
+    workout_ids = [workout.id for workout in workouts]
+    
+    # Get all records for these workouts
+    records = find_many_by_workout_ids(db, current_user.id, workout_ids)
+    
+    # Group records by workout_id
+    records_by_workout = {}
+    for record in records:
+        if record.workout_id not in records_by_workout:
+            records_by_workout[record.workout_id] = []
+        records_by_workout[record.workout_id].append(record)
+    
+    # Combine workouts with their records
+    result = []
+    for workout in workouts:
+        # Create a dict to match the WorkoutWithRecords structure
+        workout_data = {
+            'workout_id': workout.id,
+            'date_key': workout.date_key,
+            'name': workout.name,
+            'memo': workout.memo,
+            'records': records_by_workout.get(workout.id, [])
+        }
+        result.append(workout_data)
+    
+    return result
