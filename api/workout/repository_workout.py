@@ -57,3 +57,32 @@ def find_many_by_date_keys(db: Session, owner_id: Column[UUID], from_date: str, 
         Workout.date_key >= from_date,
         Workout.date_key <= to_date
     ).order_by(Workout.date_key).all()
+
+def find_by_name_and_date(db: Session, owner_id: Column[UUID], date_key: str, workout_name: str):
+    """Finds a specific workout by user, date, and name."""
+    log.info("Finding workout by name and date", user_id=owner_id, date_key=date_key, workout_name=workout_name)
+    return db.query(Workout).filter(
+        Workout.owner_id == owner_id,
+        Workout.date_key == date_key,
+        Workout.name == workout_name
+    ).first()
+
+def create_workout_if_not_exists(db: Session, owner_id: Column[UUID], date_key: str, workout_name: str):
+    """Creates a new workout if it doesn't exist, returns existing if found."""
+    existing_workout = find_by_name_and_date(db, owner_id, date_key, workout_name)
+    if existing_workout:
+        log.info("Found existing workout", workout_id=existing_workout.id)
+        return existing_workout
+    
+    log.info("Creating new workout", user_id=owner_id, date_key=date_key, workout_name=workout_name)
+    new_workout = Workout(
+        owner_id=owner_id,
+        date_key=date_key,
+        name=workout_name,
+        memo="",
+        index=0  # You might want to calculate this based on existing workouts for the day
+    )
+    db.add(new_workout)
+    db.commit()
+    db.refresh(new_workout)
+    return new_workout

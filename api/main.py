@@ -7,8 +7,9 @@ from user import model as user_models
 from workout import model as workout_models
 from auth.router import router as auth_router
 from common.database import engine
-from workout.router import router as workouts_router
 from user.router import router as profile_router
+from workout.router_record import router_record
+from workout.router_workout import router_workout
 
 import logging
 import sys
@@ -37,7 +38,8 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
-app.include_router(workouts_router)
+app.include_router(router_workout)
+app.include_router(router_record)
 app.include_router(profile_router)
 
 @app.get("/")
