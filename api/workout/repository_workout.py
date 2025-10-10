@@ -80,8 +80,8 @@ def create_workout_if_not_exists(db: Session, owner_id: Column[UUID], date_key: 
         date_key=date_key,
         name=workout_name,
         memo="",
-        index=0  # You might want to calculate this based on existing workouts for the day
     )
+
     db.add(new_workout)
     db.commit()
     db.refresh(new_workout)

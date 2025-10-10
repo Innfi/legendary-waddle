@@ -3,7 +3,6 @@ export interface WorkoutRecord {
   workoutSet: number;
   workoutReps: number;
   weight: number;
-  dateKey: string;
 }
 
 export interface WorkoutRecordItem extends WorkoutRecord {
@@ -18,4 +17,3 @@ export const workoutNames: WorkoutName[] = [
   'Squats',
   'Kettlebell Swings',
 ];
-

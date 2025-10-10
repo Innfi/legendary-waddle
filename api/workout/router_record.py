@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from auth.current_user import get_current_user
 from common.database import get_db
 from user.model import User
+from workout.model import Record
 from workout.dto import WorkoutRecordItem, CreateRecordPayload
 from workout.repository_workout import find_many_by_date_keys, create_workout_if_not_exists
 from workout.repository_record import find_many, create_one
@@ -31,21 +32,14 @@ def create_record(payload: CreateRecordPayload,
         date_key, 
         payload.workout_name
     )
-    
-    # Create a new payload with the workout_id and date_key
-    updated_payload = CreateRecordPayload(
-        workout_name=payload.workout_name,
-        workout_set=payload.workout_set,
-        workout_reps=payload.workout_reps,
-        weight=payload.weight,
-        date_key=date_key,
-        workout_id=workout.id
-    )
+
+    new_record = Record(**payload.model_dump(), owner_id=current_user.id, date_key=date_key, workout_id=workout.id) 
     
     # Create the record
-    create_one(db, updated_payload, current_user.id)
-    
+    create_one(db, new_record=new_record)
+
     return
+
 @router_record.get("/records", response_model=list[WorkoutRecordItem])
 def get_records(db: Session = Depends(get_db), 
                 current_user: User = Depends(get_current_user), 

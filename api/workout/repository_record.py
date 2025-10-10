@@ -4,24 +4,22 @@ import structlog
 from uuid import UUID
 
 from workout.model import Record
-from workout.dto import CreateRecordPayload
 
 log = structlog.get_logger()
 
-
-def create_one(db: Session, record: CreateRecordPayload, owner_id: Column[UUID]):
+def create_one(db: Session, new_record: Record):
     """Creates a new record and commits it to the database."""
     log.info(
         "Creating record for user",
-        user_id=owner_id,
-        workout_name=record.workout_name,
-        date_key=record.date_key,
+        user_id=new_record.owner_id,
+        workout_name=new_record.workout_name,
+        date_key=new_record.date_key,
     )
-    db_record = Record(**record.model_dump(), owner_id=owner_id)
-    db.add(db_record)
+
+    db.add(new_record)
     db.commit()
-    db.refresh(db_record)
-    return db_record
+    db.refresh(new_record)
+    return new_record
 
 def find_many(
     db: Session, owner_id: Column[UUID], date_key: str | None, workout_name: str | None

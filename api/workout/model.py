@@ -6,7 +6,7 @@ class Record(Base):
     __tablename__ = "records"
 
     id = Column(Integer, primary_key=True, index=True)
-    workout_id = Column(Integer)  # Added workout_id column
+    workout_id = Column(Integer) 
     workout_set = Column(Integer)
     workout_reps = Column(Integer)
     weight = Column(Integer, nullable=False, default=0)
@@ -17,12 +17,11 @@ class Record(Base):
     workout_name = Column(String)
 
 class Workout(Base):
-    __tablename__ = "workout_memos"
+    __tablename__ = "workouts"
 
     id = Column(Integer, primary_key=True, index=True)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
     date_key = Column(String, index=True)
-    index = Column(Integer) 
     name = Column(String)
     memo = Column(String)
 

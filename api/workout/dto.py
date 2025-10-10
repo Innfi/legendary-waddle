@@ -8,8 +8,6 @@ class CreateRecordPayload(BaseModel):
     workout_set: int
     workout_reps: int
     weight: int
-    date_key: str | None = None  # Optional, will be auto-generated if not provided
-    workout_id: int | None = None  # Optional, will be auto-resolved
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
