@@ -12,6 +12,7 @@ function WorkoutHistoryPage() {
   const [toDate, setToDate] = useState(dayjs().format('YYMMDD'));
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
+  // TODO: replace with useGetWorkoutsByDateKeyRange
   const { data, isLoading, error } = useGetRecordsList(fromDate, toDate);
 
   const handleToggle = (dateKey: string) => {
@@ -19,7 +20,7 @@ function WorkoutHistoryPage() {
   };
 
   const groupedByDate = data?.reduce((acc, item) => {
-    const date = item.dateKey;
+    const date = item.workoutDate.toISOString().split('T')[0];
     if (!acc[date]) {
       acc[date] = [];
     }
