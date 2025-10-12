@@ -40,6 +40,22 @@ def find_one(db: Session, workout_id: int):
     log.info("Fetching workout", workout_id=workout_id)
     return db.query(Workout).filter(Workout.id == workout_id).first()
 
+def update_memo(db: Session, workout_id: int, owner_id: Column[UUID], memo: str | None):
+    """Updates the memo field of a workout for a specific user."""
+    log.info("Updating workout memo", workout_id=workout_id, user_id=owner_id)
+    workout = db.query(Workout).filter(
+        Workout.id == workout_id, 
+        Workout.owner_id == owner_id
+    ).first()
+    
+    if workout:
+        setattr(workout, 'memo', memo)
+        db.commit()
+        db.refresh(workout)
+        return workout
+    
+    return None
+
 def find_many(db: Session, owner_id: Column[UUID], date_key: str | None = None):
     """Fetches workouts for a user, with an optional filter for date key."""
     log.info("Fetching workouts for user", user_id=owner_id)

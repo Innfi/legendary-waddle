@@ -6,8 +6,8 @@ from datetime import datetime, timedelta, timezone
 from auth.current_user import get_current_user
 from common.database import get_db
 from user.model import User
-from workout.dto import WorkoutRecordItem, WorkoutWithRecords
-from workout.repository_workout import find_many_by_date_keys, find_many as find_workouts
+from workout.dto import WorkoutRecordItem, WorkoutWithRecords, UpdateWorkoutMemoPayload
+from workout.repository_workout import find_many_by_date_keys, find_many as find_workouts, update_memo
 from workout.repository_record import find_many_by_workout_ids
 
 router_workout = APIRouter()
@@ -68,3 +68,19 @@ def get_workout_detail(date_key: str = Query(..., regex=r"^\d{6}$", description=
         result.append(workout_data)
     
     return result
+
+@router_workout.patch("/workout/{workout_id}", response_model=WorkoutWithRecords)
+def update_workout_memo(workout_id: int,
+                        payload: UpdateWorkoutMemoPayload,
+                        db: Session = Depends(get_db),
+                        current_user: User = Depends(get_current_user)):
+    """Update the memo field of a specific workout."""
+    log.info("Updating workout memo", workout_id=workout_id, user_id=current_user.id)
+    
+    updated_workout = update_memo(db, workout_id, current_user.id, payload.memo)
+    
+    if not updated_workout:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Workout not found or access denied")
+    
+    return updated_workout
