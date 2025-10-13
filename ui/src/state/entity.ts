@@ -1,4 +1,5 @@
 export interface WorkoutRecord {
+  workoutId: number;
   workoutName: string;
   workoutSet: number;
   workoutReps: number;

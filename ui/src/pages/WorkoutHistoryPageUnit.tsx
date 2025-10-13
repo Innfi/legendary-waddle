@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useUpdateWorkoutMemo } from './api';
 
 interface WorkoutSet {
   set: number;
@@ -7,6 +8,7 @@ interface WorkoutSet {
 }
 
 interface WorkoutHistoryPageUnitProps {
+  workoutId: number;
   date: string;
   workoutName: string;
   elapsedTime: string;
@@ -17,6 +19,7 @@ interface WorkoutHistoryPageUnitProps {
 }
 
 const WorkoutHistoryPageUnit: React.FC<WorkoutHistoryPageUnitProps> = ({
+  workoutId,
   date,
   workoutName,
   elapsedTime,
@@ -25,6 +28,24 @@ const WorkoutHistoryPageUnit: React.FC<WorkoutHistoryPageUnitProps> = ({
   isExpanded,
   onClick,
 }) => {
+  const [isEditingMemo, setIsEditingMemo] = useState(false);
+  const [memoValue, setMemoValue] = useState(memo);
+  const updateMemoMutation = useUpdateWorkoutMemo();
+
+  const handleMemoSave = async () => {
+    try {
+      await updateMemoMutation.mutateAsync({ workoutId, memo: memoValue });
+      setIsEditingMemo(false);
+    } catch (error) {
+      console.error('Failed to update memo:', error);
+    }
+  };
+
+  const handleMemoCancel = () => {
+    setMemoValue(memo);
+    setIsEditingMemo(false);
+  };
+
   return (
     <div style={{ border: '1px solid #ccc', padding: '16px', margin: '16px 0' }}>
       {/* Top Layer */}
@@ -68,10 +89,47 @@ const WorkoutHistoryPageUnit: React.FC<WorkoutHistoryPageUnitProps> = ({
             </table>
           </div>
 
-          {/* Bottom Layer */}
+          {/* Bottom Layer - Memo */}
           <div>
-            <strong>Memo:</strong>
-            <p>{memo}</p>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+              <strong>Memo:</strong>
+              {!isEditingMemo && (
+                <button
+                  onClick={() => setIsEditingMemo(true)}
+                  style={{ marginLeft: '8px', padding: '4px 8px', fontSize: '12px' }}
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+            
+            {isEditingMemo ? (
+              <div>
+                <textarea
+                  value={memoValue}
+                  onChange={(e) => setMemoValue(e.target.value)}
+                  style={{ width: '100%', minHeight: '60px', marginBottom: '8px' }}
+                />
+                <div>
+                  <button
+                    onClick={handleMemoSave}
+                    disabled={updateMemoMutation.isPending}
+                    style={{ marginRight: '8px', padding: '4px 12px' }}
+                  >
+                    {updateMemoMutation.isPending ? 'Saving...' : 'Save'}
+                  </button>
+                  <button
+                    onClick={handleMemoCancel}
+                    disabled={updateMemoMutation.isPending}
+                    style={{ padding: '4px 12px' }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p>{memo}</p>
+            )}
           </div>
         </>
       )}

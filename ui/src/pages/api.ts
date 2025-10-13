@@ -105,3 +105,21 @@ export const useGetWorkoutsByDateKeyRange = (from_date: string, to_date: string)
     },
   });
 };
+
+export type UpdateWorkoutMemoPayload = {
+  memo: string;
+};
+
+export const useUpdateWorkoutMemo = () => {
+  return useMutation({
+    mutationFn: async ({ workoutId, memo }: { workoutId: number; memo: string }) => {
+      const res = await axiosClient.patch(`/workout/${workoutId}`, { memo });
+      return res.data;
+    },
+    onSuccess: () => {
+      // Invalidate relevant queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['workout-detail'] });
+      queryClient.invalidateQueries({ queryKey: ['workouts-by-date-range'] });
+    },
+  });
+};
