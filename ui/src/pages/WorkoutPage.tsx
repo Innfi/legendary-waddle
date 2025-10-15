@@ -4,28 +4,20 @@ import { useAtom } from 'jotai';
 import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
-import { type WorkoutName, workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
+import { workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
 import { dateKeyAtom } from '../state/atom';
 import { useGetRecord, usePostRecord } from './api';
-
-interface CurrentWorkout {
-  workoutName: WorkoutName | null;
-  workoutSet: number;
-  workoutReps: number;
-  weight: number;
-  dateKey: string;
-}
 
 function WorkoutPage() {
   const [dateKey] = useAtom(dateKeyAtom);
   const [customWorkoutName, setCustomWorkoutName] = useState('');
 
-  const [record, setRecord] = useState<CurrentWorkout>({
+  const [record, setRecord] = useState<WorkoutRecord>({
+    workoutId: 0,
     workoutName: null,
     workoutSet: 1,
     workoutReps: 0,
     weight: 0,
-    dateKey,
   });
 
   const { data: records } = useGetRecord(dateKey, record.workoutName);
@@ -87,7 +79,7 @@ function WorkoutPage() {
           </Button>
         </Stack>
         <List>
-          {workoutNames.map((currentName: WorkoutName, index: number) => (
+          {workoutNames.map((currentName: string, index: number) => (
             <ListItemButton key={index} onClick={() => setRecord({
               ...record,
               workoutName: currentName,

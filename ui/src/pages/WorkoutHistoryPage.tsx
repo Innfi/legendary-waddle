@@ -57,12 +57,13 @@ function WorkoutHistoryPage() {
       {error && <Typography color="error">Error fetching history</Typography>}
       {groupedByDate && Object.entries(groupedByDate).map(([dateKey, records]) => {
         const firstRecord = records[0];
-        const workoutName = firstRecord.workoutName;
+        const workoutName = firstRecord.workoutName!;
         const date = new Date(firstRecord.workoutDate).toLocaleDateString();
         const sets = records.map(r => ({ set: r.workoutSet, reps: r.workoutReps, weight: r.weight }));
 
         return (
           <WorkoutHistoryPageUnit
+            workoutId={firstRecord.workoutId}
             key={dateKey}
             date={date}
             workoutName={workoutName}

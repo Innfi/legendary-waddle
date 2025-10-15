@@ -1,6 +1,13 @@
+export const workoutNames: string[] = [
+  'Pullups',
+  'Dips',
+  'Squats',
+  'Kettlebell Swings',
+];
+
 export interface WorkoutRecord {
   workoutId: number;
-  workoutName: string;
+  workoutName: string | null;
   workoutSet: number;
   workoutReps: number;
   weight: number;
@@ -9,12 +16,3 @@ export interface WorkoutRecord {
 export interface WorkoutRecordItem extends WorkoutRecord {
   workoutDate: Date;
 }
-
-export type WorkoutName = string;
-
-export const workoutNames: WorkoutName[] = [
-  'Pullups',
-  'Dips',
-  'Squats',
-  'Kettlebell Swings',
-];

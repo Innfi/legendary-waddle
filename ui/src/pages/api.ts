@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import type { WorkoutName, WorkoutRecord, WorkoutRecordItem } from "../state/entity";
+import type { WorkoutRecord, WorkoutRecordItem } from "../state/entity";
 import axiosClient from "../components/api/axios.client";
 import { queryClient } from "../components/api/query.client";
 
-export const useGetRecord = (dateKey: string, workoutName: WorkoutName | null) => {
+export const useGetRecord = (dateKey: string, workoutName: string | null) => {
   return useQuery({
     queryKey: ['records', workoutName],
     queryFn: async () => {
@@ -17,7 +17,7 @@ export const useGetRecord = (dateKey: string, workoutName: WorkoutName | null) =
   });
 };
 
-export const usePostRecord = (workoutName: WorkoutName | null) => {
+export const usePostRecord = (workoutName: string | null) => {
   return useMutation({
     mutationFn: (newRecord: WorkoutRecord) => {
       return axiosClient.post('/records', newRecord);
