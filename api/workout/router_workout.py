@@ -6,14 +6,15 @@ from datetime import datetime, timedelta, timezone
 from auth.current_user import get_current_user
 from common.database import get_db
 from user.model import User
-from workout.dto import WorkoutRecordItem, WorkoutWithRecords, UpdateWorkoutMemoPayload
+from workout.dto import WorkoutWithRecords, UpdateWorkoutMemoPayload
+from workout.model import Workout
 from workout.repository_workout import find_many_by_date_keys, find_many as find_workouts, update_memo
 from workout.repository_record import find_many_by_workout_ids
 
 router_workout = APIRouter()
 log = structlog.get_logger()
 
-@router_workout.get('/workouts', response_model=list[WorkoutRecordItem])
+@router_workout.get('/workouts', response_model=list[Workout])
 def get_workouts(db: Session = Depends(get_db), 
                  current_user: User = Depends(get_current_user), 
                  from_date: str | None = Query(None),
@@ -21,12 +22,14 @@ def get_workouts(db: Session = Depends(get_db),
     if from_date is None or to_date is None:
         today = datetime.now(timezone.utc)
         one_month_ago = today - timedelta(days=30)
-        from_date = one_month_ago.strftime("%yy%m%d")
-        to_date = today.strftime("%yy%m%d")
+        from_date = one_month_ago.strftime("%y%m%d")  # Fixed format: removed extra 'y'
+        to_date = today.strftime("%y%m%d")  # Fixed format: removed extra 'y'
 
     workouts = find_many_by_date_keys(db, current_user.id, from_date, to_date)
     if workouts is None:
         return []
+    
+    return workouts  # Added missing return statement
     
 @router_workout.get("/workout-detail", response_model=list[WorkoutWithRecords])
 def get_workout_detail(date_key: str = Query(..., regex=r"^\d{6}$", description="Date in yymmdd format (e.g., 251008)"),

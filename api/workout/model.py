@@ -11,10 +11,6 @@ class Record(Base):
     workout_reps = Column(Integer)
     weight = Column(Integer, nullable=False, default=0)
     workout_date = Column(DateTime(timezone=True), server_default=func.now())
-    # deprecated 
-    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
-    date_key = Column(String, index=True)
-    workout_name = Column(String)
 
 class Workout(Base):
     __tablename__ = "workouts"
