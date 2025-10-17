@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Box, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
-import type { WorkoutRecordItem } from '../state/entity';
-import { useGetRecordsList } from './api';
+import type { Workout } from '../state/entity';
+import { useGetWorkoutsByDateKeyRange } from './api';
 import WorkoutHistoryPageUnit from './WorkoutHistoryPageUnit';
 import Footer from './Footer';
 
@@ -13,20 +13,31 @@ function WorkoutHistoryPage() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   // TODO: replace with useGetWorkoutsByDateKeyRange
-  const { data, isLoading, error } = useGetRecordsList(fromDate, toDate);
+  // const { data, isLoading, error } = useGetRecordsList(fromDate, toDate);
+  const { data, isLoading, error } = useGetWorkoutsByDateKeyRange(fromDate, toDate);
 
   const handleToggle = (dateKey: string) => {
     setExpanded(prev => ({ ...prev, [dateKey]: !prev[dateKey] }));
   };
 
   const groupedByDate = data?.reduce((acc, item) => {
-    const date = item.workoutDate.toISOString().split('T')[0];
-    if (!acc[date]) {
-      acc[date] = [];
+    const dateKey = item.dateKey; // Use dateKey from Workout instead of workoutDate
+    if (!acc[dateKey]) {
+      acc[dateKey] = [];
     }
-    acc[date].push(item);
+    acc[dateKey].push(item);
     return acc;
-  }, {} as Record<string, WorkoutRecordItem[]>);
+  }, {} as Record<string, Workout[]>);
+
+  // Sort the grouped data by date_key in descending order (most recent first)
+  const sortedGroupedByDate = groupedByDate ? 
+    Object.entries(groupedByDate)
+      .sort(([dateKeyA], [dateKeyB]) => dateKeyB.localeCompare(dateKeyA))
+      .reduce((acc, [dateKey, workouts]) => {
+        acc[dateKey] = workouts;
+        return acc;
+      }, {} as Record<string, Workout[]>) 
+    : null;
 
   return (
     <Box>
@@ -55,21 +66,20 @@ function WorkoutHistoryPage() {
       </Stack>
       {isLoading && <CircularProgress />}
       {error && <Typography color="error">Error fetching history</Typography>}
-      {groupedByDate && Object.entries(groupedByDate).map(([dateKey, records]) => {
-        const firstRecord = records[0];
-        const workoutName = firstRecord.workoutName!;
-        const date = new Date(firstRecord.workoutDate).toLocaleDateString();
-        const sets = records.map(r => ({ set: r.workoutSet, reps: r.workoutReps, weight: r.weight }));
-
+      {sortedGroupedByDate && Object.entries(sortedGroupedByDate).map(([dateKey, workouts]) => {
+        const firstWorkout = workouts[0];
+        const workoutName = firstWorkout.workout_name!;
+        const date = new Date(`20${dateKey.slice(0,2)}-${dateKey.slice(2,4)}-${dateKey.slice(4,6)}`).toLocaleDateString();
+        
         return (
           <WorkoutHistoryPageUnit
-            workoutId={firstRecord.workoutId}
+            workoutId={firstWorkout.id}
             key={dateKey}
             date={date}
             workoutName={workoutName}
             elapsedTime="N/A"
-            sets={sets}
-            memo="N/A"
+            sets={[]} // You'll need to get this from records
+            memo={firstWorkout.memo || ""}
             isExpanded={!!expanded[dateKey]}
             onClick={() => handleToggle(dateKey)}
           />

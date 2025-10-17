@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import type { WorkoutRecord, WorkoutRecordItem } from "../state/entity";
 import axiosClient from "../components/api/axios.client";
 import { queryClient } from "../components/api/query.client";
+import type { Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem } from "../state/entity";
 
 export const useGetRecord = (dateKey: string, workoutName: string | null) => {
   return useQuery({
@@ -28,15 +28,6 @@ export const usePostRecord = (workoutName: string | null) => {
   });
 };
 
-export type UserProfile = {
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl?: string;
-  favoriteWorkouts: { name: string; icon: string }[];
-  goal: string;
-};
-
 export const useGetProfile = () => {
   return useQuery({
     queryKey: ['profile'],
@@ -45,25 +36,6 @@ export const useGetProfile = () => {
       return res.data;
     },
   });
-};
-
-export type RecordStats = {
-  total_reps: number;
-  total_sets: number;
-  avg_reps: number;
-  avg_interval_seconds: number;
-};
-
-export type ScheduleDetail = {
-  workoutName: string;
-  sets: number;
-  reps: number;
-};
-
-export type Schedule = {
-  id: number;
-  plannedDate: string; // Assuming it's a string in ISO format
-  details: ScheduleDetail[];
 };
 
 export const useGetSchedules = (from_date?: string, to_date?: string) => {
@@ -100,14 +72,10 @@ export const useGetWorkoutsByDateKeyRange = (from_date: string, to_date: string)
       if (from_date) params.append('from_date', from_date);
       if (to_date) params.append('to_date', to_date);
 
-      const res = await axiosClient.get<WorkoutRecordItem[]>(`/workouts?${params.toString()}`);
+      const res = await axiosClient.get<Workout[]>(`/workouts?${params.toString()}`);
       return res.data;
     },
   });
-};
-
-export type UpdateWorkoutMemoPayload = {
-  memo: string;
 };
 
 export const useUpdateWorkoutMemo = () => {
