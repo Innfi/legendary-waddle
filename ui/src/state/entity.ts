@@ -6,7 +6,6 @@ export const workoutNames: string[] = [
 ];
 
 export interface WorkoutRecord {
-  workoutId: number;
   workoutName: string | null;
   workoutSet: number;
   workoutReps: number;
@@ -14,6 +13,7 @@ export interface WorkoutRecord {
 }
 
 export interface WorkoutRecordItem extends WorkoutRecord {
+  workoutId: number;
   workoutDate: Date;
 }
 

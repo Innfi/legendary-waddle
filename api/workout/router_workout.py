@@ -6,15 +6,14 @@ from datetime import datetime, timedelta, timezone
 from auth.current_user import get_current_user
 from common.database import get_db
 from user.model import User
-from workout.dto import WorkoutWithRecords, UpdateWorkoutMemoPayload
-from workout.model import Workout
+from workout.dto import WorkoutWithRecords, UpdateWorkoutMemoPayload, WorkoutPayload
 from workout.repository_workout import find_many_by_date_keys, find_many as find_workouts, update_memo
 from workout.repository_record import find_many_by_workout_ids
 
 router_workout = APIRouter()
 log = structlog.get_logger()
 
-@router_workout.get('/workouts', response_model=list[Workout])
+@router_workout.get('/workouts', response_model=list[WorkoutPayload])
 def get_workouts(db: Session = Depends(get_db), 
                  current_user: User = Depends(get_current_user), 
                  from_date: str | None = Query(None),
@@ -29,7 +28,7 @@ def get_workouts(db: Session = Depends(get_db),
     if workouts is None:
         return []
     
-    return workouts  # Added missing return statement
+    return workouts 
     
 @router_workout.get("/workout-detail", response_model=list[WorkoutWithRecords])
 def get_workout_detail(date_key: str = Query(..., regex=r"^\d{6}$", description="Date in yymmdd format (e.g., 251008)"),
@@ -48,7 +47,7 @@ def get_workout_detail(date_key: str = Query(..., regex=r"^\d{6}$", description=
     workout_ids = [workout.id for workout in workouts]
     
     # Get all records for these workouts
-    records = find_many_by_workout_ids(db, current_user.id, workout_ids)
+    records = find_many_by_workout_ids(db, workout_ids)
     
     # Group records by workout_id
     records_by_workout = {}

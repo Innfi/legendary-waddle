@@ -13,7 +13,6 @@ function WorkoutPage() {
   const [customWorkoutName, setCustomWorkoutName] = useState('');
 
   const [record, setRecord] = useState<WorkoutRecord>({
-    workoutId: 0,
     workoutName: null,
     workoutSet: 1,
     workoutReps: 0,

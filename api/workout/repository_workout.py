@@ -75,7 +75,7 @@ def find_many_by_date_keys(db: Session, owner_id: Column[UUID], from_date: str, 
     ).order_by(Workout.date_key).all()
 
 def find_by_name_and_date(db: Session, owner_id: Column[UUID], date_key: str, workout_name: str):
-    """Finds a specific workout by user, date, and name."""
+    """Finds a workout by owner, date_key, and workout name."""
     log.info("Finding workout by name and date", user_id=owner_id, date_key=date_key, workout_name=workout_name)
     return db.query(Workout).filter(
         Workout.owner_id == owner_id,

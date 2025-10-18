@@ -8,8 +8,8 @@ from common.database import get_db
 from user.model import User
 from workout.model import Record
 from workout.dto import WorkoutRecordItem, CreateRecordPayload
-from workout.repository_workout import find_many_by_date_keys, create_workout_if_not_exists
-from workout.repository_record import find_many, create_one
+from workout.repository_workout import find_many_by_date_keys, create_workout_if_not_exists, find_by_name_and_date
+from workout.repository_record import find_many_by_workout_ids, create_one
 
 router_record = APIRouter()
 log = structlog.get_logger()
@@ -33,7 +33,13 @@ def create_record(payload: CreateRecordPayload,
         payload.workout_name
     )
 
-    new_record = Record(**payload.model_dump(), owner_id=current_user.id, date_key=date_key, workout_id=workout.id) 
+    new_record = Record(
+        workout_id=workout.id,
+        workout_set=payload.workout_set,
+        workout_reps=payload.workout_reps,
+        weight=payload.weight,
+        workout_date=today
+    )
     
     # Create the record
     create_one(db, new_record=new_record)
@@ -45,7 +51,15 @@ def get_records(db: Session = Depends(get_db),
                 current_user: User = Depends(get_current_user), 
                 date_key: str | None = Query(None),
                 workout_name: str | None = Query(None)):
-    return find_many(db, current_user.id, date_key, workout_name)
+    if workout_name is None:
+        return {"error": "Workout name is required"}, status.HTTP_404_NOT_FOUND
+    if date_key is None:
+        today = datetime.now(timezone.utc)
+        date_key = today.strftime("%y%m%d")
+
+    workout = find_by_name_and_date(db, current_user.id, date_key, workout_name)
+
+    return find_many_by_workout_ids(db, workout_ids=[workout.id]) if workout else []
 
 @router_record.get("/records/list", response_model=list[WorkoutRecordItem])
 def get_records_list(db: Session = Depends(get_db),

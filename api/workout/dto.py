@@ -51,6 +51,18 @@ class WorkoutWithRecords(BaseModel):
         from_attributes=True
     )
 
+class WorkoutPayload(BaseModel):
+    workout_id: int
+    date_key: str
+    name: str
+    memo: Optional[str]
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True
+    )
+
 class UpdateWorkoutMemoPayload(BaseModel):
     memo: Optional[str]
 
