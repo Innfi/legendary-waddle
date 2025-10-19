@@ -9,7 +9,7 @@ from user.model import User
 from workout.model import Record
 from workout.dto import WorkoutRecordItem, CreateRecordPayload
 from workout.repository_workout import find_many_by_date_keys, create_workout_if_not_exists, find_by_name_and_date
-from workout.repository_record import find_many_by_workout_ids, create_one
+from workout.repository_record import find_many_by_workout_id, create_one
 
 router_record = APIRouter()
 log = structlog.get_logger()
@@ -59,7 +59,7 @@ def get_records(db: Session = Depends(get_db),
 
     workout = find_by_name_and_date(db, current_user.id, date_key, workout_name)
 
-    return find_many_by_workout_ids(db, workout_ids=[workout.id]) if workout else []
+    return find_many_by_workout_id(db, workout_id=workout.id) if workout else []
 
 @router_record.get("/records/list", response_model=list[WorkoutRecordItem])
 def get_records_list(db: Session = Depends(get_db),

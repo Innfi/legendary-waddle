@@ -13,7 +13,6 @@ class CreateRecordPayload(BaseModel):
 
 class WorkoutRecordItem(BaseModel):
     workout_id: int
-    workout_name: str
     workout_set: int
     workout_reps: int
     weight: int
