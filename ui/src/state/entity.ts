@@ -55,3 +55,18 @@ export type Schedule = {
 export type UpdateWorkoutMemoPayload = {
   memo: string;
 };
+
+export interface Record {
+  id: number;
+  workout_set: number;
+  workout_reps: number;
+  weight: number;
+}
+
+export interface WorkoutWithRecords {
+  workout_id: number;
+  date_key: string;
+  name: string;
+  memo: string;
+  records: Record[];
+}

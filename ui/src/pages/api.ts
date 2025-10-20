@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import axiosClient from "../components/api/axios.client";
 import { queryClient } from "../components/api/query.client";
-import type { Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem } from "../state/entity";
+import type { Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem, WorkoutWithRecords } from "../state/entity";
 
 export const useGetRecord = (dateKey: string, workoutName: string | null) => {
   return useQuery({
@@ -89,5 +89,16 @@ export const useUpdateWorkoutMemo = () => {
       queryClient.invalidateQueries({ queryKey: ['workout-detail'] });
       queryClient.invalidateQueries({ queryKey: ['workouts-by-date-range'] });
     },
+  });
+};
+
+export const useGetWorkoutDetail = (dateKey: string) => {
+  return useQuery({
+    queryKey: ['workout-detail', dateKey],
+    queryFn: async () => {
+      const res = await axiosClient.get<WorkoutWithRecords[]>(`/workout-detail?date_key=${dateKey}`);
+      return res.data;
+    },
+    enabled: !!dateKey,
   });
 };

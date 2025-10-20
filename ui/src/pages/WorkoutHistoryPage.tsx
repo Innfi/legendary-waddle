@@ -68,7 +68,7 @@ function WorkoutHistoryPage() {
       {error && <Typography color="error">Error fetching history</Typography>}
       {sortedGroupedByDate && Object.entries(sortedGroupedByDate).map(([dateKey, workouts]) => {
         const firstWorkout = workouts[0];
-        const workoutName = firstWorkout.workout_name!;
+        const workoutName = firstWorkout.name;
         const date = new Date(`20${dateKey.slice(0,2)}-${dateKey.slice(2,4)}-${dateKey.slice(4,6)}`).toLocaleDateString();
         
         return (
