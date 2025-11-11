@@ -3,10 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import structlog
 
 from common.logger import setup_logging
+from common.database import engine
 from user import model as user_models
 from workout import model as workout_models
 from auth.router import router as auth_router
-from common.database import engine
 from user.router import router as profile_router
 from workout.router_record import router_record
 from workout.router_workout import router_workout

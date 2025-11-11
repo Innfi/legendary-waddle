@@ -23,15 +23,6 @@ function Footer() {
           <Button component={Link} to="/workouts">
             Workout
           </Button>
-          <Button component={Link} to="/schedule">
-            Schedule
-          </Button>
-          <Button component={Link} to="/profile">
-            Profile
-          </Button>
-          <Button component={Link} to="/history">
-            History
-          </Button>
         </Stack>
       </Box>
   );
