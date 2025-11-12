@@ -4,11 +4,12 @@ import structlog
 from uuid import UUID
 
 from workout.model import Workout
+from workout.model import Record
 
 log = structlog.get_logger()
 
 
-def create_one(db: Session, new_workout: Workout):
+def create_workout(db: Session, new_workout: Workout):
     """Creates a new workout and commits it to the database."""
     log.info(
         "Creating workout for user",
@@ -23,7 +24,7 @@ def create_one(db: Session, new_workout: Workout):
 
     return db_workout
 
-def update_one(db: Session, workout_id: int, updated_workout: Workout):
+def update_workout(db: Session, workout_id: int, updated_workout: Workout):
     """Updates an existing workout."""
     log.info("Updating workout", workout_id=workout_id)
     workout = db.query(Workout).filter(Workout.id == workout_id).first()
@@ -35,12 +36,12 @@ def update_one(db: Session, workout_id: int, updated_workout: Workout):
 
     return workout
 
-def find_one(db: Session, workout_id: int):
+def find_workout(db: Session, workout_id: int):
     """Fetches a workout by its ID."""
     log.info("Fetching workout", workout_id=workout_id)
     return db.query(Workout).filter(Workout.id == workout_id).first()
 
-def update_memo(db: Session, workout_id: int, owner_id: Column[UUID], memo: str | None):
+def update_workout_memo(db: Session, workout_id: int, owner_id: Column[UUID], memo: str | None):
     """Updates the memo field of a workout for a specific user."""
     log.info("Updating workout memo", workout_id=workout_id, user_id=owner_id)
     workout = db.query(Workout).filter(
@@ -56,7 +57,7 @@ def update_memo(db: Session, workout_id: int, owner_id: Column[UUID], memo: str 
     
     return None
 
-def find_many(db: Session, owner_id: Column[UUID], date_key: str | None = None):
+def find_workouts(db: Session, owner_id: Column[UUID], date_key: str | None = None):
     """Fetches workouts for a user, with an optional filter for date key."""
     log.info("Fetching workouts for user", user_id=owner_id)
     query = db.query(Workout).filter(Workout.owner_id == owner_id)
@@ -65,7 +66,7 @@ def find_many(db: Session, owner_id: Column[UUID], date_key: str | None = None):
 
     return query.order_by(Workout.id).all()
 
-def find_many_by_date_keys(db: Session, owner_id: Column[UUID], from_date: str, to_date: str):
+def find_workouts_by_datekeys(db: Session, owner_id: Column[UUID], from_date: str, to_date: str):
     """Fetches workouts for a user within a specified date range."""
     log.info("Fetching workouts for user in date range", user_id=owner_id, from_date=from_date, to_date=to_date)
     return db.query(Workout).filter(
@@ -74,7 +75,7 @@ def find_many_by_date_keys(db: Session, owner_id: Column[UUID], from_date: str, 
         Workout.date_key <= to_date
     ).order_by(Workout.date_key).all()
 
-def find_by_name_and_date(db: Session, owner_id: Column[UUID], date_key: str, workout_name: str):
+def find_workouts_by_name_and_date(db: Session, owner_id: Column[UUID], date_key: str, workout_name: str):
     """Finds a workout by owner, date_key, and workout name."""
     log.info("Finding workout by name and date", user_id=owner_id, date_key=date_key, workout_name=workout_name)
     return db.query(Workout).filter(
@@ -85,7 +86,7 @@ def find_by_name_and_date(db: Session, owner_id: Column[UUID], date_key: str, wo
 
 def create_workout_if_not_exists(db: Session, owner_id: Column[UUID], date_key: str, workout_name: str):
     """Creates a new workout if it doesn't exist, returns existing if found."""
-    existing_workout = find_by_name_and_date(db, owner_id, date_key, workout_name)
+    existing_workout = find_workouts_by_name_and_date(db, owner_id, date_key, workout_name)
     if existing_workout:
         log.info("Found existing workout", workout_id=existing_workout.id)
         return existing_workout
@@ -102,3 +103,29 @@ def create_workout_if_not_exists(db: Session, owner_id: Column[UUID], date_key: 
     db.commit()
     db.refresh(new_workout)
     return new_workout
+
+def create_record(db: Session, new_record: Record):
+    """Creates a new record and commits it to the database."""
+    log.info(
+        "repository_record.create_one",
+        workout_id=new_record.workout_id,
+    )
+
+    db.add(new_record)
+    db.commit()
+    db.refresh(new_record)
+    return new_record
+
+def find_records_by_workout_ids(db: Session, workout_ids: list[Column[int]]):
+    """Fetches records for a user that match any of the provided workout IDs."""
+    log.info("Fetching records for user by workout IDs", workout_ids=workout_ids)
+    query = db.query(Record).filter(Record.workout_id.in_(workout_ids))
+
+    return query.order_by(Record.workout_date.desc()).all()
+
+def find_records_by_workout_id(db: Session, workout_id: Column[int]):
+    """Fetches records for a user that match the provided workout ID."""
+    log.info("Fetching records for user by workout ID", workout_id=workout_id)
+    query = db.query(Record).filter(Record.workout_id == workout_id)
+
+    return query.order_by(Record.workout_date.desc()).all()

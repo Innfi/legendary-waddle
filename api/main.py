@@ -8,8 +8,7 @@ from user import model as user_models
 from workout import model as workout_models
 from auth.router import router as auth_router
 from user.router import router as profile_router
-from workout.router_record import router_record
-from workout.router_workout import router_workout
+from workout.router_workout import router_workout, router_record
 
 import logging
 import sys
