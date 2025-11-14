@@ -25,10 +25,10 @@ function WorkoutPage() {
   useEffect(() => {
     if (records && records.length > 0) {
       const maxSet = Math.max(...records.map(r => r.workoutSet));
-      setRecord({
-        ...record,
+      setRecord(prev => ({
+        ...prev,
         workoutSet: maxSet + 1,
-      });
+      }));
     }
   }, [records]);
 

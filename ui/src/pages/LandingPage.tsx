@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 
-import { Button } from '../components/Button'
+import { Button } from '../components/Button';
 import { usePostLogin } from '../components/auth/api';
 
 function LandingPage() {

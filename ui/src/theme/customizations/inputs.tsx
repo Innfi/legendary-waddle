@@ -340,7 +340,7 @@ const inputsCustomizations: Components<Theme> = {
           color: 'white',
           backgroundColor: brand[500],
           borderColor: brand[500],
-          boxShadow: `none`,
+          boxShadow: 'none',
           '&:hover': {
             backgroundColor: brand[600],
           },

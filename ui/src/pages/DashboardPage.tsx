@@ -9,8 +9,7 @@ const DashboardPage: React.FC = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Box sx={{ flex: 1, pb: 2 }}>
         <h1>Dashboard</h1>
-        <Stack direction="column" sx={{ marginLeft: '20px' }}>
-        </Stack>
+        <Stack direction="column" sx={{ marginLeft: '20px' }} />
       </Box>
       <Footer />
     </Box>

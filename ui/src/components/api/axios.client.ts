@@ -1,8 +1,9 @@
-import Axios from "axios";
+import Axios from 'axios';
 
-import { getToken } from "../../state/locals";
+import { getToken } from '../../state/locals';
+import { logger } from '../../utils/logger';
 
-console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
+logger.debug('Backend URL:', import.meta.env.VITE_BACKEND_URL);
 
 const axiosClient = Axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,

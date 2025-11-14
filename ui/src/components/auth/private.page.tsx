@@ -12,5 +12,5 @@ const PrivateRoute: FC<RouteProps> = ({ children }) => {
 };
 
 export const PrivatePage: FC<PathRouteProps> = ({ children }) => {
-  return <PrivateRoute>{children}</PrivateRoute>
+  return <PrivateRoute>{children}</PrivateRoute>;
 };

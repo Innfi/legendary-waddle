@@ -1,8 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import axiosClient from "../components/api/axios.client";
-import { queryClient } from "../components/api/query.client";
-import type { Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem, WorkoutWithRecords } from "../state/entity";
+import axiosClient from '../components/api/axios.client';
+import { queryClient } from '../components/api/query.client';
+import type { Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem, WorkoutWithRecords } from '../state/entity';
+import { logger } from '../utils/logger';
 
 export const useGetRecord = (dateKey: string, workoutName: string | null) => {
   return useQuery({
@@ -10,7 +11,7 @@ export const useGetRecord = (dateKey: string, workoutName: string | null) => {
     queryFn: async () => {
       const res = await axiosClient.get<WorkoutRecordItem[]>(`/records?date_key=${dateKey}&workout_name=${workoutName}`);
 
-      console.log(`data: ${JSON.stringify(res.data)}`);
+      logger.debug(`data: ${JSON.stringify(res.data)}`);
       return res.data;
     },
     enabled: !!workoutName,
@@ -23,7 +24,7 @@ export const usePostRecord = (workoutName: string | null) => {
       return axiosClient.post('/records', newRecord);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['records', workoutName] })
+      queryClient.invalidateQueries({ queryKey: ['records', workoutName] });
     },
   });
 };
