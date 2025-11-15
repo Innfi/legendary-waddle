@@ -29,3 +29,5 @@ database.db
 resource
 scripts
 .env
+.venv
+.ruff_cache

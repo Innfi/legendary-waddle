@@ -1,9 +1,11 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime, func
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
-from sqlalchemy.types import JSON
-from common.database import Base
 import uuid
+
+from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.types import JSON
+
+from common.database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -12,6 +14,7 @@ class User(Base):
     oauth_provider_id = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     name = Column(String)
+
 
 class UserProfile(Base):
     __tablename__ = "user_profiles"

@@ -1,14 +1,15 @@
+import os
+
+import jwt
+import requests
+import structlog
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-import jwt
-import structlog
-import requests
-import os
 
 from common.database import get_db
-from user.repository_user import get_user_by_oauth_provider_id, create_user
+from user.repository_user import create_user, get_user_by_oauth_provider_id
 
 router = APIRouter()
 log = structlog.get_logger()
@@ -18,8 +19,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 SECRET_KEY = os.environ.get("SECRET_KEY", "legendary-waddle")
 ALGORITHM = os.environ.get("ALGORITHM", "HS256")
 
+
 class Token(BaseModel):
     access_token: str
+
 
 @router.post("/login")
 async def login(token: Token, db: Session = Depends(get_db)):
@@ -32,9 +35,9 @@ async def login(token: Token, db: Session = Depends(get_db)):
         userinfo = response.json()
 
         # Extract user information
-        oauth_provider_id = userinfo['sub']
-        email = userinfo['email']
-        name = userinfo.get('name')
+        oauth_provider_id = userinfo["sub"]
+        email = userinfo["email"]
+        name = userinfo.get("name")
 
         # Check if user exists
         user = get_user_by_oauth_provider_id(db, oauth_provider_id)
@@ -53,7 +56,7 @@ async def login(token: Token, db: Session = Depends(get_db)):
 
     except requests.exceptions.RequestException as e:
         log.error("Failed to get user info from Google", error=str(e))
-        raise HTTPException(status_code=401, detail="Invalid Google access token")
+        raise HTTPException(status_code=401, detail="Invalid Google access token") from e
     except (KeyError, jwt.PyJWTError) as e:
         log.error("Login failed", error=str(e))
-        raise HTTPException(status_code=401, detail="Invalid token or user info")
+        raise HTTPException(status_code=401, detail="Invalid token or user info") from e

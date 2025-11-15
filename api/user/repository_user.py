@@ -1,13 +1,15 @@
-from sqlalchemy.orm import Session
 import structlog
+from sqlalchemy.orm import Session
 
 from user.model import User
 
 log = structlog.get_logger()
 
+
 def get_user_by_oauth_provider_id(db: Session, oauth_provider_id: str):
     """Fetches a user by their OAuth provider ID."""
     return db.query(User).filter(User.oauth_provider_id == oauth_provider_id).first()
+
 
 def create_user(db: Session, oauth_provider_id: str, email: str, name: str):
     """Creates a new user and commits them to the database."""

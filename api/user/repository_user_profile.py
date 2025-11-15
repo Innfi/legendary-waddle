@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
+
+from user.dto import FavoriteWorkout, UserProfile
 from user.model import User
-from user.dto import UserProfile, FavoriteWorkout
+
 
 def get_profile(db: Session, user: User) -> UserProfile:
     # This is mock data. In the future, this will be fetched from the database.

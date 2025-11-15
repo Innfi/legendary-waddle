@@ -1,20 +1,20 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import structlog
-
-from common.logger import setup_logging
-from common.database import engine
-from user import model as user_models
-from workout import model as workout_models
-from auth.router import router as auth_router
-from user.router import router as profile_router
-from workout.router_workout import router_workout, router_record
-
 import logging
 import sys
 
+import structlog
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from auth.router import router as auth_router
+from common.database import engine
+from common.logger import setup_logging
+from user import model as user_models
+from user.router import router as profile_router
+from workout import model as workout_models
+from workout.router_workout import router_record, router_workout
+
 # Setup logging for SQLAlchemy
-logger = logging.getLogger('sqlalchemy.engine')
+logger = logging.getLogger("sqlalchemy.engine")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(sys.stdout)
 logger.addHandler(handler)
@@ -40,6 +40,7 @@ app.include_router(auth_router)
 app.include_router(router_workout)
 app.include_router(router_record)
 app.include_router(profile_router)
+
 
 @app.get("/")
 def read_root():

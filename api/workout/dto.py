@@ -1,7 +1,8 @@
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
-from datetime import datetime
-from typing import List, Optional
+
 
 class CreateRecordPayload(BaseModel):
     workout_name: str
@@ -11,6 +12,7 @@ class CreateRecordPayload(BaseModel):
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
+
 class WorkoutRecordItem(BaseModel):
     workout_id: int
     workout_set: int
@@ -19,10 +21,9 @@ class WorkoutRecordItem(BaseModel):
     workout_date: datetime
 
     model_config = ConfigDict(
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True
+        alias_generator=to_camel, populate_by_name=True, from_attributes=True
     )
+
 
 class WorkoutRecordUnit(BaseModel):
     workout_id: int
@@ -32,37 +33,34 @@ class WorkoutRecordUnit(BaseModel):
     workout_date: datetime
 
     model_config = ConfigDict(
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True
+        alias_generator=to_camel, populate_by_name=True, from_attributes=True
     )
+
 
 class WorkoutWithRecords(BaseModel):
     workout_id: int
     date_key: str
     name: str
-    memo: Optional[str]
-    records: List[WorkoutRecordUnit] = []
+    memo: str | None
+    records: list[WorkoutRecordUnit] = []
 
     model_config = ConfigDict(
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True
+        alias_generator=to_camel, populate_by_name=True, from_attributes=True
     )
+
 
 class WorkoutPayload(BaseModel):
     workout_id: int
     date_key: str
     name: str
-    memo: Optional[str]
+    memo: str | None
 
     model_config = ConfigDict(
-        alias_generator=to_camel,
-        populate_by_name=True,
-        from_attributes=True
+        alias_generator=to_camel, populate_by_name=True, from_attributes=True
     )
 
+
 class UpdateWorkoutMemoPayload(BaseModel):
-    memo: Optional[str]
+    memo: str | None
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
