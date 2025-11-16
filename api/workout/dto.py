@@ -50,7 +50,7 @@ class WorkoutWithRecords(BaseModel):
 
 
 class WorkoutPayload(BaseModel):
-    workout_id: int
+    id: int
     date_key: str
     name: str
     memo: str | None
