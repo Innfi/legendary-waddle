@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Box, Stack } from '@mui/material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -7,13 +7,14 @@ import dayjs, { type Dayjs } from 'dayjs';
 
 import { logger } from '../utils/logger';
 import Footer from './Footer';
-import { useGetWorkoutsByDateKeyRange } from './api';
+import { useGetWorkoutsByDateKeyRange, useGetWorkoutDetail } from './api';
 
 const DashboardPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+  const [selectedDateKey, setSelectedDateKey] = useState<string>('');
 
-  const fromDate = dayjs().startOf('month').format('YYMMDD');
-  const toDate = dayjs().format('YYMMDD');
+  const fromDate = useMemo(() => dayjs().startOf('month').format('YYMMDD'), []);
+  const toDate = useMemo(() => dayjs().format('YYMMDD'), []);
 
   logger.debug('DashboardPage - Date range:', { fromDate, toDate });
 
@@ -25,6 +26,25 @@ const DashboardPage: React.FC = () => {
     error,
     workoutsCount: workouts?.length 
   });
+
+  const { data: workoutDetail, isLoading: isLoadingDetail, error: errorDetail } = useGetWorkoutDetail(selectedDateKey);
+
+  logger.debug('DashboardPage - Workout detail result:', {
+    workoutDetail,
+    isLoadingDetail,
+    errorDetail,
+    selectedDateKey
+  });
+
+  const handleDateClick = (date: Dayjs | null) => {
+    if (!date) return;
+
+    setSelectedDate(date);
+
+    const dateKey = date.format('YYMMDD');
+    setSelectedDateKey(dateKey);
+    logger.debug('Selected dateKey:', dateKey);
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -38,7 +58,7 @@ const DashboardPage: React.FC = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateCalendar 
               value={selectedDate}
-              onChange={(newValue) => setSelectedDate(newValue || dayjs())}
+              onChange={handleDateClick}
             />
           </LocalizationProvider>
         </Stack>
