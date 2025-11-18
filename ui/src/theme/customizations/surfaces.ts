@@ -1,4 +1,6 @@
-import { alpha, type Theme, type Components } from '@mui/material/styles';
+import {
+ alpha, type Theme, type Components 
+} from '@mui/material/styles';
 
 import { gray } from '../primitives';
 

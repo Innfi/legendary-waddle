@@ -1,11 +1,37 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { Container, Typography, List, ListItem, TextField, IconButton, Button, ListItemButton, Stack, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
-import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
-import { workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
+import { useAtom } from 'jotai';
+
+import {
+ AddCircleOutline, ArrowUpward, ArrowDownward 
+} from '@mui/icons-material';
+import {
+  Container,
+  Typography,
+  List,
+  ListItem,
+  TextField,
+  IconButton,
+  Button,
+  ListItemButton,
+  Stack,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
+} from '@mui/material';
+
 import { dateKeyAtom } from '../state/atom';
+import {
+  workoutNames,
+  type WorkoutRecord,
+  type WorkoutRecordItem
+} from '../state/entity';
+
 import { useGetRecord, usePostRecord } from './api';
 
 function WorkoutPage() {
@@ -97,7 +123,17 @@ function WorkoutPage() {
         <Container>
         <Stack direction="row">
           <Button component={Link} to="/dashboard">Go to Dashboard</Button>
-          <Button onClick={() => setRecord({ ...record, workoutName: null, weight: 0, workoutReps: 0, workoutSet: 1 })}>Back to Workouts</Button>
+          <Button 
+            onClick={() => setRecord({ 
+              ...record, 
+              workoutName: null, 
+              weight: 0, 
+              workoutReps: 0, 
+              workoutSet: 1 
+            })}
+          >
+            Back to Workouts
+          </Button>
         </Stack>
         <Stack direction="row" sx={{ marginBottom: '10px' }}>
           <Typography variant="h4" sx={{ marginLeft: '10px', marginRight: '10px'}}>{dateKey}</Typography>

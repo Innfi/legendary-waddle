@@ -2,7 +2,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import axiosClient from '../components/api/axios.client';
 import { queryClient } from '../components/api/query.client';
-import type { Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem, WorkoutWithRecords } from '../state/entity';
+import type {
+ Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem, WorkoutWithRecords 
+} from '../state/entity';
 import { logger } from '../utils/logger';
 
 export const useGetRecord = (dateKey: string, workoutName: string | null) => {

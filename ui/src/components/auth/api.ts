@@ -1,5 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
 import type { NavigateFunction } from 'react-router-dom';
+
+import { useMutation } from '@tanstack/react-query';
 import type { AxiosResponse } from 'axios';
 
 import { setToken } from '../../state/locals';

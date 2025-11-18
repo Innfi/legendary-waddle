@@ -1,11 +1,12 @@
 import { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+
 import { CssBaseline } from '@mui/material';
 
-import AppTheme from './theme/AppTheme';
-import { RenderRouter } from './router';
 import ErrorBoundary from './components/ErrorBoundary';
 import { NotificationProvider } from './components/notification/NotificationProvider';
+import { RenderRouter } from './router';
+import AppTheme from './theme/AppTheme';
 
 function App() {
   return (

@@ -61,6 +61,44 @@ export default tseslint.config([
       'import/no-duplicates': 'warn',
       'import/first': 'warn',
       'import/newline-after-import': 'warn',
+      'import/order': ['warn', {
+        'groups': [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index'
+        ],
+        'pathGroups': [
+          {
+            'pattern': 'react**',
+            'group': 'external',
+            'position': 'before'
+          },
+          {
+            'pattern': 'dayjs',
+            'group': 'external',
+            'position': 'before'
+          },
+          {
+            'pattern': '@mui/**',
+            'group': 'external',
+            'position': 'after'
+          },
+          {
+            'pattern': '@/**',
+            'group': 'internal',
+            'position': 'before'
+          }
+        ],
+        'pathGroupsExcludedImportTypes': ['react'],
+        'newlines-between': 'always',
+        'alphabetize': {
+          'order': 'asc',
+          'caseInsensitive': true
+        }
+      }],
       
       // Accessibility
       'jsx-a11y/alt-text': 'warn',
@@ -76,6 +114,20 @@ export default tseslint.config([
       // Code style
       'semi': ['error', 'always'],
       'quotes': ['error', 'single', { avoidEscape: true }],
+      'max-len': ['warn', { 
+        'code': 100,
+        'ignoreUrls': true,
+        'ignoreStrings': true,
+        'ignoreTemplateLiterals': true,
+        'ignoreRegExpLiterals': true,
+        'ignoreComments': true
+      }],
+      'object-curly-newline': ['warn', {
+        'ImportDeclaration': {
+          'multiline': true,
+          'minProperties': 3
+        }
+      }],
     },
   },
 ])
