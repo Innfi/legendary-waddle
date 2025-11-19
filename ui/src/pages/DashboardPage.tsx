@@ -10,7 +10,14 @@ import {
   CardContent,
   CircularProgress,
   Alert,
-  Badge
+  Badge,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
@@ -146,14 +153,14 @@ const DashboardPage: React.FC = () => {
                       return (
                         <Card key={workout.workout_id} variant="outlined">
                           <CardContent>
-                            <Typography variant="h6" sx={{ mb: 1 }}>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
                               {workout.name}
                             </Typography>
                             
-                            <Stack direction="row" spacing={3} sx={{ mb: 1 }}>
+                            <Stack direction="row" spacing={3} sx={{ mb: 2 }}>
                               <Box>
                                 <Typography variant="body2" color="text.secondary">
-                                  Sets
+                                  Total Sets
                                 </Typography>
                                 <Typography variant="h6">
                                   {stats.totalSets}
@@ -179,11 +186,32 @@ const DashboardPage: React.FC = () => {
                               </Box>
                             </Stack>
 
+                            <TableContainer component={Paper} variant="outlined">
+                              <Table size="small">
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell>Set</TableCell>
+                                    <TableCell align="right">Reps</TableCell>
+                                    <TableCell align="right">Weight (kg)</TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {workout.records.map((record, index) => (
+                                    <TableRow key={record.id}>
+                                      <TableCell>{index + 1}</TableCell>
+                                      <TableCell align="right">{record.workout_reps}</TableCell>
+                                      <TableCell align="right">{record.weight}</TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+
                             {workout.memo && (
                               <Typography 
                                 variant="body2" 
                                 color="text.secondary" 
-                                sx={{ mt: 1, fontStyle: 'italic' }}
+                                sx={{ mt: 2, fontStyle: 'italic' }}
                               >
                                 Note: {workout.memo}
                               </Typography>
