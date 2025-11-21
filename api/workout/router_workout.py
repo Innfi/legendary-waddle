@@ -8,6 +8,7 @@ from auth.current_user import get_current_user
 from common.database import get_db
 from user.model import User
 from workout.dto import (
+    BulkWorkoutPayload,
     CreateRecordPayload,
     UpdateWorkoutMemoPayload,
     WorkoutPayload,
@@ -16,6 +17,7 @@ from workout.dto import (
 )
 from workout.model import Record
 from workout.repository_workout import (
+    bulk_create_workouts_with_records,
     create_record,
     create_workout_if_not_exists,
     find_records_by_workout_id,
@@ -50,6 +52,41 @@ def get_workouts(
         return []
 
     return workouts
+
+
+@router_workout.post("/workouts/bulk", status_code=status.HTTP_201_CREATED)
+def post_workouts_bulk(
+    payload: BulkWorkoutPayload,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Bulk create workouts with records for a specific date."""
+    log.info(
+        "Bulk creating workouts",
+        user_id=current_user.id,
+        date_key=payload.date_key,
+        workout_count=len(payload.workouts),
+    )
+
+    # Convert Pydantic models to dicts for repository
+    workouts_data = [
+        {
+            "name": workout.name,
+            "memo": workout.memo,
+            "records": [
+                {"sets": record.sets, "reps": record.reps, "weight": record.weight}
+                for record in workout.records
+            ],
+        }
+        for workout in payload.workouts
+    ]
+
+    # Bulk create workouts and records
+    created_workouts = bulk_create_workouts_with_records(
+        db, current_user.id, payload.date_key, workouts_data
+    )
+
+    return {"created_count": len(created_workouts), "workouts": created_workouts}
 
 
 @router_workout.get("/workout-detail", response_model=list[WorkoutWithRecords])

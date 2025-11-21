@@ -64,3 +64,26 @@ class UpdateWorkoutMemoPayload(BaseModel):
     memo: str | None
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+
+class BulkWorkoutRecord(BaseModel):
+    weight: int = 0
+    sets: int
+    reps: int
+
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+
+class BulkWorkoutItem(BaseModel):
+    name: str
+    memo: str | None = ""
+    records: list[BulkWorkoutRecord]
+
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+
+class BulkWorkoutPayload(BaseModel):
+    date_key: str
+    workouts: list[BulkWorkoutItem]
+
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)

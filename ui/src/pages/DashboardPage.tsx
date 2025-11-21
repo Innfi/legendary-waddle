@@ -15,8 +15,6 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickersDay, type PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 
-import { logger } from '../utils/logger';
-
 import { useGetWorkoutsByDateKeyRange, useGetWorkoutDetail } from './api';
 import Footer from './Footer';
 import WorkoutDetailCard from './WorkoutDetailCard';
@@ -40,13 +38,6 @@ const DashboardPage: React.FC = () => {
     return new Set(workouts.map(w => w.dateKey));
   }, [workouts]);
 
-  logger.debug('DashboardPage - Workout detail result:', {
-    workoutDetail,
-    isLoadingDetail,
-    errorDetail,
-    selectedDateKey
-  });
-
   const handleDateClick = (date: Dayjs | null) => {
     if (!date) return;
 
@@ -54,7 +45,6 @@ const DashboardPage: React.FC = () => {
 
     const dateKey = date.format('YYMMDD');
     setSelectedDateKey(dateKey);
-    logger.debug('Selected dateKey:', dateKey);
   };
 
   // Custom day renderer to highlight workout days

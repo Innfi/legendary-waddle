@@ -174,3 +174,60 @@ def find_records_by_workout_id(db: Session, workout_id: Column[int]):
     query = db.query(Record).filter(Record.workout_id == workout_id)
 
     return query.order_by(Record.workout_date.desc()).all()
+
+
+def bulk_create_workouts_with_records(
+    db: Session, owner_id: Column[UUID], date_key: str, workouts_data: list
+):
+    """Bulk creates workouts and their records in a single transaction."""
+    from datetime import datetime
+
+    log.info(
+        "Bulk creating workouts with records",
+        user_id=owner_id,
+        date_key=date_key,
+        workout_count=len(workouts_data),
+    )
+
+    # Parse date_key to datetime (format: yymmdd)
+    workout_date = datetime.strptime(date_key, "%y%m%d")
+
+    created_workouts = []
+
+    for workout_data in workouts_data:
+        # Create workout
+        workout = Workout(
+            owner_id=owner_id,
+            date_key=date_key,
+            name=workout_data["name"],
+            memo=workout_data.get("memo", ""),
+        )
+        db.add(workout)
+        db.flush()  # Flush to get the workout ID without committing
+
+        # Create records for this workout
+        for record_data in workout_data["records"]:
+            record = Record(
+                workout_id=workout.id,
+                workout_set=record_data["sets"],
+                workout_reps=record_data["reps"],
+                weight=record_data.get("weight", 0),
+                workout_date=workout_date,
+            )
+            db.add(record)
+
+        created_workouts.append(workout)
+
+    # Commit all changes at once
+    db.commit()
+
+    # Refresh all workouts
+    for workout in created_workouts:
+        db.refresh(workout)
+
+    log.info(
+        "Successfully created workouts with records",
+        workout_count=len(created_workouts),
+    )
+
+    return created_workouts
