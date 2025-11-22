@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import axiosClient from '../components/api/axios.client';
 import { queryClient } from '../components/api/query.client';
 import type {
+  BulkWorkoutPayload,
  Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem, WorkoutWithRecords 
 } from '../state/entity';
 import { logger } from '../utils/logger';
@@ -103,5 +104,19 @@ export const useGetWorkoutDetail = (dateKey: string) => {
       return res.data;
     },
     enabled: !!dateKey,
+  });
+};
+
+export const useBulkCreateWorkouts = () => {
+  return useMutation({
+    mutationFn: async (payload: BulkWorkoutPayload) => {
+      const res = await axiosClient.post('/workouts/bulk', payload);
+      return res.data;
+    },
+    onSuccess: () => {
+      // Invalidate relevant queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['workouts-by-date-range'] });
+      queryClient.invalidateQueries({ queryKey: ['workout-detail'] });
+    },
   });
 };

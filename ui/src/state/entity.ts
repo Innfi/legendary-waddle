@@ -70,3 +70,20 @@ export interface WorkoutWithRecords {
   memo: string;
   records: Record[];
 }
+
+export type BulkWorkoutRecord = {
+  weight: number;
+  sets: number;
+  reps: number;
+};
+
+export type BulkWorkoutItem = {
+  name: string;
+  memo?: string | null;
+  records: BulkWorkoutRecord[];
+};
+
+export type BulkWorkoutPayload = {
+  dateKey: string;
+  workouts: BulkWorkoutItem[];
+};
