@@ -24,6 +24,9 @@ function Footer() {
           <Button component={Link} to="/workouts">
             Workout
           </Button>
+          <Button component={Link} to="/workout-history-submit">
+            Submit Workouts
+          </Button>
         </Stack>
       </Box>
   );

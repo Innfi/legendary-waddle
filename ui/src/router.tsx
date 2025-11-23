@@ -4,6 +4,7 @@ import { PrivatePage } from './components/auth/private.page';
 import DashboardPage from './pages/DashboardPage';
 import LandingPage from './pages/LandingPage';
 import WorkoutPage from './pages/WorkoutPage';
+import WorkoutHistorySubmitPage from './pages/WorkoutHistorySubmit';
 
 const routes: RouteObject[] = [
   { path: '/', element: <LandingPage /> },
@@ -23,6 +24,14 @@ const routes: RouteObject[] = [
       </PrivatePage>
     ),
   },
+  {
+    path: '/workout-history-submit',
+    element: (
+      <PrivatePage>
+        <WorkoutHistorySubmitPage />
+      </PrivatePage>
+    ),
+  }
 ];
 
 export function RenderRouter() {

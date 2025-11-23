@@ -58,8 +58,8 @@ export type UpdateWorkoutMemoPayload = {
 
 export interface Record {
   id: number;
-  workout_set: number;
-  workout_reps: number;
+  workoutSet: number;
+  workoutReps: number;
   weight: number;
 }
 

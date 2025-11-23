@@ -22,17 +22,21 @@ interface WorkoutDetailCardProps {
 }
 
 const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
-  const calculateAverages = (records: { workout_reps: number; weight: number }[]) => {
+  const calculateAverages = (records: { workoutReps: number; weight: number }[]) => {
     if (!records || records.length === 0) {
-      return { avgReps: 0, avgWeight: 0, totalSets: 0 };
+      return { minWeight: '-', maxWeight: '-', maxReps: 0, totalSets: 0 };
     }
-
-    const totalReps = records.reduce((sum, r) => sum + r.workout_reps, 0);
-    const totalWeight = records.reduce((sum, r) => sum + r.weight, 0);
+    
+    const weights = records.map(r => r.weight);
+    const reps = records.map(r => r.workoutReps);
+    const minWeight = Math.min(...weights);
+    const maxWeight = Math.max(...weights);
+    const maxReps = Math.max(...reps);
 
     return {
-      avgReps: Math.round((totalReps / records.length) * 10) / 10,
-      avgWeight: Math.round((totalWeight / records.length) * 10) / 10,
+      minWeight: minWeight.toString(),
+      maxWeight: maxWeight.toString(),
+      maxReps,
       totalSets: records.length
     };
   };
@@ -58,19 +62,19 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
           
           <Box>
             <Typography variant="body2" color="text.secondary">
-              Avg Reps
+              Max Reps
             </Typography>
             <Typography variant="h6">
-              {stats.avgReps}
+              {stats.maxReps}
             </Typography>
           </Box>
           
           <Box>
             <Typography variant="body2" color="text.secondary">
-              Avg Weight
+              Weight Range
             </Typography>
             <Typography variant="h6">
-              {stats.avgWeight} kg
+              {stats.minWeight} - {stats.maxWeight} kg
             </Typography>
           </Box>
         </Stack>
@@ -88,7 +92,7 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
               {workout.records.map((record, index) => (
                 <TableRow key={record.id}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell align="right">{record.workout_reps}</TableCell>
+                  <TableCell align="right">{record.workoutReps}</TableCell>
                   <TableCell align="right">{record.weight}</TableCell>
                 </TableRow>
               ))}
