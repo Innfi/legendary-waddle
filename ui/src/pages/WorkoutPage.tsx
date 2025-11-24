@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 import { useAtom } from 'jotai';
 
@@ -22,7 +21,8 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  Box
 } from '@mui/material';
 
 import { dateKeyAtom } from '../state/atom';
@@ -33,6 +33,7 @@ import {
 } from '../state/entity';
 
 import { useGetRecord, usePostRecord } from './api';
+import Footer from './Footer';
 
 function WorkoutPage() {
   const [dateKey] = useAtom(dateKeyAtom);
@@ -118,23 +119,10 @@ function WorkoutPage() {
   }
 
   return (
-    <Container>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ flex: 1, pb: 2 }}>
       <Stack direction="column">
         <Container>
-        <Stack direction="row">
-          <Button component={Link} to="/dashboard">Go to Dashboard</Button>
-          <Button 
-            onClick={() => setRecord({ 
-              ...record, 
-              workoutName: null, 
-              weight: 0, 
-              workoutReps: 0, 
-              workoutSet: 1 
-            })}
-          >
-            Back to Workouts
-          </Button>
-        </Stack>
         <Stack direction="row" sx={{ marginBottom: '10px' }}>
           <Typography variant="h4" sx={{ marginLeft: '10px', marginRight: '10px'}}>{dateKey}</Typography>
           <Typography variant="h4">{record.workoutName}</Typography>
@@ -184,7 +172,9 @@ function WorkoutPage() {
           </TableContainer>
         </Container>
       </Stack>
-    </Container>
+      </Box>
+      <Footer />
+    </Box>
   );
 }
 
