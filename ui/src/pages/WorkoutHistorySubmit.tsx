@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAtom } from 'jotai';
 
 import dayjs, { type Dayjs } from 'dayjs';
 
@@ -19,6 +20,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+import { workoutSetCountersAtom } from '../state/atom';
 import type { BulkWorkoutRecord } from '../state/entity';
 
 import { useBulkCreateWorkouts } from './api';
@@ -32,21 +34,28 @@ interface WorkoutUnit {
 
 const WorkoutHistorySubmitPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
-  const [workouts, setWorkouts] = useState<WorkoutUnit[]>([
-    {
-      id: crypto.randomUUID(),
-      name: '',
-      records: [{ id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
-    }
-  ]);
+  const [setCounters, setSetCounters] = useAtom(workoutSetCountersAtom);
+  const [workouts, setWorkouts] = useState<WorkoutUnit[]>(() => {
+    const initialId = crypto.randomUUID();
+    setSetCounters({ [initialId]: 1 });
+    return [
+      {
+        id: initialId,
+        name: '',
+        records: [{ id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
+      }
+    ];
+  });
 
   const bulkCreateMutation = useBulkCreateWorkouts();
 
   const addWorkout = () => {
+    const newId = crypto.randomUUID();
+    setSetCounters({ ...setCounters, [newId]: 1 });
     setWorkouts([
       ...workouts,
       {
-        id: crypto.randomUUID(),
+        id: newId,
         name: '',
         records: [{ id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
       }
@@ -56,20 +65,32 @@ const WorkoutHistorySubmitPage: React.FC = () => {
   const deleteWorkout = (id: string) => {
     if (workouts.length === 1) return;
     setWorkouts(workouts.filter(w => w.id !== id));
+    const newCounters = { ...setCounters };
+    delete newCounters[id];
+    setSetCounters(newCounters);
   };
 
   const addRecord = (workoutId: string) => {
+    const currentSetNumber = (setCounters[workoutId] || 0) + 1;
+    setSetCounters({ ...setCounters, [workoutId]: currentSetNumber });
+    
     setWorkouts(workouts.map(w =>
       w.id === workoutId
         ? {
           ...w,
-          records: [...w.records, { id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
+          records: [...w.records, { id: crypto.randomUUID(), weight: 0, sets: currentSetNumber, reps: 0 }]
         }
         : w
     ));
   };
 
   const deleteRecord = (workoutId: string, recordId: string) => {
+    const workout = workouts.find(w => w.id === workoutId);
+    if (workout && workout.records.length > 1) {
+      const currentSetNumber = setCounters[workoutId] || 1;
+      setSetCounters({ ...setCounters, [workoutId]: Math.max(1, currentSetNumber - 1) });
+    }
+    
     setWorkouts(workouts.map(w =>
       w.id === workoutId && w.records.length > 1
         ? { ...w, records: w.records.filter(r => r.id !== recordId) }
@@ -121,9 +142,11 @@ const WorkoutHistorySubmitPage: React.FC = () => {
     bulkCreateMutation.mutate(payload, {
       onSuccess: () => {
         alert('Workouts created successfully!');
+        const newId = crypto.randomUUID();
+        setSetCounters({ [newId]: 1 });
         setWorkouts([
           {
-            id: crypto.randomUUID(),
+            id: newId,
             name: '',
             records: [{ id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
           }
