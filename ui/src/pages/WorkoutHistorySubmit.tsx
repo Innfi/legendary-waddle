@@ -6,12 +6,10 @@ import dayjs, { type Dayjs } from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
-  Box,
   Button,
   Card,
   CardContent,
   IconButton,
-  Stack,
   TextField,
   Typography,
   Divider
@@ -159,14 +157,14 @@ const WorkoutHistorySubmitPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Box sx={{ flex: 1, p: 3, maxWidth: '800px', margin: '0 auto', width: '100%' }}>
-        <Typography variant="h4" sx={{ mb: 3 }}>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 p-6 max-w-3xl mx-auto w-full">
+        <Typography variant="h4" className="!mb-6 !font-bold">
           Submit Workout History
         </Typography>
 
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      <Card className="!mb-6 shadow-sm">
+        <CardContent className="!p-4">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Workout Date"
@@ -178,25 +176,26 @@ const WorkoutHistorySubmitPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Stack spacing={2} sx={{ mb: 3 }}>
+      <div className="space-y-4 mb-6">
         {workouts.map((workout, index) => (
-          <Card key={workout.id}>
-            <CardContent>
-              <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-                <Typography variant="h6">
+          <Card key={workout.id} className="shadow-md hover:shadow-lg transition-shadow">
+            <CardContent className="!p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <Typography variant="h6" className="!font-semibold">
                   Workout #{index + 1}
                 </Typography>
-                <Box sx={{ flexGrow: 1 }} />
+                <div className="flex-1" />
                 <IconButton
                   color="error"
                   onClick={() => deleteWorkout(workout.id)}
                   disabled={workouts.length === 1}
+                  className="hover:bg-red-50 transition-colors"
                 >
                   <DeleteIcon />
                 </IconButton>
-              </Stack>
+              </div>
 
-              <Stack spacing={2}>
+              <div className="space-y-4">
                 <TextField
                   label="Exercise Name"
                   value={workout.name}
@@ -205,25 +204,26 @@ const WorkoutHistorySubmitPage: React.FC = () => {
                   required
                 />
 
-                <Divider sx={{ my: 2 }}>Sets</Divider>
+                <Divider className="!my-4">Sets</Divider>
 
                 {workout.records.map((record, recordIndex) => (
-                  <Card key={record.id} variant="outlined" sx={{ p: 2, bgcolor: 'grey.50' }}>
-                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary">
+                  <Card key={record.id} variant="outlined" className="!p-4 !bg-gray-50 hover:!bg-gray-100 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Typography variant="body2" color="text.secondary" className="!font-medium">
                         Set #{recordIndex + 1}
                       </Typography>
-                      <Box sx={{ flexGrow: 1 }} />
+                      <div className="flex-1" />
                       <IconButton
                         size="small"
                         color="error"
                         onClick={() => deleteRecord(workout.id, record.id)}
                         disabled={workout.records.length === 1}
+                        className="hover:bg-red-50 transition-colors"
                       >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
-                    </Stack>
-                    <Stack direction="row" spacing={2}>
+                    </div>
+                    <div className="flex gap-4">
                       <TextField
                         type="number"
                         label="Sets"
@@ -257,7 +257,7 @@ const WorkoutHistorySubmitPage: React.FC = () => {
                         size="small"
                         fullWidth
                       />
-                    </Stack>
+                    </div>
                   </Card>
                 ))}
 
@@ -266,22 +266,23 @@ const WorkoutHistorySubmitPage: React.FC = () => {
                   size="small"
                   startIcon={<AddIcon />}
                   onClick={() => addRecord(workout.id)}
-                  sx={{ mt: 1 }}
+                  className="!mt-2 hover:!bg-blue-50 transition-colors"
                 >
                   Add Set
                 </Button>
-              </Stack>
+              </div>
             </CardContent>
           </Card>
         ))}
-      </Stack>
+      </div>
 
-      <Stack direction="row" spacing={2}>
+      <div className="flex gap-4">
         <Button
           variant="outlined"
           startIcon={<AddIcon />}
           onClick={addWorkout}
           fullWidth
+          className="hover:!bg-blue-50 transition-colors"
         >
           Add Another Workout
         </Button>
@@ -290,13 +291,14 @@ const WorkoutHistorySubmitPage: React.FC = () => {
           onClick={handleSubmit}
           disabled={bulkCreateMutation.isPending}
           fullWidth
+          className="hover:!shadow-lg transition-shadow"
         >
           {bulkCreateMutation.isPending ? 'Submitting...' : 'Submit All Workouts'}
         </Button>
-      </Stack>
-      </Box>
+      </div>
+      </div>
       <Footer />
-    </Box>
+    </div>
   );
 };
 
