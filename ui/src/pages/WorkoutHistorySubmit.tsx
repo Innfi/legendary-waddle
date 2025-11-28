@@ -27,6 +27,7 @@ import Footer from './Footer';
 interface WorkoutUnit {
   id: string;
   name: string;
+  memo?: string | null;
   records: (BulkWorkoutRecord & { id: string })[];
 }
 
@@ -40,6 +41,7 @@ const WorkoutHistorySubmitPage: React.FC = () => {
       {
         id: initialId,
         name: '',
+        memo: null,
         records: [{ id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
       }
     ];
@@ -55,6 +57,7 @@ const WorkoutHistorySubmitPage: React.FC = () => {
       {
         id: newId,
         name: '',
+        memo: null,
         records: [{ id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
       }
     ]);
@@ -102,6 +105,12 @@ const WorkoutHistorySubmitPage: React.FC = () => {
     ));
   };
 
+  const updateWorkoutMemo = (id: string, memo: string | null) => {
+    setWorkouts(workouts.map(w =>
+      w.id === id ? { ...w, memo } : w
+    ));
+  };
+
   const updateRecord = (
     workoutId: string,
     recordId: string,
@@ -132,7 +141,7 @@ const WorkoutHistorySubmitPage: React.FC = () => {
       dateKey: selectedDate.format('YYMMDD'),
       workouts: validWorkouts.map(w => ({
         name: w.name,
-        memo: null,
+        memo: w.memo,
         records: w.records.map(({ id: _id, ...record }) => record)
       }))
     };
@@ -146,6 +155,7 @@ const WorkoutHistorySubmitPage: React.FC = () => {
           {
             id: newId,
             name: '',
+            memo: null,
             records: [{ id: crypto.randomUUID(), weight: 0, sets: 1, reps: 0 }]
           }
         ]);
@@ -202,6 +212,16 @@ const WorkoutHistorySubmitPage: React.FC = () => {
                   onChange={(e) => updateWorkoutName(workout.id, e.target.value)}
                   fullWidth
                   required
+                />
+
+                <TextField
+                  label="Memo (optional)"
+                  value={workout.memo || ''}
+                  onChange={(e) => updateWorkoutMemo(workout.id, e.target.value || null)}
+                  fullWidth
+                  multiline
+                  rows={2}
+                  placeholder="Add notes about this workout..."
                 />
 
                 <Divider className="!my-4">Sets</Divider>
