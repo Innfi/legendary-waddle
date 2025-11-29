@@ -4,7 +4,12 @@ import axiosClient from '../components/api/axios.client';
 import { queryClient } from '../components/api/query.client';
 import type {
   BulkWorkoutPayload,
- Schedule, UserProfile, Workout, WorkoutRecord, WorkoutRecordItem, WorkoutWithRecords 
+  Schedule,
+  UserProfile,
+  Workout,
+  WorkoutRecord,
+  WorkoutRecordItem,
+  WorkoutWithRecords,
 } from '../state/entity';
 import { logger } from '../utils/logger';
 
@@ -12,7 +17,9 @@ export const useGetRecord = (dateKey: string, workoutName: string | null) => {
   return useQuery({
     queryKey: ['records', workoutName],
     queryFn: async () => {
-      const res = await axiosClient.get<WorkoutRecordItem[]>(`/records?date_key=${dateKey}&workout_name=${workoutName}`);
+      const res = await axiosClient.get<WorkoutRecordItem[]>(
+        `/records?date_key=${dateKey}&workout_name=${workoutName}`
+      );
 
       logger.debug(`data: ${JSON.stringify(res.data)}`);
       return res.data;
@@ -100,7 +107,9 @@ export const useGetWorkoutDetail = (dateKey: string) => {
   return useQuery({
     queryKey: ['workout-detail', dateKey],
     queryFn: async () => {
-      const res = await axiosClient.get<WorkoutWithRecords[]>(`/workout-detail?date_key=${dateKey}`);
+      const res = await axiosClient.get<WorkoutWithRecords[]>(
+        `/workout-detail?date_key=${dateKey}`
+      );
       return res.data;
     },
     enabled: !!dateKey,

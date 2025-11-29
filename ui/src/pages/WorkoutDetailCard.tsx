@@ -10,7 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
+  Typography,
 } from '@mui/material';
 
 import type { WorkoutWithRecords } from '../state/entity';
@@ -22,7 +22,6 @@ interface WorkoutDetailCardProps {
 }
 
 const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
-
   const stats = calculateAverages(workout.records);
 
   return (
@@ -31,7 +30,7 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
         <Typography variant="h6" className="!mb-4 !font-bold">
           {workout.name}
         </Typography>
-        
+
         <div className="flex gap-6 mb-4">
           <div className="flex flex-col">
             <Typography variant="body2" color="text.secondary" className="!mb-1">
@@ -41,7 +40,7 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
               {stats.totalSets}
             </Typography>
           </div>
-          
+
           <div className="flex flex-col">
             <Typography variant="body2" color="text.secondary" className="!mb-1">
               Max Reps
@@ -50,7 +49,7 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
               {stats.maxReps}
             </Typography>
           </div>
-          
+
           <div className="flex flex-col">
             <Typography variant="body2" color="text.secondary" className="!mb-1">
               Weight Range
@@ -61,13 +60,17 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
           </div>
         </div>
 
-        <TableContainer component={Paper} variant="outlined" className="rounded-lg">
+        <TableContainer component={Paper} variant="outlined" className="rounded-lg !pb-10">
           <Table size="small">
             <TableHead>
               <TableRow className="bg-gray-50">
                 <TableCell className="!font-semibold">Set</TableCell>
-                <TableCell align="right" className="!font-semibold">Reps</TableCell>
-                <TableCell align="right" className="!font-semibold">Weight (kg)</TableCell>
+                <TableCell align="right" className="!font-semibold">
+                  Reps
+                </TableCell>
+                <TableCell align="right" className="!font-semibold">
+                  Weight (kg)
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -83,13 +86,16 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
         </TableContainer>
 
         {workout.memo && (
-          <Typography 
-            variant="body2" 
-            color="text.secondary" 
-            className="!mt-4 !italic"
-          >
-            Note: {workout.memo}
-          </Typography>
+          <>
+            <Typography variant="h6" className="!mb-4 !font-bold">
+              Memo
+            </Typography>
+            <Paper variant="outlined" className="!pt-10 !p-3 !bg-blue-50 !border-blue-200">
+              <Typography variant="body2" className="!text-gray-700">
+                {workout.memo}
+              </Typography>
+            </Paper>
+          </>
         )}
       </CardContent>
     </Card>

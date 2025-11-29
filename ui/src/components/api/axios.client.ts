@@ -9,7 +9,7 @@ const axiosClient = Axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
   responseType: 'json',
 });
@@ -21,7 +21,7 @@ axiosClient.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 export default axiosClient;

@@ -11,9 +11,16 @@ interface NotificationState {
 }
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [notification, setNotification] = useState<NotificationState>({ open: false, message: '', severity: 'info' });
+  const [notification, setNotification] = useState<NotificationState>({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
 
-  const showNotification = (message: string, severity: 'success' | 'error' | 'warning' | 'info' = 'info') => {
+  const showNotification = (
+    message: string,
+    severity: 'success' | 'error' | 'warning' | 'info' = 'info'
+  ) => {
     setNotification({ open: true, message, severity });
   };
 

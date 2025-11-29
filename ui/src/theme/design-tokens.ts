@@ -1,10 +1,6 @@
-import {
- createTheme, alpha, type PaletteMode, type Shadows 
-} from '@mui/material/styles';
+import { createTheme, alpha, type PaletteMode, type Shadows } from '@mui/material/styles';
 
-import {
- brand, gray, green, orange, red 
-} from './primitives';
+import { brand, gray, green, orange, red } from './primitives';
 
 const defaultTheme = createTheme();
 

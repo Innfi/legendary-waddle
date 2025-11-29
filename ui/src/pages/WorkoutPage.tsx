@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useAtom } from 'jotai';
 
-import {
- AddCircleOutline, ArrowUpward, ArrowDownward 
-} from '@mui/icons-material';
+import { AddCircleOutline, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import {
   Container,
   Typography,
@@ -22,15 +20,11 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Box
+  Box,
 } from '@mui/material';
 
 import { dateKeyAtom } from '../state/atom';
-import {
-  workoutNames,
-  type WorkoutRecord,
-  type WorkoutRecordItem
-} from '../state/entity';
+import { workoutNames, type WorkoutRecord, type WorkoutRecordItem } from '../state/entity';
 
 import { useGetRecord, usePostRecord } from './api';
 import Footer from './Footer';
@@ -51,8 +45,8 @@ function WorkoutPage() {
 
   useEffect(() => {
     if (records && records.length > 0) {
-      const maxSet = Math.max(...records.map(r => r.workoutSet));
-      setRecord(prev => ({
+      const maxSet = Math.max(...records.map((r) => r.workoutSet));
+      setRecord((prev) => ({
         ...prev,
         workoutSet: maxSet + 1,
       }));
@@ -61,11 +55,11 @@ function WorkoutPage() {
 
   const handleChangeReps = (direction: 'up' | 'down') => {
     if (direction === 'up') {
-      setRecord({ ...record, workoutReps: record.workoutReps+1 });
+      setRecord({ ...record, workoutReps: record.workoutReps + 1 });
       return;
     }
 
-    setRecord({ ...record, workoutReps: record.workoutReps <= 0 ? 0 : record.workoutReps -1 });
+    setRecord({ ...record, workoutReps: record.workoutReps <= 0 ? 0 : record.workoutReps - 1 });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -79,7 +73,7 @@ function WorkoutPage() {
 
     setRecord({
       ...record,
-      workoutSet: record.workoutSet+1,
+      workoutSet: record.workoutSet + 1,
     });
   };
 
@@ -106,10 +100,15 @@ function WorkoutPage() {
         </Stack>
         <List>
           {workoutNames.map((currentName: string, index: number) => (
-            <ListItemButton key={index} onClick={() => setRecord({
-              ...record,
-              workoutName: currentName,
-            })}>
+            <ListItemButton
+              key={index}
+              onClick={() =>
+                setRecord({
+                  ...record,
+                  workoutName: currentName,
+                })
+              }
+            >
               <ListItem>{currentName}</ListItem>
             </ListItemButton>
           ))}
@@ -121,57 +120,88 @@ function WorkoutPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Box sx={{ flex: 1, pb: 2 }}>
-      <Stack direction="column">
-        <Container>
-        <Stack direction="row" sx={{ marginBottom: '10px' }}>
-          <Typography variant="h4" sx={{ marginLeft: '10px', marginRight: '10px'}}>{dateKey}</Typography>
-          <Typography variant="h4">{record.workoutName}</Typography>
-        </Stack>
-        </Container>
-        <Container sx={{ marginBottom: '10px' }}>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Stack direction="row" alignItems="center">
-              <TextField name="sets" label="Set" value={record.workoutSet} disabled sx={{ marginRight: '10px' }} />
-              <TextField name="reps" label="Reps" value={record.workoutReps}  sx={{ marginRight: '10px' }}/>
-              <IconButton onClick={() => handleChangeReps('up')} size="small" sx={{ marginRight: '5px' }}>
-                  <ArrowUpward />
-              </IconButton>
-              <IconButton onClick={() => handleChangeReps('down')} size="small" sx={{ marginRight: '10px' }}>
-                  <ArrowDownward />
-              </IconButton>
-              <TextField name="weight" label="Weight" value={record.weight} sx={{ marginRight: '10px' }} 
-                onChange={(e) => setRecord({ ...record, weight: Number(e.target.value) })} />
-            <IconButton type="submit">
-              <AddCircleOutline />
-            </IconButton>
+        <Stack direction="column">
+          <Container>
+            <Stack direction="row" sx={{ marginBottom: '10px' }}>
+              <Typography variant="h4" sx={{ marginLeft: '10px', marginRight: '10px' }}>
+                {dateKey}
+              </Typography>
+              <Typography variant="h4">{record.workoutName}</Typography>
             </Stack>
-          </form>
-        </Container>
-        <Container>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Set</TableCell>
-                  <TableCell>Reps</TableCell>
-                  <TableCell>Weight</TableCell>
-                  <TableCell>Time</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {records?.map((record: WorkoutRecordItem, index: number) => (
-                  <TableRow key={index}>
-                    <TableCell>{records.length-index}</TableCell>
-                    <TableCell>{record.workoutReps}</TableCell>
-                    <TableCell>{record.weight}</TableCell>
-                    <TableCell>{new Date(record.workoutDate).toLocaleTimeString('ko-KR')}</TableCell>
+          </Container>
+          <Container sx={{ marginBottom: '10px' }}>
+            <form
+              onSubmit={handleSubmit}
+              style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}
+            >
+              <Stack direction="row" alignItems="center">
+                <TextField
+                  name="sets"
+                  label="Set"
+                  value={record.workoutSet}
+                  disabled
+                  sx={{ marginRight: '10px' }}
+                />
+                <TextField
+                  name="reps"
+                  label="Reps"
+                  value={record.workoutReps}
+                  sx={{ marginRight: '10px' }}
+                />
+                <IconButton
+                  onClick={() => handleChangeReps('up')}
+                  size="small"
+                  sx={{ marginRight: '5px' }}
+                >
+                  <ArrowUpward />
+                </IconButton>
+                <IconButton
+                  onClick={() => handleChangeReps('down')}
+                  size="small"
+                  sx={{ marginRight: '10px' }}
+                >
+                  <ArrowDownward />
+                </IconButton>
+                <TextField
+                  name="weight"
+                  label="Weight"
+                  value={record.weight}
+                  sx={{ marginRight: '10px' }}
+                  onChange={(e) => setRecord({ ...record, weight: Number(e.target.value) })}
+                />
+                <IconButton type="submit">
+                  <AddCircleOutline />
+                </IconButton>
+              </Stack>
+            </form>
+          </Container>
+          <Container>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Set</TableCell>
+                    <TableCell>Reps</TableCell>
+                    <TableCell>Weight</TableCell>
+                    <TableCell>Time</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Container>
-      </Stack>
+                </TableHead>
+                <TableBody>
+                  {records?.map((record: WorkoutRecordItem, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell>{records.length - index}</TableCell>
+                      <TableCell>{record.workoutReps}</TableCell>
+                      <TableCell>{record.weight}</TableCell>
+                      <TableCell>
+                        {new Date(record.workoutDate).toLocaleTimeString('ko-KR')}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Container>
+        </Stack>
       </Box>
       <Footer />
     </Box>

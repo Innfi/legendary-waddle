@@ -31,7 +31,7 @@ const routes: RouteObject[] = [
         <WorkoutHistorySubmitPage />
       </PrivatePage>
     ),
-  }
+  },
 ];
 
 export function RenderRouter() {

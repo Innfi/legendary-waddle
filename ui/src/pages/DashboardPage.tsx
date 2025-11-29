@@ -2,14 +2,7 @@ import React, { useState, useMemo } from 'react';
 
 import dayjs, { type Dayjs } from 'dayjs';
 
-import {
-  Box,
-  Stack,
-  Typography,
-  CircularProgress,
-  Alert,
-  Badge
-} from '@mui/material';
+import { Box, Stack, Typography, CircularProgress, Alert, Badge } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -28,14 +21,17 @@ const DashboardPage: React.FC = () => {
 
   // Fetch workouts for the current month to highlight calendar days
   const { data: workouts } = useGetWorkoutsByDateKeyRange(fromDate, toDate);
-  
-  const { data: workoutDetail, isLoading: isLoadingDetail, error: errorDetail } = 
-    useGetWorkoutDetail(selectedDateKey);
+
+  const {
+    data: workoutDetail,
+    isLoading: isLoadingDetail,
+    error: errorDetail,
+  } = useGetWorkoutDetail(selectedDateKey);
 
   // Create a set of date keys that have workouts
   const workoutDates = useMemo(() => {
     if (!workouts) return new Set<string>();
-    return new Set(workouts.map(w => w.dateKey));
+    return new Set(workouts.map((w) => w.dateKey));
   }, [workouts]);
 
   const handleDateClick = (date: Dayjs | null) => {
@@ -60,11 +56,7 @@ const DashboardPage: React.FC = () => {
         badgeContent={hasWorkout ? '●' : undefined}
         color="primary"
       >
-        <PickersDay
-          {...other}
-          outsideCurrentMonth={outsideCurrentMonth}
-          day={day}
-        />
+        <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
       </Badge>
     );
   };
@@ -76,7 +68,7 @@ const DashboardPage: React.FC = () => {
           {/* Calendar Section */}
           <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar 
+              <DateCalendar
                 value={selectedDate}
                 onChange={handleDateClick}
                 slots={{
@@ -89,10 +81,9 @@ const DashboardPage: React.FC = () => {
           {/* Workout Details Section */}
           <Box sx={{ flex: 1, maxWidth: '600px' }}>
             <Typography variant="h5" sx={{ mb: 2 }}>
-              {selectedDateKey 
+              {selectedDateKey
                 ? dayjs(selectedDateKey, 'YYMMDD').format('MMMM DD, YYYY')
-                : 'Select a date to view workouts'
-              }
+                : 'Select a date to view workouts'}
             </Typography>
 
             {isLoadingDetail && (

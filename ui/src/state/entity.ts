@@ -1,9 +1,4 @@
-export const workoutNames: string[] = [
-  'Pullups',
-  'Dips',
-  'Squats',
-  'Kettlebell Swings',
-];
+export const workoutNames: string[] = ['Pullups', 'Dips', 'Squats', 'Kettlebell Swings'];
 
 export interface WorkoutRecord {
   workoutName: string | null;

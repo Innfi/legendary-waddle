@@ -31,18 +31,14 @@ function LandingPage() {
         {/* Main content area */}
         <div className="flex flex-1 items-center justify-center pb-6">
           <div className="text-center space-y-8">
-            <h1 className="text-4xl tracking-tight">
-              legenary-waddle
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              record your workouts 
-            </p>
+            <h1 className="text-4xl tracking-tight">legenary-waddle</h1>
+            <p className="text-muted-foreground text-lg">record your workouts</p>
           </div>
         </div>
 
         {/* Bottom section with Google login */}
         <div className="flex-1 pb-8 pt-12">
-          <Button 
+          <Button
             onClick={() => login()}
             className="w-full bg-white text-black hover:bg-gray-100 flex items-center justify-center gap-3 py-6"
             size="lg"

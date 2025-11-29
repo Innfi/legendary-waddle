@@ -11,18 +11,18 @@ import AppTheme from './theme/AppTheme';
 function App() {
   return (
     <Suspense fallback={<div>loading...</div>}>
-    <ErrorBoundary>
-      <AppTheme>
-        <CssBaseline enableColorScheme/>
-        <NotificationProvider>
-          <BrowserRouter>
-            <RenderRouter />
-          </BrowserRouter>
-        </NotificationProvider>
-      </AppTheme>
-    </ErrorBoundary>
+      <ErrorBoundary>
+        <AppTheme>
+          <CssBaseline enableColorScheme />
+          <NotificationProvider>
+            <BrowserRouter>
+              <RenderRouter />
+            </BrowserRouter>
+          </NotificationProvider>
+        </AppTheme>
+      </ErrorBoundary>
     </Suspense>
   );
-};
+}
 
 export default App;
