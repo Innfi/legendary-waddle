@@ -82,3 +82,10 @@ export type BulkWorkoutPayload = {
   dateKey: string;
   workouts: BulkWorkoutItem[];
 };
+
+export interface WorkoutUnit {
+  id: string;
+  name: string;
+  memo?: string | null;
+  records: (BulkWorkoutRecord & { id: string })[];
+}

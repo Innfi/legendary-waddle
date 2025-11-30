@@ -62,7 +62,10 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box
+      sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+      className="dark:bg-gray-900"
+    >
       <Box sx={{ flex: 1, pb: 2 }}>
         <Stack direction="row" spacing={3} sx={{ marginLeft: '20px', marginTop: '20px' }}>
           {/* Calendar Section */}
