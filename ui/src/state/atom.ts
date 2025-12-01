@@ -17,3 +17,5 @@ export const workoutsAtom = atom<WorkoutUnit[]>([]);
 
 // Store selected date for workout submission
 export const selectedDateAtom = atom<Dayjs>(dayjs());
+
+export const selectedMonthAtom = atom<Dayjs>(dayjs());

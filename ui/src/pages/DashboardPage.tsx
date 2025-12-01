@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import dayjs, { type Dayjs } from 'dayjs';
+import { useAtom } from 'jotai';
 
 import { Box, Stack, Typography, CircularProgress, Alert, Badge } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -11,13 +12,21 @@ import { PickersDay, type PickersDayProps } from '@mui/x-date-pickers/PickersDay
 import { useGetWorkoutsByDateKeyRange, useGetWorkoutDetail } from './api';
 import Footer from './Footer';
 import WorkoutDetailCard from './WorkoutDetailCard';
+import { selectedMonthAtom } from '../state/atom';
 
 const DashboardPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [selectedDateKey, setSelectedDateKey] = useState<string>('');
+  const [selectedMonth, setSelectedMonth] = useAtom(selectedMonthAtom);
 
-  const fromDate = useMemo(() => dayjs().startOf('month').format('YYMMDD'), []);
-  const toDate = useMemo(() => dayjs().format('YYMMDD'), []);
+  const fromDate = useMemo(
+    () => dayjs(selectedMonth).startOf('month').format('YYMMDD'),
+    [selectedMonth]
+  );
+  const toDate = useMemo(
+    () => dayjs(selectedMonth).endOf('month').format('YYMMDD'),
+    [selectedMonth]
+  );
 
   // Fetch workouts for the current month to highlight calendar days
   const { data: workouts } = useGetWorkoutsByDateKeyRange(fromDate, toDate);
@@ -41,6 +50,12 @@ const DashboardPage: React.FC = () => {
 
     const dateKey = date.format('YYMMDD');
     setSelectedDateKey(dateKey);
+  };
+
+  const handleOnMonthChange = (month: dayjs.Dayjs) => {
+    console.log(`month: ${month}`);
+
+    setSelectedMonth(month);
   };
 
   // Custom day renderer to highlight workout days
@@ -74,6 +89,7 @@ const DashboardPage: React.FC = () => {
               <DateCalendar
                 value={selectedDate}
                 onChange={handleDateClick}
+                onMonthChange={handleOnMonthChange}
                 slots={{
                   day: ServerDay,
                 }}

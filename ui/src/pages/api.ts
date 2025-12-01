@@ -77,7 +77,7 @@ export const useGetRecordsList = (from_date?: string, to_date?: string) => {
 
 export const useGetWorkoutsByDateKeyRange = (from_date: string, to_date: string) => {
   return useQuery({
-    queryKey: ['workouts-by-date-range', from_date, to_date],
+    queryKey: [`workout-${from_date}-${to_date}`],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (from_date) params.append('from_date', from_date);
@@ -86,6 +86,7 @@ export const useGetWorkoutsByDateKeyRange = (from_date: string, to_date: string)
       const res = await axiosClient.get<Workout[]>(`/workouts?${params.toString()}`);
       return res.data;
     },
+    staleTime: 1000 * 60 * 5,
   });
 };
 
