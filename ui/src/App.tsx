@@ -6,6 +6,7 @@ import { NotificationProvider } from './components/notification/NotificationProv
 import { RenderRouter } from './router';
 import AppTheme from './theme/AppTheme';
 import { useDarkMode } from './theme/useDarkMode';
+import { StyledEngineProvider } from '@mui/material';
 
 function AppContent() {
   // Sync MUI dark mode with Tailwind
@@ -22,13 +23,15 @@ function AppContent() {
 
 function App() {
   return (
-    <Suspense fallback={<div>loading...</div>}>
-      <ErrorBoundary>
-        <AppTheme>
-          <AppContent />
-        </AppTheme>
-      </ErrorBoundary>
-    </Suspense>
+    <StyledEngineProvider injectFirst>
+      <Suspense fallback={<div>loading...</div>}>
+        <ErrorBoundary>
+          <AppTheme>
+            <AppContent />
+          </AppTheme>
+        </ErrorBoundary>
+      </Suspense>
+    </StyledEngineProvider>
   );
 }
 

@@ -4,7 +4,6 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  important: '#root',
   darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
@@ -24,7 +23,7 @@ export default {
     },
   },
   corePlugins: {
-    preflight: true, // Enable Tailwind's CSS reset
+    preflight: false,
   },
   plugins: [],
 }

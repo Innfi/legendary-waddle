@@ -88,7 +88,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workoutId, index, isOnlyWorko
   };
 
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow">
+    <Card className="!mt-auto shadow-md hover:shadow-lg transition-shadow">
       <CardContent className="!p-6">
         <div className="flex items-center !gap-4 mb-4">
           <Typography variant="h6" className="!font-semibold">

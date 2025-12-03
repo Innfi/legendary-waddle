@@ -149,3 +149,13 @@ Application-wide utility functions.
 - **Tailwind CSS** - Utility-first styling (`tailwind.config.js`)
 - **PostCSS** - CSS processing (`postcss.config.js`)
 - **ESLint** - Code linting (`eslint.config.js`)
+
+### Tailwind + MUI compatibility
+
+- **Problem:** Using `important: '#root'` (or making Tailwind utilities more specific) causes Tailwind rules to win over Material UI's runtime-emitted Emotion styles and `sx` props (commonly observed as MUI margins or other styles being ignored).
+- **Recommended fixes:**
+	- **Remove `important` from Tailwind config (preferred):** revert `important: '#root'` in `tailwind.config.js` so MUI styles can take precedence when needed.
+	- **Use an Emotion insertion point:** add `<meta name="emotion-insertion-point" content="emotion-insertion-point" />` to `index.html` and create a custom Emotion cache so MUI's styles are injected after Tailwind if order is the issue.
+	- **Scope or selectively apply `!important`:** avoid global `important`; if you must increase specificity, apply `!important` only to specific utilities or create scoped utility layers.
+- **How to verify:** rebuild the dev server and confirm MUI `sx` styles and margin utilities behave as expected on components like the calendar and `Workout` cards.
+- **Files to check/edit:** `tailwind.config.js`, `index.html`, and the MUI theme/cache setup (e.g., `src/theme/AppTheme.tsx` or `main.tsx`).

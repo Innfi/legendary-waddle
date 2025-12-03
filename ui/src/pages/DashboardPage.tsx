@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import dayjs, { type Dayjs } from 'dayjs';
 import { useAtom } from 'jotai';

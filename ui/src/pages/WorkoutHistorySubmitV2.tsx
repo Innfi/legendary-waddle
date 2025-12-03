@@ -86,14 +86,17 @@ const WorkoutHistorySubmitPageV2: React.FC = () => {
     });
   };
 
+  // flex flex-col min-h-screen dark:bg-gray-900
+  // flex-1 p-6 max-w-md mx-auto w-full
+
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-900">
-      <div className="flex-1 p-6 max-w-md mx-auto w-full">
-        <Typography variant="h4" className="!mb-6 !font-bold">
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 p-6">
+        <Typography variant="h4" className="!font-bold">
           Submit Workout History V2
         </Typography>
 
-        <Card className="!mb-6 shadow-sm">
+        <Card className="shadow-sm">
           <CardContent className="!p-4">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -106,7 +109,7 @@ const WorkoutHistorySubmitPageV2: React.FC = () => {
           </CardContent>
         </Card>
 
-        <div className="space-y-4 mb-6">
+        <div className="space-y-4 !mt-4">
           {workouts.map((workout, index) => (
             <WorkoutCard
               key={workout.id}
