@@ -6,7 +6,7 @@ import { NotificationProvider } from './components/notification/NotificationProv
 import { RenderRouter } from './router';
 import AppTheme from './theme/AppTheme';
 import { useDarkMode } from './theme/useDarkMode';
-import { StyledEngineProvider } from '@mui/material';
+import { GlobalStyles, StyledEngineProvider } from '@mui/material';
 
 function AppContent() {
   // Sync MUI dark mode with Tailwind
@@ -23,7 +23,8 @@ function AppContent() {
 
 function App() {
   return (
-    <StyledEngineProvider injectFirst>
+    <StyledEngineProvider enableCssLayer>
+      <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
       <Suspense fallback={<div>loading...</div>}>
         <ErrorBoundary>
           <AppTheme>

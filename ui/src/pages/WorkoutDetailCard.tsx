@@ -31,7 +31,7 @@ const WorkoutDetailCard: React.FC<WorkoutDetailCardProps> = ({ workout }) => {
           {workout.name}
         </Typography>
 
-        <div className="flex gap-6 mb-4">
+        <div className="flex gap-6 mb-2.5">
           <div className="flex flex-col">
             <Typography variant="body2" color="text.secondary" className="!mb-1">
               Total Sets
