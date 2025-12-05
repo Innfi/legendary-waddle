@@ -1,0 +1,21 @@
+# Terraform State Management
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.backup
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment files (customize these)
+terraform.tfvars
+
+# OS
+.DS_Store
+Thumbs.db

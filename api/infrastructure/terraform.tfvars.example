@@ -1,0 +1,20 @@
+# Example terraform.tfvars file
+# Uncomment and fill in your actual values
+
+# aws_region = "us-east-1"
+
+# docker_image = "innfi/legendary-waddle"
+# docker_image_tag = "latest"
+
+# lambda_timeout = 60
+# lambda_memory_size = 512
+
+# environment_variables = {
+#   LOG_LEVEL = "INFO"
+# }
+
+# If you need VPC networking (optional):
+# subnet_ids = ["subnet-xxxxx", "subnet-xxxxx"]
+# security_group_ids = ["sg-xxxxx"]
+
+# log_retention_days = 7
