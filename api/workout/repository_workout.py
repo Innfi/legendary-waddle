@@ -4,7 +4,7 @@ import structlog
 from sqlalchemy import Column
 from sqlalchemy.orm import Session
 
-from workout.model import Record, Workout
+from workout.model import Record, Workout, WorkoutV2
 
 log = structlog.get_logger()
 

@@ -15,6 +15,7 @@ from workout.dto import (
     WorkoutRecordItem,
     WorkoutWithRecords,
 )
+from workout.dto_v2 import BulkWorkoutPayloadV2
 from workout.model import Record
 from workout.repository_workout import (
     bulk_create_workouts_with_records,
@@ -87,7 +88,6 @@ def post_workouts_bulk(
     )
 
     return {"created_count": len(created_workouts), "workouts": created_workouts}
-
 
 @router_workout.get("/workout-detail", response_model=list[WorkoutWithRecords])
 def get_workout_detail(
