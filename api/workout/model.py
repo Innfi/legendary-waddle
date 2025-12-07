@@ -24,6 +24,7 @@ class Workout(Base):
     name = Column(String)
     memo = Column(String)
 
+
 class WorkoutV2(Base):
     __tablename__ = "workouts_v2"
 

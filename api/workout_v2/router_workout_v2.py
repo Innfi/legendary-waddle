@@ -11,7 +11,7 @@ from workout.dto_v2 import BulkWorkoutPayloadV2
 from workout_v2.repository import (
     find_workouts_by_datekeys,
     update_workout_memo,
-    bulk_create_workouts_v2
+    bulk_create_workouts_v2,
 )
 from workout_v2.dto import GetWorkoutDetailResponse, WorkoutPayload
 
@@ -40,7 +40,10 @@ def get_workouts(
 
     return workouts
 
-@router_workout.get("/v2/workout/{date_key}", response_model=list[GetWorkoutDetailResponse])
+
+@router_workout.get(
+    "/v2/workout/{date_key}", response_model=list[GetWorkoutDetailResponse]
+)
 def get_workout_detail_by_date_key(
     date_key: str,
     db: Session = Depends(get_db),
@@ -58,6 +61,7 @@ def get_workout_detail_by_date_key(
         return []
 
     return workouts
+
 
 @router_workout.post("/v2/workouts/bulk", status_code=status.HTTP_201_CREATED)
 def post_workouts_v2_bulk(
@@ -79,7 +83,11 @@ def post_workouts_v2_bulk(
             "name": workout.name,
             "memo": workout.memo or "",
             "records": [
-                {"sets": record.workout_set, "reps": record.workout_reps, "weight": record.weight}
+                {
+                    "sets": record.workout_set,
+                    "reps": record.workout_reps,
+                    "weight": record.weight,
+                }
                 for record in workout.records
             ],
         }
@@ -92,6 +100,7 @@ def post_workouts_v2_bulk(
     )
 
     return {"created_count": len(created_workouts), "workouts": created_workouts}
+
 
 @router_workout.patch("/v2/workout/{workout_id}", response_model=WorkoutPayload)
 def patch_workout_memo(

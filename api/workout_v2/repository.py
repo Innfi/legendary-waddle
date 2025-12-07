@@ -8,6 +8,7 @@ from workout.model import WorkoutV2
 
 log = structlog.get_logger()
 
+
 def find_workouts_by_datekeys(
     db: Session, owner_id: Column[UUID], from_date: str, to_date: str
 ):
@@ -48,6 +49,7 @@ def update_workout_memo(
         return workout
 
     return None
+
 
 def bulk_create_workouts_v2(
     db: Session, owner_id: Column[UUID], date_key: str, workouts_data: list

@@ -56,7 +56,9 @@ async def login(token: Token, db: Session = Depends(get_db)):
 
     except requests.exceptions.RequestException as e:
         log.error("Failed to get user info from Google", error=str(e))
-        raise HTTPException(status_code=401, detail="Invalid Google access token") from e
+        raise HTTPException(
+            status_code=401, detail="Invalid Google access token"
+        ) from e
     except (KeyError, jwt.PyJWTError) as e:
         log.error("Login failed", error=str(e))
         raise HTTPException(status_code=401, detail="Invalid token or user info") from e

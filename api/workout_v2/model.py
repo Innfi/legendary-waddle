@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from common.database import Base
 
+
 class WorkoutV2(Base):
     __tablename__ = "workouts_v2"
 

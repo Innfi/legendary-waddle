@@ -1,11 +1,14 @@
 from datetime import UTC, datetime, timedelta
+from uuid import UUID
 
+from sqlalchemy import Column
 import structlog
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from auth.current_user import get_current_user
 from common.database import get_db
+from migration.wokout_migration_handler import migrate_workouts
 from user.model import User
 from workout.dto import (
     BulkWorkoutPayload,
@@ -15,7 +18,6 @@ from workout.dto import (
     WorkoutRecordItem,
     WorkoutWithRecords,
 )
-from workout.dto_v2 import BulkWorkoutPayloadV2
 from workout.model import Record
 from workout.repository_workout import (
     bulk_create_workouts_with_records,
@@ -89,8 +91,10 @@ def post_workouts_bulk(
 
     return {"created_count": len(created_workouts), "workouts": created_workouts}
 
+
 @router_workout.get("/workout-detail", response_model=list[WorkoutWithRecords])
 def get_workout_detail(
+    background_tasks: BackgroundTasks,
     date_key: str = Query(
         ..., regex=r"^\d{6}$", description="Date in yymmdd format (e.g., 251008)"
     ),
@@ -102,8 +106,17 @@ def get_workout_detail(
         "Fetching workout detail for user", user_id=current_user.id, date_key=date_key
     )
 
+    background_tasks.add_task(migrate_workouts, date_key, current_user.id)
+
+    return fetch_workout_detail(date_key, db, current_user.id)
+
+def fetch_workout_detail(
+    date_key: str,
+    db: Session,
+    user_id: Column[UUID],
+) -> list[WorkoutWithRecords]:
     # Get all workouts for the specific date
-    workouts = find_workouts(db, current_user.id, date_key)
+    workouts = find_workouts(db, user_id, date_key)
 
     if not workouts:
         return []
