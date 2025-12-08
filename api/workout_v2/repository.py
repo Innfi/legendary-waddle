@@ -5,6 +5,7 @@ from sqlalchemy import Column
 from sqlalchemy.orm import Session
 
 from workout.model import WorkoutV2
+from workout_v2.dto import CreateWorkoutRequest, WorkoutItemV2
 
 log = structlog.get_logger()
 
@@ -43,7 +44,7 @@ def update_workout_memo(
     )
 
     if workout:
-        workout.memo = memo
+        workout.memo = memo # type: ignore
         db.commit()
         db.refresh(workout)
         return workout
@@ -52,13 +53,12 @@ def update_workout_memo(
 
 
 def bulk_create_workouts_v2(
-    db: Session, owner_id: Column[UUID], date_key: str, workouts_data: list
+    db: Session, owner_id: Column[UUID], workouts_data: list[WorkoutItemV2]
 ):
     """Bulk creates WorkoutV2 records with embedded JSONB records in a single transaction."""
     log.info(
         "Bulk creating workouts v2",
         user_id=owner_id,
-        date_key=date_key,
         workout_count=len(workouts_data),
     )
 
@@ -68,10 +68,10 @@ def bulk_create_workouts_v2(
         # Create WorkoutV2 with records embedded as JSONB
         workout_v2 = WorkoutV2(
             owner_id=owner_id,
-            date_key=date_key,
-            name=workout_data["name"],
-            memo=workout_data.get("memo", ""),
-            records=workout_data.get("records", []),  # Store records as JSONB
+            date_key=workout_data.date_key,
+            name=workout_data.name,
+            memo=workout_data.memo or "",
+            records=workout_data.records,  # Store records as JSONB
         )
         db.add(workout_v2)
         created_workouts.append(workout_v2)

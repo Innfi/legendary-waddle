@@ -4,6 +4,7 @@ from sqlalchemy import Column
 import structlog
 
 from common.database import get_db
+from workout_v2.dto import WorkoutItemV2, WorkoutRecordPayload
 
 log = structlog.get_logger()
 
@@ -22,21 +23,21 @@ async def migrate_workouts(date_key: str, user_id: Column[UUID]):
             log.info("No workouts found for migration", date_key=date_key, user_id=user_id)
             return
 
-        workouts_data = [
-            {
-                "name": workout.name,
-                "memo": workout.memo or "",
-                "records": [
-                    {
-                        "sets": record.workout_set,
-                        "reps": record.workout_reps,
-                        "weight": record.weight,
-                    } for record in workout.records
-                ]
-            } for workout in workouts
-        ]
+        workouts_data: list[WorkoutItemV2] = []
+        for workout in workouts:
+            records = [
+                WorkoutRecordPayload(
+                    workout_set=record.workout_set,
+                    workout_reps=record.workout_reps,
+                    weight=record.weight,
+                )
+                for record in workout.records
+            ]
 
-        bulk_create_workouts_v2(db, user_id, date_key, workouts_data)
+            item = WorkoutItemV2(date_key=workout.date_key, name=workout.name, memo=workout.memo or "", records=records)
+            workouts_data.append(item)
+
+        bulk_create_workouts_v2(db, user_id, workouts_data)
 
     except Exception as e:
         log.error("migration error", error=str(e))

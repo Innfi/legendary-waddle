@@ -7,13 +7,12 @@ from sqlalchemy.orm import Session
 from auth.current_user import get_current_user
 from common.database import get_db
 from user.model import User
-from workout.dto_v2 import BulkWorkoutPayloadV2
 from workout_v2.repository import (
     find_workouts_by_datekeys,
     update_workout_memo,
     bulk_create_workouts_v2,
 )
-from workout_v2.dto import GetWorkoutDetailResponse, WorkoutPayload
+from workout_v2.dto import CreateWorkoutRequest, GetWorkoutDetailResponse, WorkoutPayload
 
 router_workout = APIRouter()
 router_record = APIRouter()
@@ -65,7 +64,7 @@ def get_workout_detail_by_date_key(
 
 @router_workout.post("/v2/workouts/bulk", status_code=status.HTTP_201_CREATED)
 def post_workouts_v2_bulk(
-    payload: BulkWorkoutPayloadV2,
+    payload: CreateWorkoutRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -73,31 +72,11 @@ def post_workouts_v2_bulk(
     log.info(
         "Bulk creating workouts v2",
         user_id=current_user.id,
-        date_key=payload.date_key,
         workout_count=len(payload.workouts),
     )
 
-    # Convert Pydantic models to dicts for repository
-    workouts_data = [
-        {
-            "name": workout.name,
-            "memo": workout.memo or "",
-            "records": [
-                {
-                    "sets": record.workout_set,
-                    "reps": record.workout_reps,
-                    "weight": record.weight,
-                }
-                for record in workout.records
-            ],
-        }
-        for workout in payload.workouts
-    ]
-
     # Bulk create workouts v2 with embedded records
-    created_workouts = bulk_create_workouts_v2(
-        db, current_user.id, payload.date_key, workouts_data
-    )
+    created_workouts = bulk_create_workouts_v2(db, current_user.id, payload.workouts)
 
     return {"created_count": len(created_workouts), "workouts": created_workouts}
 
