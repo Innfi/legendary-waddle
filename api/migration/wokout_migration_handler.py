@@ -25,7 +25,7 @@ async def migrate_workouts(date_key: str, user_id: Column[UUID]):
 
         workouts_data: list[WorkoutItemV2] = []
         for workout in workouts:
-            records = [
+            records_v2 = [
                 WorkoutRecordPayload(
                     workout_set=record.workout_set,
                     workout_reps=record.workout_reps,
@@ -34,10 +34,11 @@ async def migrate_workouts(date_key: str, user_id: Column[UUID]):
                 for record in workout.records
             ]
 
-            item = WorkoutItemV2(date_key=workout.date_key, name=workout.name, memo=workout.memo or "", records=records)
+            item = WorkoutItemV2(date_key=workout.date_key, name=workout.name, memo=workout.memo or "", records=records_v2)
             workouts_data.append(item)
 
-        bulk_create_workouts_v2(db, user_id, workouts_data)
+        log.info("new workouts_data", workouts_data=workouts_data)
+        # bulk_create_workouts_v2(db, user_id, workouts_data)
 
     except Exception as e:
         log.error("migration error", error=str(e))

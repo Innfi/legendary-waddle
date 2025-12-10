@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from pydantic import BaseModel
 import structlog
 from sqlalchemy import Column
 from sqlalchemy.orm import Session
@@ -66,18 +67,42 @@ def bulk_create_workouts_v2(
 
     for workout_data in workouts_data:
         # Create WorkoutV2 with records embedded as JSONB
+        # Ensure records are plain Python structures (list[dict]) so SQLAlchemy/psycopg
+        # can serialize to JSONB. Pydantic models and ORM objects are not directly
+        # JSON serializable by psycopg2.
+        records_payload = []
+        for r in workout_data.records:
+            if isinstance(r, BaseModel):
+                records_payload.append(r.model_dump())
+            else:
+                # assume it's already a dict-like or simple dataclass/obj
+                try:
+                    # common case: dict-like
+                    records_payload.append(dict(r))
+                except Exception:
+                    # fallback: take attributes
+                    records_payload.append(
+                        {
+                            "workout_set": getattr(r, "workout_set", None),
+                            "workout_reps": getattr(r, "workout_reps", None),
+                            "weight": getattr(r, "weight", None),
+                        }
+                    )
+
+        # Create WorkoutV2 with records embedded as JSONB
         workout_v2 = WorkoutV2(
             owner_id=owner_id,
             date_key=workout_data.date_key,
             name=workout_data.name,
             memo=workout_data.memo or "",
-            records=workout_data.records,  # Store records as JSONB
+            records=records_payload,  # Store records as JSONB
         )
-        db.add(workout_v2)
+        log.info("new record", workout_v2=workout_v2)
+        # db.add(workout_v2)
         created_workouts.append(workout_v2)
 
     # Commit all changes at once
-    db.commit()
+    # db.commit()
 
     # Refresh all workouts
     for workout in created_workouts:
