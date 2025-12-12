@@ -6,7 +6,7 @@ from sqlalchemy import Column
 from sqlalchemy.orm import Session
 
 from workout.model import WorkoutV2
-from workout_v2.dto import CreateWorkoutRequest, WorkoutItemV2
+from workout_v2.dto import WorkoutItemV2
 
 log = structlog.get_logger()
 
@@ -32,6 +32,25 @@ def find_workouts_by_datekeys(
         .all()
     )
 
+def count_workouts_by_datekeys(
+    db: Session, owner_id: Column[UUID], from_date: str, to_date: str
+):
+    """Counts workouts for a user within a specified date range."""
+    log.info(
+        "Counting workouts for user in date range",
+        user_id=owner_id,
+        from_date=from_date,
+        to_date=to_date,
+    )
+    return (
+        db.query(WorkoutV2)
+        .filter(
+            WorkoutV2.owner_id == owner_id,
+            WorkoutV2.date_key >= from_date,
+            WorkoutV2.date_key <= to_date,
+        )
+        .count()
+    )
 
 def update_workout_memo(
     db: Session, workout_id: int, owner_id: Column[UUID], memo: str | None
@@ -98,11 +117,11 @@ def bulk_create_workouts_v2(
             records=records_payload,  # Store records as JSONB
         )
         log.info("new record", workout_v2=workout_v2)
-        # db.add(workout_v2)
+        db.add(workout_v2)
         created_workouts.append(workout_v2)
 
     # Commit all changes at once
-    # db.commit()
+    db.commit()
 
     # Refresh all workouts
     for workout in created_workouts:

@@ -135,16 +135,17 @@ def fetch_workout_detail(
         records_by_workout[record.workout_id].append(record)
 
     # Combine workouts with their records
-    result = []
+    result: list[WorkoutWithRecords] = []
     for workout in workouts:
         # Create a dict to match the WorkoutWithRecords structure
-        workout_data = {
-            "workout_id": workout.id,
-            "date_key": workout.date_key,
-            "name": workout.name,
-            "memo": workout.memo,
-            "records": records_by_workout.get(workout.id, []),
-        }
+        workout_data = WorkoutWithRecords(
+            workout_id=workout.id,
+            date_key=workout.date_key,
+            name=workout.name,
+            memo=workout.memo,
+            records=records_by_workout.get(workout.id, []),
+        )
+
         result.append(workout_data)
 
     return result
