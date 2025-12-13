@@ -23,10 +23,36 @@ def find_workouts_by_datekeys(
     )
     return (
         db.query(WorkoutV2)
+        .with_entities(
+            WorkoutV2.id,
+            WorkoutV2.owner_id,
+            WorkoutV2.date_key,
+            WorkoutV2.name,
+            WorkoutV2.memo,
+        )
         .filter(
             WorkoutV2.owner_id == owner_id,
             WorkoutV2.date_key >= from_date,
             WorkoutV2.date_key <= to_date,
+        )
+        .order_by(WorkoutV2.date_key)
+        .all()
+    )
+
+def find_workout_detail_by_datekey(
+    db: Session, owner_id: Column[UUID], date_key: str
+):
+    """Fetches workouts for a user within a specified date range."""
+    log.info(
+        "Fetching workouts for user in date range",
+        user_id=owner_id,
+        date_key=date_key,
+    )
+    return (
+        db.query(WorkoutV2)
+        .filter(
+            WorkoutV2.owner_id == owner_id,
+            WorkoutV2.date_key == date_key,
         )
         .order_by(WorkoutV2.date_key)
         .all()

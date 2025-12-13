@@ -9,6 +9,7 @@ from common.database import get_db
 from user.model import User
 from workout_v2.repository import (
     find_workouts_by_datekeys,
+    find_workout_detail_by_datekey,
     update_workout_memo,
     bulk_create_workouts_v2,
 )
@@ -55,7 +56,7 @@ def get_workout_detail_by_date_key(
         date_key=date_key,
     )
 
-    workouts = find_workouts_by_datekeys(db, current_user.id, date_key, date_key)
+    workouts = find_workout_detail_by_datekey(db, current_user.id, date_key)
     if not workouts:
         return []
 
