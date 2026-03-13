@@ -1,0 +1,30 @@
+{
+  "project": "github-stats-svg",
+  "description": "Generate a GitHub stats SVG (languages by repo count, commits/PRs/issues in 2026) via a Python script driven by a scheduled GitHub Action.",
+  "stories": [
+    {
+      "id": "fetch-stats",
+      "status": "incomplete",
+      "title": "Fetch GitHub stats via GraphQL API",
+      "description": "Create `stats/fetch.py`. It must:\n- Accept a GitHub username and personal access token via env vars `GH_USERNAME` and `GH_TOKEN`.\n- Query the GitHub GraphQL API to collect:\n  1. All public repositories and their primary language.\n  2. Count of commits authored by the user in calendar year 2026 (Jan 1 – Dec 31 2026).\n  3. Count of pull requests opened by the user in 2026.\n  4. Count of issues opened by the user in 2026.\n- Compute language proportions as: repos using language / total repos with a detected language (round to 2 decimal places, values sum to 1.0).\n- Write results to `stats/data.json` in this exact shape:\n  {\n    \"languages\": [{\"name\": \"Python\", \"proportion\": 0.45}, ...],\n    \"commits\": 120,\n    \"pull_requests\": 30,\n    \"issues\": 15\n  }\n- Languages sorted descending by proportion. Include only languages with proportion > 0.\n- The script must be runnable standalone: `python stats/fetch.py`.\n- Handle paginated GraphQL responses (use `after` cursor) so all repos are counted.\n- Requirements go in `stats/requirements.txt` (use `requests` only, no extra deps)."
+    },
+    {
+      "id": "render-svg",
+      "status": "incomplete",
+      "title": "Render stats.svg from data.json",
+      "description": "Create `stats/render.py`. It must:\n- Read `stats/data.json` (produced by fetch-stats story).\n- Produce `stats/stats.svg` as a pure SVG string (no external SVG libraries — build the XML with Python's `xml.etree.ElementTree` or plain f-strings).\n- SVG layout:\n  - Width: 400px, height: auto (grows with number of languages).\n  - Dark background (#0d1117), light text (#c9d1d9) — GitHub dark theme palette.\n  - Title: 'GitHub Stats 2026' at the top.\n  - Language section: for each language, show the name, a filled bar (width proportional to proportion), and the percentage label. Use distinct fill colors per language (define a fixed palette of at least 10 hex colors).\n  - Stats row at the bottom: three labeled counters for Commits, Pull Requests, Issues.\n- The script must be runnable standalone: `python stats/render.py`.\n- No pip dependencies beyond the standard library."
+    },
+    {
+      "id": "github-action",
+      "status": "incomplete",
+      "title": "GitHub Actions workflow to generate and commit stats.svg",
+      "description": "Create `.github/workflows/stats.yml`. It must:\n- Trigger on: schedule (cron `0 3 * * *` — daily at 03:00 UTC) and on `workflow_dispatch`.\n- Use `ubuntu-latest`.\n- Steps:\n  1. Checkout the repo (fetch full history).\n  2. Set up Python 3.12.\n  3. Install dependencies: `pip install -r stats/requirements.txt`.\n  4. Run `python stats/fetch.py` with env vars `GH_USERNAME` (hardcode your username as a non-secret var or pass via vars context) and `GH_TOKEN` from `secrets.GH_TOKEN`.\n  5. Run `python stats/render.py`.\n  6. Commit and push `stats/stats.svg` if it changed (use `git diff --quiet` check; commit message: `chore: update stats.svg [skip ci]`; configure git user as `github-actions[bot]`).\n- The workflow must not fail if there are no changes to commit."
+    },
+    {
+      "id": "readme-embed",
+      "status": "incomplete",
+      "title": "Create profile README.md embedding stats.svg",
+      "description": "Create `README.md` at the repo root. It must:\n- Be a GitHub profile README (suitable for a `<username>/<username>` repo).\n- Embed `stats/stats.svg` as an image using a relative path: `![GitHub Stats](stats/stats.svg)`.\n- Include a brief one-line description above the image (placeholder: 'Hi, I am <username>. Here are my 2026 GitHub stats:').\n- Keep it minimal — no extra badges, sections, or boilerplate beyond what is specified."
+    }
+  ]
+}
