@@ -40,7 +40,7 @@ for i in $(seq 1 "$MAX_ITERATIONS"); do
   # and follows the instructions there.
   # Exit code 3 = permission denied by user; exit the loop immediately.
   claude --print \
-    "You are working on the probable-eureka CNI plugin. Read CLAUDE.md and follow the instructions there exactly. The next incomplete story in prd.json is: $next_story" \
+    "You are working on the github-stats-svg project. Read CLAUDE.md and follow the instructions there exactly. The next incomplete story in prd.json is: $next_story" \
     || {
       exit_code=$?
       if [ "$exit_code" -eq 3 ]; then

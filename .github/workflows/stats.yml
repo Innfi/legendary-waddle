@@ -1,0 +1,44 @@
+name: Generate Stats SVG
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r stats/requirements.txt
+
+      - name: Fetch stats
+        env:
+          GH_USERNAME: ${{ vars.GH_USERNAME }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: python stats/fetch.py
+
+      - name: Render SVG
+        run: python stats/render.py
+
+      - name: Commit and push stats.svg
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add stats/stats.svg
+          if git diff --quiet HEAD stats/stats.svg; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update stats.svg [skip ci]"
+            git push
+          fi
