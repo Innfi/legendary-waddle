@@ -25,6 +25,18 @@
       "status": "complete",
       "title": "Create profile README.md embedding stats.svg",
       "description": "Create `README.md` at the repo root. It must:\n- Be a GitHub profile README (suitable for a `<username>/<username>` repo).\n- Embed `stats/stats.svg` as an image using a relative path: `![GitHub Stats](stats/stats.svg)`.\n- Include a brief one-line description above the image (placeholder: 'Hi, I am <username>. Here are my 2026 GitHub stats:').\n- Keep it minimal — no extra badges, sections, or boilerplate beyond what is specified."
+    },
+    {
+      "id": "render-font",
+      "status": "complete",
+      "title": "Configurable font family and sizes in render.py",
+      "description": "Modify `stats/render.py` to centralise all font settings as module-level constants and add a test script.\n\n**Changes to `stats/render.py`:**\n- Add four constants near the top of the file (after the existing layout constants):\n  - `FONT_FAMILY = \"'Segoe UI', Ubuntu, sans-serif\"`\n  - `FONT_SIZE_TITLE = \"18\"`\n  - `FONT_SIZE_BODY = \"13\"`\n  - `FONT_SIZE_SMALL = \"12\"`\n- Replace every hardcoded `font-family` attribute value with `FONT_FAMILY`.\n- Replace font sizes in the SVG elements:\n  - Title text (`\"GitHub Stats ...\"`): use `FONT_SIZE_TITLE` (was `\"18\"`).\n  - Language name text: use `FONT_SIZE_BODY` (was `\"12\"`).\n  - Percentage label text: use `FONT_SIZE_SMALL` (was `\"11\"`).\n  - Stats value text (commits/PRs/issues number): use `FONT_SIZE_TITLE` (was `\"20\"`).\n  - Stats label text: use `FONT_SIZE_SMALL` (was `\"11\"`).\n- Do not change any other logic or layout.\n\n**New file `stats/test_render_font.py`:**\n- Create a standalone test script (no pytest required — plain `assert` statements, runnable with `python stats/test_render_font.py`).\n- Import `render` from `stats/render.py`.\n- Build a minimal `data` dict (2 languages, small counts) and call `render(data)`.\n- Assert that the SVG output string contains `FONT_FAMILY`, `FONT_SIZE_TITLE`, `FONT_SIZE_BODY`, and `FONT_SIZE_SMALL` (import the constants from `render`).\n- Assert the output is valid XML by parsing it with `xml.etree.ElementTree.fromstring`.\n- Print `All font assertions passed.` on success.\n- Must exit 0 when run: `python stats/test_render_font.py`."
+    },
+    {
+      "id": "dynamic-year",
+      "status": "complete",
+      "title": "Use current calendar year dynamically in fetch.py",
+      "description": "Modify `stats/fetch.py` to replace all hardcoded year references (2026) with the current calendar year, determined at runtime using `datetime.date.today().year`.\n- In `fetch_commits`: replace the hardcoded date range `committer-date:2026-01-01..2026-12-31` with `committer-date:{year}-01-01..{year}-12-31` where `year = datetime.date.today().year`.\n- In `fetch_pull_requests`: replace `created:2026-01-01..2026-12-31` with `created:{year}-01-01..{year}-12-31`.\n- In `fetch_issues`: replace `created:2026-01-01..2026-12-31` with `created:{year}-01-01..{year}-12-31`.\n- Pass `year` as a parameter to each of the three fetch functions from `main()`.\n- Add `import datetime` at the top of the file (standard library, no new deps).\n- Do not modify any other logic, files, or function signatures beyond what is listed above.\n- The script must still be runnable standalone: `python stats/fetch.py`."
     }
   ]
 }

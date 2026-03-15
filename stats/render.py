@@ -15,6 +15,13 @@ PALETTE = [
     "#41b883",  # teal
 ]
 
+FONT_FAMILY = (
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+)
+FONT_SIZE_TITLE = "20"
+FONT_SIZE_BODY = "14"
+FONT_SIZE_SMALL = "12"
+
 BG = "#0d1117"
 TEXT = "#c9d1d9"
 WIDTH = 400
@@ -55,8 +62,8 @@ def render(data: dict) -> str:
             "x": str(WIDTH // 2),
             "y": "32",
             "text-anchor": "middle",
-            "font-family": "monospace",
-            "font-size": "18",
+            "font-family": FONT_FAMILY,
+            "font-size": FONT_SIZE_TITLE,
             "font-weight": "bold",
             "fill": TEXT,
         },
@@ -78,8 +85,8 @@ def render(data: dict) -> str:
             {
                 "x": str(PADDING),
                 "y": str(y + BAR_HEIGHT - 4),
-                "font-family": "monospace",
-                "font-size": "12",
+                "font-family": FONT_FAMILY,
+                "font-size": FONT_SIZE_BODY,
                 "fill": TEXT,
             },
         )
@@ -105,8 +112,8 @@ def render(data: dict) -> str:
             {
                 "x": str(bar_x + bar_w + 6),
                 "y": str(y + BAR_HEIGHT - 4),
-                "font-family": "monospace",
-                "font-size": "11",
+                "font-family": FONT_FAMILY,
+                "font-size": FONT_SIZE_SMALL,
                 "fill": TEXT,
             },
         )
@@ -127,8 +134,8 @@ def render(data: dict) -> str:
                 "x": str(cx),
                 "y": str(stats_y + 20),
                 "text-anchor": "middle",
-                "font-family": "monospace",
-                "font-size": "20",
+                "font-family": FONT_FAMILY,
+                "font-size": FONT_SIZE_TITLE,
                 "font-weight": "bold",
                 "fill": TEXT,
             },
@@ -142,8 +149,8 @@ def render(data: dict) -> str:
                 "x": str(cx),
                 "y": str(stats_y + 40),
                 "text-anchor": "middle",
-                "font-family": "monospace",
-                "font-size": "11",
+                "font-family": FONT_FAMILY,
+                "font-size": FONT_SIZE_SMALL,
                 "fill": "#8b949e",
             },
         )

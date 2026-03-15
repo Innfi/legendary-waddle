@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 from collections import defaultdict
@@ -63,12 +64,12 @@ def fetch_languages(token: str, username: str) -> dict[str, int]:
     return dict(lang_counts)
 
 
-def fetch_commits(token: str, username: str) -> int:
+def fetch_commits(token: str, username: str, year: int) -> int:
     headers = {
         "Authorization": f"bearer {token}",
         "Accept": "application/vnd.github.cloak-preview",
     }
-    params = {"q": f"author:{username} committer-date:2026-01-01..2026-12-31", "per_page": 1}
+    params = {"q": f"author:{username} committer-date:{year}-01-01..{year}-12-31", "per_page": 1}
     response = requests.get(
         "https://api.github.com/search/commits",
         headers=headers,
@@ -79,7 +80,7 @@ def fetch_commits(token: str, username: str) -> int:
     return response.json()["total_count"]
 
 
-def fetch_pull_requests(token: str, username: str) -> int:
+def fetch_pull_requests(token: str, username: str, year: int) -> int:
     query = """
     query($query: String!) {
       search(query: $query, type: ISSUE, first: 1) {
@@ -87,12 +88,12 @@ def fetch_pull_requests(token: str, username: str) -> int:
       }
     }
     """
-    search_query = f"author:{username} type:pr created:2026-01-01..2026-12-31"
+    search_query = f"author:{username} type:pr created:{year}-01-01..{year}-12-31"
     data = run_query(token, query, {"query": search_query})
     return data["data"]["search"]["issueCount"]
 
 
-def fetch_issues(token: str, username: str) -> int:
+def fetch_issues(token: str, username: str, year: int) -> int:
     query = """
     query($query: String!) {
       search(query: $query, type: ISSUE, first: 1) {
@@ -100,7 +101,7 @@ def fetch_issues(token: str, username: str) -> int:
       }
     }
     """
-    search_query = f"author:{username} type:issue created:2026-01-01..2026-12-31"
+    search_query = f"author:{username} type:issue created:{year}-01-01..{year}-12-31"
     data = run_query(token, query, {"query": search_query})
     return data["data"]["search"]["issueCount"]
 
@@ -126,10 +127,11 @@ def main():
     if not username or not token:
         raise RuntimeError("GH_USERNAME and GH_TOKEN environment variables must be set")
 
+    year = datetime.date.today().year
     lang_counts = fetch_languages(token, username)
-    commits = fetch_commits(token, username)
-    pull_requests = fetch_pull_requests(token, username)
-    issues = fetch_issues(token, username)
+    commits = fetch_commits(token, username, year)
+    pull_requests = fetch_pull_requests(token, username, year)
+    issues = fetch_issues(token, username, year)
 
     languages = compute_proportions(lang_counts)
 
